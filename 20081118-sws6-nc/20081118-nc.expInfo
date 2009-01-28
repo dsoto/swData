@@ -1,0 +1,14 @@
+experiment description
+
+type of experiment: normal compliance test
+
+sample = sws6
+cantilever = 629a03
+
+18 November 2008 08:14:42 PST
+branch 20081118-nc created
+
+18 November 2008 14:34:25 PST
+took data and started a substantial rewrite of the analyzeNC.m script.
+ran plots and generated output based on this new script.
+
