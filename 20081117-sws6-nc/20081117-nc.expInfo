@@ -1,0 +1,14 @@
+experiment description
+
+type of experiment: normal compliance test
+
+sample = sws6
+cantilever = 629a03
+
+18 November 2008 08:14:42 PST
+branch 20081118-nc created
+
+18 November 2008 08:34:48 PST
+during yesterday's test as deeper compressions were achieved, it was evident that there was compression of the backing layer.  also, the tip bent over so that this wasn't a compression test with a member in purely axial loading.  i'm not sure how to model this bending to get a better model estimate for the compliance.  
+
+
