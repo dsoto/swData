@@ -1,0 +1,10 @@
+experimental details logfile
+
+directory name
+
+sample used
+
+trajectories used
+
+cantilever used
+
