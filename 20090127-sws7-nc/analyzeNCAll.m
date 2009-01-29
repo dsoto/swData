@@ -26,11 +26,13 @@ columnHeaders{1} = {'Data',       'File',      'Name',    formatString20};
 columnHeaders{2} = {'Trajectory', 'File',      'Name',    formatString20};
 columnHeaders{3} = {'Sample',     '',          ''    ,    formatString15};
 columnHeaders{4} = {'Cantilever', '',          ''    ,    formatString15};
-columnHeaders{5} = {'Cantilever', 'Deflection','(um)',   formatString15};
+columnHeaders{5} = {'Cantilever', 'Deflection','(um)',    formatString15};
 columnHeaders{6} = {'Stage',      'Preload',   '(um)',    formatString15};
 columnHeaders{7} = {'Preload',    'Force',     '(uN)',    formatString15};
 columnHeaders{8} = {'Microwedge', 'Deflection','(um)',    formatString15};
-columnHeaders{9} = {'Spring',     'Constant',  '(N/m)',    formatString15};
+columnHeaders{9} = {'Spring',     'Constant',  '(N/m)',   formatString15};
+columnHeaders{10} = {'Roll',     'Angle',  '(deg)',   formatString15};
+columnHeaders{11} = {'Pitch',     'Angle',  '(deg)',   formatString15};
 
 % loop through cell array to construct headers
 for i = 1:3			% line loop
@@ -43,6 +45,7 @@ end
 
 % loop through data files and call analyzeLS.m
 for i = 1:numFiles
+%for i = 1:1
 	fileName = ['./data/',listFiles(i).name];
 	fprintf('Processing File %d of %d : % 10s\n',i,numFiles,fileName);
 	figure = gcf;

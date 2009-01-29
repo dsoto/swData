@@ -6,6 +6,7 @@ function plotHandle = analysisNC ( dataFileName, logFileHandle, ...
 % flag to perform analysis
 analyze = 1;
 stdOutput = 0;
+doPrintPlot = 0;
 
 % open data file and strip off headers
 fileHandle = fopen(dataFileName,'r');
@@ -14,10 +15,23 @@ cantilever         = fgetl(fileHandle);
 trajectoryFileName = fgetl(fileHandle);
 latAmp             = fgetl(fileHandle); 
 norAmp             = fgetl(fileHandle);
-% deal with blank line
-fgetl(fileHandle);
+pitchAngle         = fgetl(fileHandle);
+rollAngle          = fgetl(fileHandle);
 token              = fgetl(fileHandle);
 dataHeaders        = fgetl(fileHandle);
+
+% need to extract only file name from trajectory file name
+% since the file string is on a PC this is all fucked 
+% search for PC path separator
+index = strfind(trajectoryFileName,'\');
+% get last one
+index = index(length(index));
+% rest of string is the actual filename
+trajectoryFileName = trajectoryFileName(index+1:length(trajectoryFileName));
+
+% get short filenames
+[pathstr, shortTrajectoryFileName, ext, ver] = fileparts(trajectoryFileName);
+[pathstr, shortDataFileName, ext, ver] = fileparts(dataFileName);
 
 % call function to get cantilever parameters
 [normalStiffness, lateralStiffness, ...
@@ -43,6 +57,14 @@ lateralAmplification = str2num(lateralAmplification);
 token = regexp(norAmp,'(\d*)','tokens');
 normalAmplification = char(token{1,1});
 normalAmplification = str2num(normalAmplification);
+
+token = regexp(pitchAngle,'(\d*)','tokens');
+pitchAngle = char(token{1,1});
+pitchAngle = str2num(pitchAngle);
+
+token = regexp(rollAngle,'(\d*)','tokens');
+rollAngle = char(token{1,1});
+rollAngle = str2num(rollAngle);
 
 % now displacement is corrected for gain setting on box 
 defaultAmplification = 100;
@@ -137,6 +159,8 @@ if (analyze)
 	end
 
 	% output to log file
+	fprintf(logFileHandle, '% 20s\t',   shortDataFileName);
+	fprintf(logFileHandle, '% 20s\t',   shortTrajectoryFileName);
 	fprintf(logFileHandle, '% 15s\t',   sample);
 	fprintf(logFileHandle, '% 15s\t',   cantilever);
 	fprintf(logFileHandle, '% 15.3f\t', cantileverDeflectionMicron);
@@ -144,12 +168,15 @@ if (analyze)
 	fprintf(logFileHandle, '% 15.3f\t', totalPreloadForceMicroNewton);
 	fprintf(logFileHandle, '% 15.3f\t', microwedgeDeflectionMicron);
 	fprintf(logFileHandle, '% 15.3f\t', normalSpringConstant);
+	fprintf(logFileHandle, '% 15.3d\t', rollAngle);
+	fprintf(logFileHandle, '% 15.3d\t', pitchAngle);
 	fprintf(logFileHandle, '\n');
 	
 end
 	
 % assemble plot file name and title from the tokens above 
-plotFileName = sprintf('sb_x%s_v%s',x,velocity);
+plotFileName = sprintf('sb_x%s_v%s_p%03d_r%03d', ... 
+	x,velocity,pitchAngle, rollAngle);
 titleString = plotFileName;	
 
 % plot normal and shear traces 
@@ -201,5 +228,7 @@ ylabel(axesHandle, 'Force (microNewtons)');
 legend('Shear','Normal');			
 title(titleString,'Interpreter','None');
 
-formatPlot( figureHandle, axesHandle, 'Times New Roman', 8 );
-printPlot ( figureHandle, plotFileName, 5.0, 3.0);
+if (doPrintPlot == 1)
+	formatPlot( figureHandle, axesHandle, 'Times New Roman', 8 );
+	printPlot ( figureHandle, plotFileName, 5.0, 3.0);
+end
