@@ -6,7 +6,7 @@ function plotHandle = analysisNC ( dataFileName, logFileHandle, ...
 % flag to perform analysis
 analyze = 1;
 stdOutput = 0;
-doPrintPlot = 0;
+doPrintPlot = 1;
 
 % open data file and strip off headers
 fileHandle = fopen(dataFileName,'r');
@@ -175,7 +175,7 @@ if (analyze)
 end
 	
 % assemble plot file name and title from the tokens above 
-plotFileName = sprintf('sb_x%s_v%s_p%03d_r%03d', ... 
+plotFileName = sprintf('nc_x%s_v%s_p%03d_r%03d', ... 
 	x,velocity,pitchAngle, rollAngle);
 titleString = plotFileName;	
 
