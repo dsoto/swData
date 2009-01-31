@@ -9,7 +9,7 @@
 % v = velocity of loading (micron/second)
 % drawing on page 82 of 2008_1
 
-formatString = 'SB_x%02.0f_v%02.0f';
+formatString = 'nc_x%02.0f_v%02.0f';
 
 xMicron = [0:1:30];
 velocityMicronPerSecond = [20 20];
