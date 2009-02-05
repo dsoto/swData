@@ -46,7 +46,7 @@ trajectoryFileName = trajectoryFileName(index+1:length(trajectoryFileName));
 % uses cell arrays so char must be used
 % data stored as strings
 angleToken = regexp(trajectoryFileName,'_a(\d*)','tokens');
-angle = char(angleToken{1,1});
+dragAngle = char(angleToken{1,1});
 
 sampleToken = regexp(dataFileName,'_(sws\d*)','tokens');
 sample = char(sampleToken{1,1});
@@ -175,7 +175,7 @@ if (analyze == 1)
   fprintf(logFileHandle, '% 20s\t',   shortTrajectoryFileName);
   fprintf(logFileHandle, '% 15s\t',   sample);
   fprintf(logFileHandle, '% 15s\t',   cantilever);
-  fprintf(logFileHandle, '% 15s\t',   angle);
+  fprintf(logFileHandle, '% 15s\t',   dragAngle);
   fprintf(logFileHandle, '% 15.3f\t', maxAdhesionMicroNewton);
   fprintf(logFileHandle, '% 15.3f\t', maxShearMicroNewton);
   fprintf(logFileHandle, '% 15.3f',   effectivePreload);
@@ -187,9 +187,10 @@ end
 
 if (doDisplayPlot==1)
 	% assemble plot file name and title from the tokens above
-	plotFileName = sprintf('./plots/%s_p%s_a%s_ls',sample,preload,angle);
-	titleString = sprintf('%s preload %s angle %s ls',... 
-												 sample,preload,angle);
+	plotFileName = sprintf('./plots/%s_p%s_a%s_r%s_ls', ...
+	                       sample,preload,dragAngle,rollAngle);
+	titleString = sprintf('%s preload %s angle %s roll %s ls',... 
+												 sample,preload,dragAngle,rollAngle);
 	
 	% plot normal and shear traces 
 	plot(axesHandle,lateralForceMicroNewton,'g');
