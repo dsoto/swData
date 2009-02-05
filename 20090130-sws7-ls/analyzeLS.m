@@ -181,8 +181,8 @@ end
 if (doDisplayPlot==1)
 % assemble plot file name and title from the tokens above
 % FIXME : what the hell is FS?
-plotFileName = sprintf('./plots/%s_p%s_a%s_FS',sample,preload,angle);
-titleString = sprintf('%s preload %s angle %s FS',... 
+plotFileName = sprintf('./plots/%s_p%s_a%s_ls',sample,preload,angle);
+titleString = sprintf('%s preload %s angle %s ls',... 
 											 sample,preload,angle);
 
 % plot normal and shear traces 
@@ -212,8 +212,8 @@ hold off;
 xlabel(axesHandle, 'Time (ms)');
 ylabel(axesHandle, 'Force (microNewtons)');
 legend('Shear','Normal');			
-title({'Limit Surface';titleString;'Cantilever 629a03 Sample SWS6'; ...
-	'2008023_sws6_ls'},'Interpreter','None');
+title({'Limit Surface';titleString;''; ...
+	''},'Interpreter','None');
 
 if (doPrintPlot == 1)
 	fprintf('Printing Plot File %s\n',plotFileName);
