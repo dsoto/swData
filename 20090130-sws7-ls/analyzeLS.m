@@ -65,6 +65,14 @@ token = regexp(norAmp,'(\d*)','tokens');
 normalAmplification = char(token{1,1});
 normalAmplification = str2num(normalAmplification);
 
+token = regexp(pitchAngle,'(\d*)','tokens');
+pitchAngle = char(token{1,1});
+
+token = regexp(rollAngle,'(\d*)','tokens');
+rollAngle = char(token{1,1});
+
+
+
 % call function to get cantilever parameters
 [normalStiffness, lateralStiffness, ...
  normalDisplacement, lateralDisplacement] = ...
@@ -173,52 +181,47 @@ if (analyze == 1)
   fprintf(logFileHandle, '% 15.3f',   effectivePreload);
 %  fprintf(logFileHandle, '% 15.3f',   normalCantileverDeflection);
 %  fprintf(logFileHandle, '% 15.3f',   normalStagePreload);
-  
-  fprintf(logFileHandle, '\n');
+    fprintf(logFileHandle, '\n');
 	
 end
 
 if (doDisplayPlot==1)
-% assemble plot file name and title from the tokens above
-% FIXME : what the hell is FS?
-plotFileName = sprintf('./plots/%s_p%s_a%s_ls',sample,preload,angle);
-titleString = sprintf('%s preload %s angle %s ls',... 
-											 sample,preload,angle);
-
-% plot normal and shear traces 
-plot(axesHandle,lateralForceMicroNewton,'g');
-hold on;
-plot(axesHandle,normalForceMicroNewton,'b');
-
-% graph annotation with extracted points
-if (analyze==1) 
-	% plot maximum adhesion point
-	plot(indexMaxAdhesion, maxAdhesionUncompensatedMicroNewton,'ko');
-
-	% plot corresponding max shear point
-	plot(indexMaxAdhesion, maxShearMicroNewton,'ko');
+	% assemble plot file name and title from the tokens above
+	plotFileName = sprintf('./plots/%s_p%s_a%s_ls',sample,preload,angle);
+	titleString = sprintf('%s preload %s angle %s ls',... 
+												 sample,preload,angle);
 	
-	% plot maximum preload point
-	plot(indexMaxPreload, maxPreloadMicroNewton,'ko');
-
-	% plot contact position
-	plot(indexContact, normalForceContactMicroNewton,'ko');
-end
-
-
-
-hold off;
-
-xlabel(axesHandle, 'Time (ms)');
-ylabel(axesHandle, 'Force (microNewtons)');
-legend('Shear','Normal');			
-title({'Limit Surface';titleString;''; ...
-	''},'Interpreter','None');
-
-if (doPrintPlot == 1)
-	fprintf('Printing Plot File %s\n',plotFileName);
-	formatPlot( figureHandle, axesHandle, 'Times New Roman', 8 );
-	printPlot ( figureHandle, plotFileName, 5.0, 3.0);
-end
+	% plot normal and shear traces 
+	plot(axesHandle,lateralForceMicroNewton,'g');
+	hold on;
+	plot(axesHandle,normalForceMicroNewton,'b');
+	
+	% graph annotation with extracted points
+	if (analyze==1) 
+		% plot maximum adhesion point
+		plot(indexMaxAdhesion, maxAdhesionUncompensatedMicroNewton,'ko');
+	
+		% plot corresponding max shear point
+		plot(indexMaxAdhesion, maxShearMicroNewton,'ko');
+		
+		% plot maximum preload point
+		plot(indexMaxPreload, maxPreloadMicroNewton,'ko');
+	
+		% plot contact position
+		plot(indexContact, normalForceContactMicroNewton,'ko');
+	end
+	hold off;
+	
+	xlabel(axesHandle, 'Time (ms)');
+	ylabel(axesHandle, 'Force (microNewtons)');
+	legend('Shear','Normal');			
+	title({'Limit Surface';titleString;''; ...
+		''},'Interpreter','None');
+	
+	if (doPrintPlot == 1)
+		fprintf('Printing Plot File %s\n',plotFileName);
+		formatPlot( figureHandle, axesHandle, 'Times New Roman', 8 );
+		printPlot ( figureHandle, plotFileName, 5.0, 3.0);
+	end
 
 end
