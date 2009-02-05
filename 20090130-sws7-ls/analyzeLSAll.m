@@ -6,11 +6,13 @@
 % FIXME : put this in function for use in all scripts
 % function getDataFiles();
 % go into data directory
-cd('data');
+pathString = './data/040/';
+
+cd(pathString);
 % grab list of files
 listFiles = dir('*.data');
 % go back to parent directory
-cd('..');
+cd('../..');
 % count files
 numFiles = length(listFiles);
 
@@ -42,7 +44,7 @@ end
 
 % loop through data files and call analyzeLS.m
 for i = 1:numFiles
-	fileName = ['./data/',listFiles(i).name];
+	fileName = [pathString,listFiles(i).name];
 	fprintf('Processing File %d of %d : % 10s\n',i,numFiles,fileName);
 	figure = gcf;
 	axes = gca;
