@@ -8,8 +8,8 @@ function plotHandle = analyzeLS ( dataFileName, logFileHandle, ...
 analyze = 1;       % perform analysis of forces
 stdOutput = 0;     % output to command line
 filterSpikes = 0;  % filter sharp piezo spikes
-doDisplayPlot = 0;  % display plot
-doPrintPlot = 0;     % output a pdf plot 
+doDisplayPlot = 1;  % display plot
+doPrintPlot = 1;     % output a pdf plot 
 
 % open data file and strip off headers
 fileHandle = fopen(dataFileName,'r');
@@ -170,8 +170,8 @@ end
 if (doDisplayPlot)
 % assemble plot file name and title from the tokens above
 % FIXME : what the hell is FS?
-plotFileName = sprintf('./plots/%s_p%s_a%s_FS',sample,preload,angle);
-titleString = sprintf('%s preload %s angle %s FS',... 
+plotFileName = sprintf('./plots/%s_p%s_a%s_ls',sample,preload,angle);
+titleString = sprintf('%s preload %s angle %s LS',... 
 											 sample,preload,angle);
 
 % plot normal and shear traces 
@@ -185,13 +185,17 @@ if (analyze)
 	plot(indexMaxAdhesion, maxAdhesionUncompensatedMicroNewton,'ko');
 
 	% plot corresponding max shear point
-	plot(indexMaxAdhesion, maxShearMicroNewton,'ko');
+	plot(indexMaxAdhesion, maxShearUncompensatedMicroNewton,'ko');
 	
 	% plot maximum preload point
 	plot(indexMaxPreload, maxPreloadMicroNewton,'ko');
 
-	% plot contact position
+	% plot normal contact position
 	plot(indexContact, normalForceContactMicroNewton,'ko');
+
+	% plot shear contact position
+	plot(indexContact, shearForceContactMicroNewton,'ko');
+
 end
 
 
@@ -201,8 +205,10 @@ hold off;
 xlabel(axesHandle, 'Time (ms)');
 ylabel(axesHandle, 'Force (microNewtons)');
 legend('Shear','Normal');			
-title({'Limit Surface';titleString;'Cantilever 629a03 Sample SWS6'; ...
-	'2008023_sws6_ls'},'Interpreter','None');
+title({'Limit Surface'; ... 
+        titleString; ...
+        'Cantilever 529b02 Sample SWS6'; ...
+	      '20081211-sws6-ls'},'Interpreter','None');
 
 if (doPrintPlot == 1)
 	fprintf('Printing Plot File %s\n',plotFileName);
