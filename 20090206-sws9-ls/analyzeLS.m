@@ -203,13 +203,17 @@ if (doDisplayPlot==1)
 		plot(indexMaxAdhesion, maxAdhesionUncompensatedMicroNewton,'ko');
 	
 		% plot corresponding max shear point
-		plot(indexMaxAdhesion, maxShearMicroNewton,'ko');
+		plot(indexMaxAdhesion, maxShearUncompensatedMicroNewton,'ko');
 		
 		% plot maximum preload point
 		plot(indexMaxPreload, maxPreloadMicroNewton,'ko');
 	
-		% plot contact position
+		% plot normal contact position
 		plot(indexContact, normalForceContactMicroNewton,'ko');
+
+		% plot shear contact position
+		plot(indexContact, shearForceContactMicroNewton,'ko');
+
 	end
 	hold off;
 	

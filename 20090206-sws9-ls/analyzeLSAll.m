@@ -18,7 +18,7 @@ numFiles = length(listFiles);
 
 % open data file for logging of files and parameters
 % to create index of data
-logFileHandle = fopen('20090130-sws7-ls.data','w');
+logFileHandle = fopen('20090206-sws9-ls.data','w');
 
 formatString20 = '% 20s\t';
 formatString15 = '% 15s\t';
