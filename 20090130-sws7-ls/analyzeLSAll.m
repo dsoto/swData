@@ -6,13 +6,13 @@
 % FIXME : put this in function for use in all scripts
 % function getDataFiles();
 % go into data directory
-pathString = './data/040/';
+pathString = './data/';
 
 cd(pathString);
 % grab list of files
 listFiles = dir('*.data');
 % go back to parent directory
-cd('../..');
+cd('..');
 % count files
 numFiles = length(listFiles);
 
