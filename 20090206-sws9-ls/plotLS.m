@@ -9,7 +9,10 @@ dummyLine = fgetl(fileHandle);
 dummyLine = fgetl(fileHandle);
 
 
-dataArray = textscan(fileHandle, '%20s %20s %15s %15s %15s %15.7f %15.7f');
+%dataArray = textscan(fileHandle, ... 
+%            '%20s %20s %15s %15s %15s %15.3f %15.3f %15.3f');
+dataArray = textscan(fileHandle, ... 
+            '%s%s%s%s%s%f%f%f');
 
 shearForce =  dataArray{1,7};
 normalForce  =  dataArray{1,6};
@@ -19,7 +22,10 @@ plot(shearForce,normalForce,'ko');
 
 xlabel('Shear Force (microNewtons)');
 ylabel('Normal Force (microNewtons)');
-title({'Single Microwedge Limit Surface';'Cantilever 529b02 Sample SWS6';'20081211-ls'},'Interpreter','None');
+title({'Single Microwedge Limit Surface'; ...
+       'Cantilever 529b02 Sample sws9';... 
+       '20090206-sws9-ls'}, ...
+       'Interpreter','None');
 
 %axis([0 20 -5 0.5]);
 x = get(gca,'XLim');
