@@ -9,26 +9,47 @@ function plotHandle = analyzeSlantTestManual ( dataFileName, logFileHandle, ...
 % 
 
 x = 1:10;
-y = rand(1,10);
+y = round(10*rand(1,10));
 
 plot(x,y);
+axis([1 10 0 10]);
 hold on;
 
 fprintf(1,'Please click on Initial Contact point on Normal Trace\n');
 
 [xIn,yIn] = ginput(1);
+xIn = round(xIn);
+yIn = y(xIn);
+fprintf(1,'actual neighboring point\n');
 fprintf(1,'x = %f\n',xIn);
 fprintf(1,'y = %f\n',yIn);
 
 plot(xIn,yIn,'ko');
+legend('Trace','Initial Contact');
+
+fprintf(1,'Is this acceptable? (y/n) \n');
+response = input(' : ','s');
+isAcceptable = strcmp('y',response);
+
+if (isAcceptable == 1)
+	fprintf(1,'You accepted\n');
+else
+	fprintf(1,'You rejected\n');
+end
 
 fprintf(1,'Please click on Maximum Adhesion on Normal Trace\n');
 
 [xIn,yIn] = ginput(1);
+xIn = round(xIn);
+yIn = y(xIn);
+
 fprintf(1,'x = %f\n',xIn);
 fprintf(1,'y = %f\n',yIn);
 
 plot(xIn,yIn,'bo');
+legend('Trace','Initial Contact','Max Adhesion');
+
+hold off;
 
 fprintf(1,'done\n');
 return
@@ -253,6 +274,10 @@ if (doDisplayPlot==1)
 	legend('Shear','Normal');			
 	title({'Limit Surface';titleString;''; ...
 		''},'Interpreter','None');
+	
+	% do not print plot yet
+	% check if plot is acceptable
+	% if not acceptable, go through manual routine
 	
 	if (doPrintPlot == 1)
 		fprintf('Printing Plot File %s\n',plotFileName);
