@@ -4,9 +4,11 @@
 def plotDataFile(fileName):
 	import os.path
 	import matplotlib.pyplot
+
 	baseFileName = os.path.splitext(fileName)
 	baseFileName = baseFileName[0]
 	plotFileName = baseFileName + '.pdf'
+	plotFileName = baseFileName
 	dataArray = readDataFile(fileName)
 	time = dataArray[0]
 	voltageNormal = dataArray[1]
@@ -18,8 +20,11 @@ def plotDataFile(fileName):
 	matplotlib.pyplot.hold(True)
 	matplotlib.pyplot.plot(voltageShear)
 	matplotlib.pyplot.hold(False)
+#	matplotlib.pyplot.show()
+#	matplotlib.pyplot.ginput(1)
 	matplotlib.pyplot.xlabel('Time (ms)')
 	matplotlib.pyplot.ylabel('Piezo Voltage Signal (V)')
+	matplotlib.pyplot.title(baseFileName)
 	matplotlib.pyplot.savefig(plotFileName,transparent=True)
 	return 0
 	
@@ -27,6 +32,9 @@ def plotDataFile(fileName):
 def readDataFile(fileName):
 	# read in file
 	fileIn = open(fileName,'r')
+	# read and discard first 9 lines of file
+	for i in range(9):
+		tempLine=fileIn.readline()
 	tempData = fileIn.readlines()
 	# initialize data arrays
 	strings=[]

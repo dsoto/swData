@@ -1,3 +1,12 @@
+February 11, 2009 14:58 
+629a03
+H:\swData\20090211-sws10-st\traj\LS_p30_a00_v20.traj
+lateral amplification = 100
+normal amp = 100
+pitch angle = -10
+roll angle = 130
+\* Data Starts Here *\
+Time Stamp	X Output	Y Output	Capacitive Feedback 1	Capacitive Feedback 2
 14:58:03.5781	1.220703E-3	-9.155273E-4	1.556396E-2	1.220703E-2
 14:58:03.5781	-7.629395E-3	-3.662109E-3	1.495361E-2	1.190186E-2
 14:58:03.5781	-1.525879E-3	3.051758E-3	1.495361E-2	1.251221E-2
