@@ -1,5 +1,4 @@
-function plotHandle = analyzeSlantTestManual ( dataFileName, logFileHandle, ... 
-                                             figureHandle, axesHandle);
+function returnValue = analyzeSlantTestManual ( dataFileName, logFileHandle);
 
 % this function will determine
 % max preload
@@ -7,53 +6,6 @@ function plotHandle = analyzeSlantTestManual ( dataFileName, logFileHandle, ...
 % max shear
 % effective preload
 % 
-
-x = 1:10;
-y = round(10*rand(1,10));
-
-plot(x,y);
-axis([1 10 0 10]);
-hold on;
-
-fprintf(1,'Please click on Initial Contact point on Normal Trace\n');
-
-[xIn,yIn] = ginput(1);
-xIn = round(xIn);
-yIn = y(xIn);
-fprintf(1,'actual neighboring point\n');
-fprintf(1,'x = %f\n',xIn);
-fprintf(1,'y = %f\n',yIn);
-
-plot(xIn,yIn,'ko');
-legend('Trace','Initial Contact');
-
-fprintf(1,'Is this acceptable? (y/n) \n');
-response = input(' : ','s');
-isAcceptable = strcmp('y',response);
-
-if (isAcceptable == 1)
-	fprintf(1,'You accepted\n');
-else
-	fprintf(1,'You rejected\n');
-end
-
-fprintf(1,'Please click on Maximum Adhesion on Normal Trace\n');
-
-[xIn,yIn] = ginput(1);
-xIn = round(xIn);
-yIn = y(xIn);
-
-fprintf(1,'x = %f\n',xIn);
-fprintf(1,'y = %f\n',yIn);
-
-plot(xIn,yIn,'bo');
-legend('Trace','Initial Contact','Max Adhesion');
-
-hold off;
-
-fprintf(1,'done\n');
-return
-
 
 debug = 0;
 if debug
@@ -93,6 +45,7 @@ trajectoryFileName = trajectoryFileName(index+1:length(trajectoryFileName));
 [pathstr, shortTrajectoryFileName, ext, ver] = fileparts(trajectoryFileName);
 [pathstr, shortDataFileName, ext, ver] = fileparts(dataFileName);
 
+
 % extract parameters from headers
 % uses cell arrays so char must be used
 % data stored as strings
@@ -121,6 +74,12 @@ pitchAngle = char(token{1,1});
 
 token = regexp(rollAngle,'= (.*)','tokens');
 rollAngle = char(token{1,1});
+
+% assemble plot file name and title from the tokens above
+plotFileName = sprintf('./plots/%s_p%s_pa%s_ra%s_ls', ...
+											 sample,preload,pitchAngle,rollAngle);
+titleString = sprintf('%s preload %s pitch angle %s roll angle %s ls',... 
+											 sample,preload,pitchAngle,rollAngle);
 
 
 
@@ -171,118 +130,157 @@ lateralForceMicroNewton = ...
 normalForceMicroNewton = ... 
 	normalVoltage * normalStiffness / normalDisplacement;
 
-if (analyze == 1)
+%
+% automated point detection 
 
-	% find maximum (negative) adhesion value; this is pulloff
-	[maxAdhesionUncompensatedMicroNewton,indexMaxAdhesion] = ...
-		min(normalForceMicroNewton);
-	% get cantilever normal voltage at max adhesion
-	normalCantileverVoltageMaxAdhesion = normalVoltage(indexMaxAdhesion);
-	% get stage displacement at max adhesion
-	normalStagePositionMaxAdhesion = positionNormalMicron(indexMaxAdhesion);
+% find maximum (negative) adhesion value; this is pulloff
+[maxAdhesionUncompensatedMicroNewton,indexMaxAdhesion] = ...
+	min(normalForceMicroNewton);
+% store shear value corresponding to max adhesion
+maxShearUncompensatedMicroNewton = lateralForceMicroNewton(indexMaxAdhesion);
+% back up and find maximum normal value; this is max preload
+[maxPreloadMicroNewton,indexMaxPreload] = ...
+	max(normalForceMicroNewton(1:indexMaxAdhesion));
+% back up and find min normal value; this is point of contact
+[normalForceContactMicroNewton, indexContact] = ...
+	min(normalForceMicroNewton(1:indexMaxPreload));
+% find corresponding value of contact for shear
+shearForceContactMicroNewton = lateralForceMicroNewton(indexContact);
 
+%
+% automated plot presentation
+
+% plot normal and shear traces 
+plot(lateralForceMicroNewton,'g');
+hold on;
+plot(normalForceMicroNewton,'b');
+
+% plot maximum adhesion point
+plot(indexMaxAdhesion, maxAdhesionUncompensatedMicroNewton,'bo');
+
+% plot corresponding max shear point
+plot(indexMaxAdhesion, maxShearUncompensatedMicroNewton,'go');
+
+% plot maximum preload point
+plot(indexMaxPreload, maxPreloadMicroNewton,'ro');
+
+% plot normal contact position
+plot(indexContact, normalForceContactMicroNewton,'bd');
+
+% plot shear contact position
+plot(indexContact, shearForceContactMicroNewton,'gd');
+hold off;
+
+xlabel('Time (ms)');
+ylabel('Force (microNewtons)');
+legend('Shear','Normal','Max Normal Adhesion', ...
+       'Max Shear Adhesion', 'Max Preload', ...
+       'Normal Contact Point', 'Shear Contact Point');		
+title({titleString},'Interpreter','None');
+
+%
+% check if automated detection was acceptable
+
+fprintf(1,'Are these points acceptable? (y/n) \n');
+response = input(' : ','s');
+isAcceptable = strcmp('y',response);
+
+if (isAcceptable == 1)
+	fprintf(1,'You accepted\n');
+else
+	fprintf(1,'You rejected\n');
+
+	% replot for user to select
+	plot(lateralForceMicroNewton,'g');
+	hold on;
+	plot(normalForceMicroNewton,'b');
+	
+	% get contact point
+	fprintf('Click on Initial Contact on Normal Trace \n');
+	[indexContact, normalForceContactMicroNewton] = ginput(1);
+	indexContact = round(indexContact);
+	normalForceContactMicroNewton = ...
+		normalForceMicroNewton(indexContact);
 	% store shear value corresponding to max adhesion
-	maxShearUncompensatedMicroNewton = lateralForceMicroNewton(indexMaxAdhesion);
-	
-	% back up and find maximum normal value; this is max preload
-	[maxPreloadMicroNewton,indexMaxPreload] = ...
-		max(normalForceMicroNewton(1:indexMaxAdhesion));
-
-	% back up and find min normal value; this is point of contact
-	[normalForceContactMicroNewton, indexContact] = ...
-		min(normalForceMicroNewton(1:indexMaxPreload));
-	% get cantilever deflection at contact
-	normalCantileverVoltageContact = normalVoltage(indexContact);
-	% get stage displacement at contact
-	normalStagePositionContact = positionNormalMicron(indexContact);
-	
-	% calculate effective stage preload
-	normalStagePreload = normalStagePositionMaxAdhesion - ...
-		normalStagePositionContact;
-	% calculate effective cantilever deflection
-	normalCantileverDeflection = (normalCantileverVoltageContact - ...
-		normalCantileverVoltageMaxAdhesion)/normalDisplacement;
-	% calculate effective microwedge deflection (effective preload)
-	effectivePreload = normalCantileverDeflection + normalStagePreload;
-		
-	% find corresponding value of contact for shear
 	shearForceContactMicroNewton = lateralForceMicroNewton(indexContact);
-
-	% adhesion force = maxAdhesion - force at contact
-	maxAdhesionMicroNewton = ...
-		maxAdhesionUncompensatedMicroNewton - normalForceContactMicroNewton;
+	% plot max normal adhesion
+	plot(indexContact, normalForceContactMicroNewton,'bo');
+	% plot corresponding max shear point
+	plot(indexContact, shearForceContactMicroNewton,'go');
+	legend('Shear','Normal','Normal Contact Point', ...
+	'Shear Contact Point');			
 	
-	% shear force = maxShear - force at contact
-	maxShearMicroNewton = ...
-		maxShearUncompensatedMicroNewton - shearForceContactMicroNewton;
+	% get max preload
+	fprintf('Click on Maximum Preload on Normal Trace \n');
+	[indexMaxPreload, maxPreloadMicroNewton] = ginput(1);
+	indexMaxPreload = round(indexMaxPreload);
+	maxPreloadMicroNewton = normalForceMicroNewton(indexMaxPreload);
+	plot(indexMaxPreload, maxPreloadMicroNewton,'ro');		
+	legend('Shear','Normal', 'Normal Contact Point', ...
+	'Shear Contact Point', 'Max Preload');			
 	
-	% output to stdout
-	if (stdOutput)
-		fprintf('Max Normal Adhesion %3.3f\n',maxAdhesionMicroNewton);
-	end
-
-	% output to log file
-  fprintf(logFileHandle, '% 20s\t',   shortDataFileName);
-  fprintf(logFileHandle, '% 20s\t',   shortTrajectoryFileName);
-  fprintf(logFileHandle, '% 15s\t',   sample);
-  fprintf(logFileHandle, '% 15s\t',   cantilever);
-  fprintf(logFileHandle, '% 15s\t',   pitchAngle);
-  fprintf(logFileHandle, '% 15s\t',   rollAngle);
-  fprintf(logFileHandle, '% 15.3f\t', maxAdhesionMicroNewton);
-  fprintf(logFileHandle, '% 15.3f\t', maxShearMicroNewton);
-  fprintf(logFileHandle, '% 15.3f',   effectivePreload);
-%  fprintf(logFileHandle, '% 15.3f',   normalCantileverDeflection);
-%  fprintf(logFileHandle, '% 15.3f',   normalStagePreload);
-    fprintf(logFileHandle, '\n');
-	
+	% get pulloff point
+	fprintf('Click on Pulloff / Max Adhesion on Normal Trace \n');
+	[indexMaxAdhesion,maxAdhesionUncompensatedMicroNewton] = ginput(1);
+	indexMaxAdhesion = round(indexMaxAdhesion);
+	maxAdhesionUncompensatedMicroNewton = ...
+		normalForceMicroNewton(indexMaxAdhesion);
+	% plot maximum adhesion point
+	plot(indexMaxAdhesion, maxAdhesionUncompensatedMicroNewton,'bo');
+	% plot corresponding max shear point
+	plot(indexMaxAdhesion, maxShearUncompensatedMicroNewton,'go');	
+	hold off;
+	xlabel('Time (ms)');
+	ylabel('Force (microNewtons)');
+	legend('Shear','Normal', 'Normal Contact Point', ...
+	       'Shear Contact Point', 'Max Preload', ...
+	       'Max Normal Adhesion','Max Shear Adhesion');			
+	title({titleString;shortDataFileName},'Interpreter','None');
 end
 
-if (doDisplayPlot==1)
-	% assemble plot file name and title from the tokens above
-	plotFileName = sprintf('./plots/%s_p%s_pa%s_ra%s_ls', ...
-	                       sample,preload,pitchAngle,rollAngle);
-	titleString = sprintf('%s preload %s pitch angle %s roll angle %s ls',... 
-												 sample,preload,pitchAngle,rollAngle);
-	
-	% plot normal and shear traces 
-	plot(axesHandle,lateralForceMicroNewton,'g');
-	hold on;
-	plot(axesHandle,normalForceMicroNewton,'b');
-	
-	% graph annotation with extracted points
-	if (analyze==1) 
-		% plot maximum adhesion point
-		plot(indexMaxAdhesion, maxAdhesionUncompensatedMicroNewton,'ko');
-	
-		% plot corresponding max shear point
-		plot(indexMaxAdhesion, maxShearUncompensatedMicroNewton,'ko');
-		
-		% plot maximum preload point
-		plot(indexMaxPreload, maxPreloadMicroNewton,'ko');
-	
-		% plot normal contact position
-		plot(indexContact, normalForceContactMicroNewton,'ko');
+%
+% by this point the points should be satisfactorily determined
+% and we can perform calculations and log results
+%
+% calculations based on contact and pulloff points
 
-		% plot shear contact position
-		plot(indexContact, shearForceContactMicroNewton,'ko');
+% get cantilever normal voltage at max adhesion
+normalCantileverVoltageMaxAdhesion = normalVoltage(indexMaxAdhesion);
+% get stage displacement at max adhesion
+normalStagePositionMaxAdhesion = positionNormalMicron(indexMaxAdhesion);
+% get cantilever deflection at contact
+normalCantileverVoltageContact = normalVoltage(indexContact);
+% get stage displacement at contact
+normalStagePositionContact = positionNormalMicron(indexContact);
+% calculate effective stage preload
+normalStagePreload = normalStagePositionMaxAdhesion - ...
+	normalStagePositionContact;
+% calculate effective cantilever deflection
+normalCantileverDeflection = (normalCantileverVoltageContact - ...
+	normalCantileverVoltageMaxAdhesion)/normalDisplacement;
+% calculate effective microwedge deflection (effective preload)
+effectivePreload = normalCantileverDeflection + normalStagePreload;
+% adhesion force = maxAdhesion - force at contact
+maxAdhesionMicroNewton = ...
+	maxAdhesionUncompensatedMicroNewton - normalForceContactMicroNewton;
+% shear force = maxShear - force at contact
+maxShearMicroNewton = ...
+	maxShearUncompensatedMicroNewton - shearForceContactMicroNewton;
 
-	end
-	hold off;
+% output to log file
+fprintf(logFileHandle, '% 20s\t',   shortDataFileName);
+fprintf(logFileHandle, '% 20s\t',   shortTrajectoryFileName);
+fprintf(logFileHandle, '% 15s\t',   sample);
+fprintf(logFileHandle, '% 15s\t',   cantilever);
+fprintf(logFileHandle, '% 15s\t',   pitchAngle);
+fprintf(logFileHandle, '% 15s\t',   rollAngle);
+fprintf(logFileHandle, '% 15.3f\t', maxAdhesionMicroNewton);
+fprintf(logFileHandle, '% 15.3f\t', maxShearMicroNewton);
+fprintf(logFileHandle, '% 15.3f',   effectivePreload);
+fprintf(logFileHandle, '\n');
 	
-	xlabel(axesHandle, 'Time (ms)');
-	ylabel(axesHandle, 'Force (microNewtons)');
-	legend('Shear','Normal');			
-	title({'Limit Surface';titleString;''; ...
-		''},'Interpreter','None');
-	
-	% do not print plot yet
-	% check if plot is acceptable
-	% if not acceptable, go through manual routine
-	
-	if (doPrintPlot == 1)
-		fprintf('Printing Plot File %s\n',plotFileName);
-		formatPlot( figureHandle, axesHandle, 'Times New Roman', 8 );
-		printPlot ( figureHandle, plotFileName, 5.0, 3.0);
-	end
-
+if (doPrintPlot == 1)
+	fprintf('Printing Plot File %s\n',plotFileName);
+	formatPlot( gcf, gca, 'Times New Roman', 8 );
+	printPlot ( gcf, plotFileName, 5.0, 3.0);
 end
