@@ -18,7 +18,7 @@ numFiles = length(listFiles);
 
 % open data file for logging of files and parameters
 % to create index of data
-logFileHandle = fopen('20090206-sws9-ls.data','w');
+logFileHandle = fopen('20090211-sws10-st.data','w');
 
 formatString20 = '% 20s\t';
 formatString15 = '% 15s\t';
@@ -49,6 +49,7 @@ for i = 1:numFiles
 	fprintf('Processing File %d of %d : % 10s\n',i,numFiles,fileName);
 	figure = gcf;
 	axes = gca;
-	analyzeSlantTest(fileName,logFileHandle,figure,axes);
+%	analyzeSlantTest(fileName,logFileHandle,figure,axes);
+	analyzeSlantTestManual(fileName,logFileHandle);
 	close(figure);
 end

@@ -187,7 +187,9 @@ isAcceptable = strcmp('y',response);
 
 if (isAcceptable == 1)
 	fprintf(1,'You accepted\n');
-else
+end
+
+while (isAcceptable == 0)
 	fprintf(1,'You rejected\n');
 
 	% replot for user to select
@@ -225,6 +227,8 @@ else
 	indexMaxAdhesion = round(indexMaxAdhesion);
 	maxAdhesionUncompensatedMicroNewton = ...
 		normalForceMicroNewton(indexMaxAdhesion);
+	maxShearUncompensatedMicroNewton = ...
+		lateralForceMicroNewton(indexMaxAdhesion);
 	% plot maximum adhesion point
 	plot(indexMaxAdhesion, maxAdhesionUncompensatedMicroNewton,'bo');
 	% plot corresponding max shear point
@@ -236,6 +240,11 @@ else
 	       'Shear Contact Point', 'Max Preload', ...
 	       'Max Normal Adhesion','Max Shear Adhesion');			
 	title({titleString;shortDataFileName},'Interpreter','None');
+	
+	fprintf(1,'Are these points acceptable? (y/n) \n');
+	response = input(' : ','s');
+	isAcceptable = strcmp('y',response);
+
 end
 
 %
