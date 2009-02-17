@@ -6,7 +6,6 @@ def main():
 
 def plotDataFileChaco(fileName):
 	import os.path
-	import matplotlib.pyplot
 	import numpy
 
 	baseFileName = os.path.splitext(fileName)
@@ -20,7 +19,7 @@ def plotDataFileChaco(fileName):
 	positionY = dataArray[4]	
 	x = numpy.arange(len(voltageNormal))
 
-	from enthought.chaco.api import ArrayPlotData,Plot
+	from enthought.chaco.api import ArrayPlotData, Plot, PlotGraphicsContext
 	from enthought.chaco.pdf_graphics_context import PdfPlotGraphicsContext
 	
 	pd=ArrayPlotData(index=x)
@@ -35,10 +34,45 @@ def plotDataFileChaco(fileName):
 	p.y_axis.title = "Voltage (V)"
 	p.bounds = ([800,600])
 	p.do_layout(force=True)
-	gc = PdfPlotGraphicsContext(filename=plotFileName, 
+	gcpdf = PdfPlotGraphicsContext(filename=plotFileName, 
 	                            dest_box=(0.5,0.5,5.0,5.0))
-	gc.render_component(p)
-	gc.save()
+	gcpdf.render_component(p)
+	gcpdf.save()
+
+def plotDataFileChacoPNG(fileName):
+	import os.path
+	import numpy
+
+	baseFileName = os.path.splitext(fileName)
+	baseFileName = baseFileName[0]
+	plotFileName = baseFileName + '.png'
+	dataArray = readDataFile(fileName)
+	time = dataArray[0]
+	voltageNormal = dataArray[1]
+	voltageShear = dataArray[2]
+	positionX = dataArray[3]
+	positionY = dataArray[4]	
+	x = numpy.arange(len(voltageNormal))
+
+	from enthought.traits.api import false
+	from enthought.chaco.api import ArrayPlotData, Plot, PlotGraphicsContext
+	from enthought.chaco.pdf_graphics_context import PdfPlotGraphicsContext
+	
+	pd=ArrayPlotData(index=x)
+	p = Plot(pd,bgcolor="white",padding=50,border_visible=True)
+	pd.set_data("normal",voltageNormal)
+	pd.set_data("shear",voltageShear)
+	p.plot(("index","normal"),color='blue',width=2.0)
+	p.plot(("index","shear"),color='green',width=2.0)
+	p.padding = 50
+	p.title = baseFileName
+	p.x_axis.title = "Sample"
+	p.y_axis.title = "Voltage (V)"
+	p.outer_bounds = ([800,600])
+	p.do_layout(force=True)
+	gcpng = PlotGraphicsContext(([800,600]),dpi=72)
+	gcpng.render_component(p)
+	gcpng.save(plotFileName)
 
 def plotDataFile(fileName):
 	import os.path
