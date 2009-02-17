@@ -26,7 +26,13 @@ def plotDataFileChaco(fileName):
 	pd=ArrayPlotData(index=x)
 	p = Plot(pd)
 	pd.set_data("normal",voltageNormal)
-	p.plot(("index","normal"),color='black')
+	pd.set_data("shear",voltageShear)
+	p.plot(("index","normal"),color='blue',width=2.0)
+	p.plot(("index","shear"),color='green',width=2.0)
+	p.padding = 50
+	p.title = baseFileName
+	p.x_axis.title = "Sample"
+	p.y_axis.title = "Voltage (V)"
 	p.bounds = ([800,600])
 	p.do_layout(force=True)
 	gc = PdfPlotGraphicsContext(filename=plotFileName, 
