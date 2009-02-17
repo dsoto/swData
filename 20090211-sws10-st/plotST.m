@@ -2,7 +2,7 @@
 % strip first three lines
 % dump into array
 
-dataFileName = ('20090130-sws7-ls.data');
+dataFileName = ('20090211-sws10-st.data');
 fileHandle = fopen(dataFileName,'r');
 dummyLine = fgetl(fileHandle);
 dummyLine = fgetl(fileHandle);
@@ -12,22 +12,22 @@ dummyLine = fgetl(fileHandle);
 %dataArray = textscan(fileHandle, ... 
 %            '%20s %20s %15s %15s %15s %15.3f %15.3f %15.3f');
 dataArray = textscan(fileHandle, ... 
-            '%s%s%s%s%s%f%f%f');
+            '%s%s%s%s%f%f%f%f%f');
 
-shearForce =  dataArray{1,7};
-normalForce  =  dataArray{1,6};
+angleSlant = dataArray{1,5};
+shearForce =  dataArray{1,8};
+normalForce  =  dataArray{1,7};
 fclose(fileHandle);
 
-plot(shearForce,normalForce,'ko');
+plot(angleSlant,shearForce,'gd',angleSlant,normalForce,'bo');
 
-xlabel('Shear Force (microNewtons)');
-ylabel('Normal Force (microNewtons)');
-title({'Single Microwedge Limit Surface'; ...
-       'Cantilever 529b02 Sample sws9';... 
-       '20090206-sws9-ls'}, ...
+xlabel('Goniometer Reading');
+ylabel('Max Force (microNewtons)');
+title({'Slant Dependence'}, ...
        'Interpreter','None');
+legend('Max Shear','Max Normal');
 
-%axis([0 20 -5 0.5]);
+axis([-26 26 -5 10]);
 x = get(gca,'XLim');
 y = get(gca,'YLim');
 grid on;
@@ -36,5 +36,5 @@ line(x,[0 0],[0 0],'Color','k','LineWidth',2);
 line([0 0],y,[0 0],'Color','k','LineWidth',2);
 
 formatPlot(gcf,gca,'Times New Roman',24);
-plotFilename = 'limitSurface';
+plotFilename = 'slantTest';
 printPlot(gcf,plotFilename,8,6);

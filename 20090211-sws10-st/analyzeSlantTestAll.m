@@ -36,7 +36,7 @@ columnHeaders{9} = {'Effective',  'Preload',   '(um)',    formatString15};
 
 % loop through cell array to construct headers
 for i = 1:3			% line loop
-	for j = 1:8		% column loop
+	for j = 1:9		% column loop
 		% indexed by columnHeaders{column}(line)
 		fprintf(logFileHandle,char(columnHeaders{j}(4)),char(columnHeaders{j}(i)));
 	end
