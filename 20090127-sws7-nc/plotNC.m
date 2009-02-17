@@ -22,20 +22,20 @@ ylabel('Preload Force (\muN)');
 title({'Normal Microwedge Force vs. Compression'; ...
 	'Cantilever 529b02 - Sample SWS7';'20000127-sws7-nc'});
 
-x = 0:0.5:3;
-xLoc = 2.5;
+x = 0:0.5:4;
+xLoc = 2.0;
 yOffset = 0.2;
-m = 0.25;
-plot(x,m*x,':k');
-text(xLoc,xLoc*m-yOffset,'k=0.25');
-m = 0.5;
-plot(x,m*x,':k');
-text(xLoc,xLoc*m-yOffset,'k=0.5');
 m = 1.0;
 plot(x,m*x,':k');
 text(xLoc,xLoc*m-yOffset,'k=1.0');
+m = 2.0;
+plot(x,m*x,':k');
+text(xLoc,xLoc*m-yOffset,'k=2.0');
+m = 5.0;
+plot(x,m*x,':k');
+text(xLoc,xLoc*m-yOffset,'k=5.0');
 
-%axis([0 3 0 3]);
+axis([0 4 0 11]);
 
 
 formatPlot( gcf, gca, 'Times New Roman', 12 );
