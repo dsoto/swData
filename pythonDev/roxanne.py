@@ -4,6 +4,36 @@ def main():
 	print 'roxanne.py'
 	return 0
 
+def plotDataFileChaco(fileName):
+	import os.path
+	import matplotlib.pyplot
+	import numpy
+
+	baseFileName = os.path.splitext(fileName)
+	baseFileName = baseFileName[0]
+	plotFileName = baseFileName + '.pdf'
+	dataArray = readDataFile(fileName)
+	time = dataArray[0]
+	voltageNormal = dataArray[1]
+	voltageShear = dataArray[2]
+	positionX = dataArray[3]
+	positionY = dataArray[4]	
+	x = numpy.arange(len(voltageNormal))
+
+	from enthought.chaco.api import ArrayPlotData,Plot
+	from enthought.chaco.pdf_graphics_context import PdfPlotGraphicsContext
+	
+	pd=ArrayPlotData(index=x)
+	p = Plot(pd)
+	pd.set_data("normal",voltageNormal)
+	p.plot(("index","normal"),color='black')
+	p.bounds = ([800,600])
+	p.do_layout(force=True)
+	gc = PdfPlotGraphicsContext(filename=plotFileName, 
+	                            dest_box=(0.5,0.5,5.0,5.0))
+	gc.render_component(p)
+	gc.save()
+
 def plotDataFile(fileName):
 	import os.path
 	import matplotlib.pyplot
