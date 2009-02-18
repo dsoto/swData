@@ -201,36 +201,28 @@ function returnValue = parseSlantTestManual ( dataFileName, logFileHandle);
 		
 		% get contact point
 		fprintf('Click on Initial Contact on Normal Trace \n');
-		[indexContact, normalForceContactMicroNewton] = ginput(1);
-		indexContact = round(indexContact);
+		points = ginput(3);
+		indexContact = round(points(1,1));
 		normalForceContactMicroNewton = ...
 			normalForceMicroNewton(indexContact);
 		% store shear value corresponding to max adhesion
 		shearForceContactMicroNewton = lateralForceMicroNewton(indexContact);
-		% plot max normal adhesion
-		plot(indexContact, normalForceContactMicroNewton,'bo');
-		% plot corresponding max shear point
-		plot(indexContact, shearForceContactMicroNewton,'go');
-		legend('Shear','Normal','Normal Contact Point', ...
-		'Shear Contact Point');			
-		
-		% get max preload
-		fprintf('Click on Maximum Preload on Normal Trace \n');
-		[indexMaxPreload, maxPreloadMicroNewton] = ginput(1);
-		indexMaxPreload = round(indexMaxPreload);
+
+		indexMaxPreload = round(points(2,1));
 		maxPreloadMicroNewton = normalForceMicroNewton(indexMaxPreload);
-		plot(indexMaxPreload, maxPreloadMicroNewton,'ro');		
-		legend('Shear','Normal', 'Normal Contact Point', ...
-		'Shear Contact Point', 'Max Preload');			
-		
-		% get pulloff point
-		fprintf('Click on Pulloff / Max Adhesion on Normal Trace \n');
-		[indexMaxAdhesion,maxAdhesionUncompensatedMicroNewton] = ginput(1);
-		indexMaxAdhesion = round(indexMaxAdhesion);
+
+		indexMaxAdhesion = round(points(3,1));
 		maxAdhesionUncompensatedMicroNewton = ...
 			normalForceMicroNewton(indexMaxAdhesion);
 		maxShearUncompensatedMicroNewton = ...
 			lateralForceMicroNewton(indexMaxAdhesion);
+
+
+		% plot max normal adhesion
+		plot(indexContact, normalForceContactMicroNewton,'bo');
+		% plot corresponding max shear point
+		plot(indexContact, shearForceContactMicroNewton,'go');
+		plot(indexMaxPreload, maxPreloadMicroNewton,'ro');		
 		% plot maximum adhesion point
 		plot(indexMaxAdhesion, maxAdhesionUncompensatedMicroNewton,'bo');
 		% plot corresponding max shear point
