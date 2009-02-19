@@ -2,21 +2,18 @@
 % strip first three lines
 % dump into array
 
-dataFileName = ('20090211-sws10-st.data');
+dataFileName = ('test.data');
 fileHandle = fopen(dataFileName,'r');
-dummyLine = fgetl(fileHandle);
-dummyLine = fgetl(fileHandle);
-dummyLine = fgetl(fileHandle);
+%dummyLine = fgetl(fileHandle);
+%dummyLine = fgetl(fileHandle);
+%dummyLine = fgetl(fileHandle);
 
 
-%dataArray = textscan(fileHandle, ... 
-%            '%20s %20s %15s %15s %15s %15.3f %15.3f %15.3f');
-dataArray = textscan(fileHandle, ... 
-            '%s%s%s%s%f%f%f%f%f');
+dataArray = textscan(fileHandle, '%s%f%f%f%f');
 
-angleSlant = dataArray{1,5};
-shearForce =  dataArray{1,8};
-normalForce  =  dataArray{1,7};
+angleSlant = dataArray{1,2};
+shearForce =  dataArray{1,5};
+normalForce  =  dataArray{1,4};
 fclose(fileHandle);
 
 plot(angleSlant,shearForce,'gd',angleSlant,normalForce,'bo');
