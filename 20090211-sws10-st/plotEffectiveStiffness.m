@@ -24,6 +24,6 @@ grid on;
 
 axis([-30 25 0.10 0.15]);
 
-formatPlot(gcf,gca,'Times New Roman',24);
+formatPlot(gcf,gca,'Times New Roman',12);
 plotFilename = 'slantTestEffectiveStiffness';
-printPlot(gcf,plotFilename,8,6);
+printPlot(gcf,plotFilename,4,3);
