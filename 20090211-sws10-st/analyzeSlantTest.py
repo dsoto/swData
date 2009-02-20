@@ -93,6 +93,7 @@ def main():
 	fOut = open('test.data','w')
 	fileNameList = glob.glob('st_sws10_*.data')
 	for fileName in fileNameList:
+		print 'processing file : ' + fileName
 		fileIn = open(fileName)
 		returnList = readDataFileHeader(fileIn)
 		fileIn = returnList[0]
@@ -102,8 +103,8 @@ def main():
 
 		lateralVoltage        = -numpy.array(dataList[1])
 		normalVoltage         = numpy.array(dataList[2])
-		positionNormalMicron  = dataList[3] * 10
-		positionLateralMicron = dataList[4] * 10
+		positionNormalMicron  = numpy.array(dataList[3]) * 10
+		positionLateralMicron = numpy.array(dataList[4]) * 10
 						
 		normalStiffness      = 0.313
 		lateralStiffness     = 0.307
@@ -143,26 +144,28 @@ def main():
 
 		# get forces at contact, preload, pulloff	
 		normalForceContactMicroNewton = normalForceMicroNewton[indexContact]
-		shearForceContactMicroNewton  = lateralForceMicroNewton[indexContact]
 		normalForcePreloadMicroNewton = normalForceMicroNewton[indexPreload]
-		shearForcePreloadMicroNewton  = lateralForceMicroNewton[indexPreload]
 		normalForcePulloffMicroNewton = normalForceMicroNewton[indexMaxAdhesion]
+
+		shearForceContactMicroNewton  = lateralForceMicroNewton[indexContact]
+		shearForcePreloadMicroNewton  = lateralForceMicroNewton[indexPreload]
 		shearForcePulloffMicroNewton  = lateralForceMicroNewton[indexMaxAdhesion]
 
+		normalCantileverVoltageContact     = normalVoltage[indexContact]
+		normalCantileverVoltagePreload     = normalVoltage[indexPreload]
 		normalCantileverVoltageMaxAdhesion = normalVoltage[indexMaxAdhesion]
-		# get stage displacement at max adhesion
+		
+		normalStagePositionContact     = positionNormalMicron[indexContact]
+		normalStagePositionPreload     = positionNormalMicron[indexPreload]
 		normalStagePositionMaxAdhesion = positionNormalMicron[indexMaxAdhesion]
-		# get cantilever deflection at contact
-		normalCantileverVoltageContact = normalVoltage[indexContact]
-		# get stage displacement at contact
-		normalStagePositionContact = positionNormalMicron[indexContact]
+
 		# calculate effective stage preload
 		normalStagePreload = (normalStagePositionMaxAdhesion - 
 													normalStagePositionContact)
 		# calculate effective cantilever deflection
 		normalCantileverDeflection = ((normalCantileverVoltageContact - 
-                                   normalCantileverVoltageMaxAdhesion)/
-                                   normalDisplacement)
+																	 normalCantileverVoltageMaxAdhesion)/
+																	 normalDisplacement)
 		# calculate effective microwedge deflection (effective preload)
 		effectivePreload = normalCantileverDeflection + normalStagePreload
 		# adhesion force = maxAdhesion - force at contact
@@ -171,14 +174,29 @@ def main():
 		# shear force = maxShear - force at contact
 		maxShearMicroNewton = (shearForcePulloffMicroNewton - 
 													 shearForceContactMicroNewton)
+		# calculate effective stiffness of structure
+		# force at preload - force at contact = force of preload
+		forcePreload = normalForcePreloadMicroNewton - normalForceContactMicroNewton
+		stageMovement = normalStagePositionPreload - normalStagePositionContact
+		normalCantileverDeflection = ((normalCantileverVoltageContact - 
+                                   normalCantileverVoltagePreload)/
+                                   normalDisplacement)
+		
+		# stage movement between contact and preload - cantilever deflection
+		effectiveStiffness = forcePreload/(stageMovement-normalCantileverDeflection)
 
 #		print indexContact
 #		input()
-		fOut.write(fileName + '\t')
-		fOut.write('%5.1f\t' % pitchAngle )
-		fOut.write('%5.3f\t' % effectivePreload)
-		fOut.write('%5.3f\t' % maxAdhesionMicroNewton)
-		fOut.write('%5.3f\t' % maxShearMicroNewton)
+#		fOut.write(fileName + '\t')
+		fOut.write('% 5.1f\t' % pitchAngle )
+#		fOut.write('% 5.3f\t' % effectivePreload)
+#		fOut.write('% 5.3f\t' % maxAdhesionMicroNewton)
+#		fOut.write('% 5.3f\t' % maxShearMicroNewton)
+#		fOut.write('% 5.3f\t' % normalStagePositionPreload)
+#		fOut.write('% 5.3f\t' % normalStagePositionContact)
+		fOut.write('% 5.3f\t' % forcePreload)		
+		fOut.write('% 5.3f\t' % stageMovement)		
+		fOut.write('% 5.3f\t' % effectiveStiffness)
 		fOut.write('\n')
 	
 	fOut.close()
