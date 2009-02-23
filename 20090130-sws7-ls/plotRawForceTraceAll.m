@@ -7,7 +7,7 @@
 % function getDataFiles();
 % go into data directory
 
-pathString = './data/040/';
+pathString = './data/130/';
 
 cd(pathString);
 % grab list of files
