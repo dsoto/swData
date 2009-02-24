@@ -8,17 +8,19 @@ def addToDict(kvDict, key, tempLine):
 	index = tempLine.find('=')+1
 	length = len(tempLine)
 	val = tempLine[index-length:]
+	val = val.lstrip()
 	kvDict.update({key:val})
 	return kvDict
 
 def getCantileverData(cantilever):
-	if cantilever = '529b02'
+	cantileverDict = {}
+	if cantilever == '529b02':
 		lateralStiffness    = 3.898
 		normalStiffness     = 0.659
 		lateralDisplacement = 1.148
 		normalDisplacement  = 0.224
 
-	if cantilever = '629a03'
+	if cantilever == '629a03':
 		lateralStiffness    = 0.307
 		normalStiffness     = 0.313
 		lateralDisplacement = 0.473
@@ -30,8 +32,6 @@ def getCantileverData(cantilever):
 	cantileverDict['normalDisplacement']  = normalDisplacement
 
 	return cantileverDict
-
-
 
 def readDataFileHeader(fileIn):
 	# read in file
@@ -61,7 +61,7 @@ def readDataFileHeader(fileIn):
 			key = 'cantilever'
 			kvDict = addToDict(kvDict, key, tempLine)
 
-		if tempLine.find('data starts here')!=-1:
+		if tempLine.find('<data>')!=-1:
 			keepReading = 0
 
 	fileIn.readline()
@@ -218,16 +218,16 @@ def main():
 
 #		print indexContact
 #		input()
-#		fOut.write(fileName + '\t')
+		fOut.write(fileName + '\t')
 		fOut.write('% 5.1f\t' % pitchAngle )
 #		fOut.write('% 5.3f\t' % effectivePreload)
-#		fOut.write('% 5.3f\t' % maxAdhesionMicroNewton)
-#		fOut.write('% 5.3f\t' % maxShearMicroNewton)
+		fOut.write('% 5.3f\t' % maxAdhesionMicroNewton)
+		fOut.write('% 5.3f\t' % maxShearMicroNewton)
 #		fOut.write('% 5.3f\t' % normalStagePositionPreload)
 #		fOut.write('% 5.3f\t' % normalStagePositionContact)
-		fOut.write('% 5.3f\t' % forcePreload)
-		fOut.write('% 5.3f\t' % stageMovement)
-		fOut.write('% 5.3f\t' % effectiveStiffness)
+#		fOut.write('% 5.3f\t' % forcePreload)
+#		fOut.write('% 5.3f\t' % stageMovement)
+#		fOut.write('% 5.3f\t' % effectiveStiffness)
 		fOut.write('\n')
 
 	fOut.close()
