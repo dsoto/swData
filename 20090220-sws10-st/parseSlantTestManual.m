@@ -54,7 +54,7 @@ function returnValue = parseSlantTestManual ( dataFileName, logFileHandle);
 	angleToken = regexp(trajectoryFileName,'_a(\d*)','tokens');
 	dragAngle = char(angleToken{1,1});
 	
-	sampleToken = regexp(dataFileName,'_(sws\d*)','tokens');
+	sampleToken = regexp(dataFileName,'(sws\d*)','tokens');
 	sample = char(sampleToken{1,1});
 	
 	velocityToken = regexp(trajectoryFileName,'_v(\d*)','tokens');
@@ -84,7 +84,7 @@ function returnValue = parseSlantTestManual ( dataFileName, logFileHandle);
 												 sample,preload,pitchAngle,rollAngle);
 	
 	
-	
+	cantilever = cantilever(14:19);
 	% call function to get cantilever parameters
 	[normalStiffness, lateralStiffness, ...
 	 normalDisplacement, lateralDisplacement] = ...
