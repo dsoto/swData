@@ -90,7 +90,7 @@ def main():
 	import numpy
 	
 	indexList = readIndexFile('parsed.data')
-	fOut = open('test.data','w')
+	fOut = open('analyzed.data','w')
 	fileNameList = glob.glob('st_sws10_*.data')
 	for fileName in fileNameList:
 		print 'processing file : ' + fileName
