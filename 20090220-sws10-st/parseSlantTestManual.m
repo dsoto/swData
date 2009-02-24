@@ -243,9 +243,9 @@ function returnValue = parseSlantTestManual ( dataFileName, logFileHandle);
 	
 	% output to log file
 	fprintf(logFileHandle, '% 20s\t',   shortDataFileName);
-	fprintf(logFileHandle, '% 15.3f\t', indexContact);
-	fprintf(logFileHandle, '% 15.3f\t', indexMaxPreload);
-	fprintf(logFileHandle, '% 15.3f',   indexMaxAdhesion);
+	fprintf(logFileHandle, '% 15d\t', indexContact);
+	fprintf(logFileHandle, '% 15d\t', indexMaxPreload);
+	fprintf(logFileHandle, '% 15d',   indexMaxAdhesion);
 	fprintf(logFileHandle, '\n');
 		
 	if (doPrintPlot == 1)
