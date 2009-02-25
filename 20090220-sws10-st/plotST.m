@@ -2,18 +2,18 @@
 % strip first three lines
 % dump into array
 
-dataFileName = ('test.data');
+dataFileName = ('analyzed.data');
 fileHandle = fopen(dataFileName,'r');
 %dummyLine = fgetl(fileHandle);
 %dummyLine = fgetl(fileHandle);
 %dummyLine = fgetl(fileHandle);
 
 
-dataArray = textscan(fileHandle, '%s%f%f%f%f');
+dataArray = textscan(fileHandle, '%s%f%f%f');
 
 angleSlant = dataArray{1,2};
-shearForce =  dataArray{1,5};
-normalForce  =  dataArray{1,4};
+shearForce =  dataArray{1,4};
+normalForce  =  dataArray{1,3};
 fclose(fileHandle);
 
 plot(angleSlant,shearForce,'gd',angleSlant,normalForce,'bo');
