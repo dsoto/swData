@@ -6,6 +6,7 @@ def main():
 
 def generateTrajectory():
 	print 'generateTrajectory'
+	print 'generateTrajectory'
 	# function outputvector = generateTrajectory(verticesMicron,velocityMicronPerSecond,pathFileName);
 	# 
 	# % code to generate points for piezo movement
@@ -68,6 +69,7 @@ def generateTrajectory():
 	# set(gca,'XDir','reverse');
 	# set(gca,'YDir','reverse');
 	# shg;
+	print 'done'
 
 def plotDataFileChaco(fileName):
 	import os.path
