@@ -6,7 +6,6 @@ def main():
 
 def generateTrajectory():
 	print 'generateTrajectory'
-	print 'generateTrajectory'
 	# function outputvector = generateTrajectory(verticesMicron,velocityMicronPerSecond,pathFileName);
 	# 
 	# % code to generate points for piezo movement
@@ -226,6 +225,124 @@ def readDataFile(fileName):
 	# tidy up and return values
 	fileIn.close()
 	return [strings,column1,column2,column3,column4]
-		
+
+def addToDict(kvDict, key, tempLine):
+	index = tempLine.find('=')+1
+	length = len(tempLine)
+	val = tempLine[index-length:]
+	val = val.lstrip()
+	kvDict.update({key:val})
+	return kvDict
+
+def getCantileverData(cantilever):
+	cantileverDict = {}
+	if cantilever == '529b02':
+		lateralStiffness    = 3.898
+		normalStiffness     = 0.659
+		lateralDisplacement = 1.148
+		normalDisplacement  = 0.224
+
+	if cantilever == '629a03':
+		lateralStiffness    = 0.307
+		normalStiffness     = 0.313
+		lateralDisplacement = 0.473
+		normalDisplacement  = 0.148
+
+	cantileverDict['lateralStiffness']    = lateralStiffness
+	cantileverDict['normalStiffness']     = normalStiffness
+	cantileverDict['lateralDisplacement'] = lateralDisplacement
+	cantileverDict['normalDisplacement']  = normalDisplacement
+
+	return cantileverDict
+
+def readDataFileHeader(fileIn):
+	# read in file
+	# read in lines until find data tag
+	# if line contains '=' put entries in dictionary
+
+	# TODO - get trajectory file
+
+	kvDict = {}
+	keepReading = 1
+	while keepReading == 1:
+		tempLine = fileIn.readline()
+		tempLine = tempLine.lower()
+		tempLine = tempLine.rstrip()
+		if tempLine.find('normal') != -1:
+			key = 'norAmp'
+			kvDict = addToDict(kvDict, key, tempLine)
+		if tempLine.find('lateral') != -1:
+			key = 'latAmp'
+			kvDict = addToDict(kvDict, key, tempLine)
+		if tempLine.find('roll') != -1:
+			key = 'rollAngle'
+			kvDict = addToDict(kvDict, key, tempLine)
+		if tempLine.find('pitch') != -1:
+			key = 'pitchAngle'
+			kvDict = addToDict(kvDict, key, tempLine)
+		if tempLine.find('cantilever') != -1:
+			key = 'cantilever'
+			kvDict = addToDict(kvDict, key, tempLine)
+
+		if tempLine.find('<data>')!=-1:
+			keepReading = 0
+
+	return kvDict
+
+def readDataFileArrayOld(fileIn):
+	tempData = fileIn.readlines()
+	# initialize data arrays
+	strings=[]
+	column1=[]
+	column2=[]
+	column3=[]
+	column4=[]
+	# loop through data and append arrays
+	for line in tempData:
+		line=line.replace('\n','')
+		value=line.split('\t')
+		strings.append(value[0])
+		column1.append(float(value[1]))
+		column2.append(float(value[2]))
+		column3.append(float(value[3]))
+		column4.append(float(value[4]))
+	# tidy up and return values
+	fileIn.close()
+	return [strings,column1,column2,column3,column4]
+
+def readDataFileArray(fileIn):
+	
+	tempLine = fileIn.readline()
+	tempLine = tempLine.rstrip()
+	headers = tempLine.split('\t')
+	print headers
+	for header in headers
+		header.strip()
+	print headers
+	
+	numColumns = len(headers)
+	
+	columnList = []
+	for i in range(numColumns):
+		columnList.append([])
+	
+	tempData = fileIn.readlines()
+
+	# loop through data and append arrays
+	for line in tempData:
+		line=line.replace('\n','')
+		value=line.split('\t')
+		for i in range(numColumns):
+			columnList[i].append(value[i])
+
+	columnDict = {}
+	for i in range(numColumns):
+		columnDict[headers[i]] = columnList[i]
+	
+	# tidy up and return values
+	fileIn.close()
+	return columnDict
+
+
 if __name__ == '__main__':
 	main()
