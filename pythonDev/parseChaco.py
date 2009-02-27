@@ -11,6 +11,9 @@ from enthought.enable.component_editor import ComponentEditor
 import numpy
 import glob
 import os.path
+import sys
+sys.path.append("../roxanne")
+import roxanne
 
 class plotBox(HasTraits):
 	x = Array
@@ -32,12 +35,22 @@ class plotBox(HasTraits):
  	def __init__(self, fileName):
 		self.fileName = fileName
 		self.plotTitle = fileName
-		self.x = numpy.arange(-10,10,0.01)
-		self.y = numpy.sin(self.x)
 		
+		fileIn = open(fileName,'r')
+		roxanne.readDataFileHeader(fileIn)
+		columnDict = roxanne.readDataFileArray(fileIn)
+
+		self.x = numpy.array(map(float,columnDict['voltageForceLateral']))
+		self.y = numpy.array(map(float,columnDict['voltageForceNormal']))
+
 		self.plotdata = ArrayPlotData(x=self.x,y=self.y)
 		self.plotAttribute = Plot(self.plotdata)
-		self.plotAttribute.plot(("x","y"),type="line",color="blue",name='amp')
+		self.plotAttribute.plot(("x"),type="line",color="blue",name='amp')
+		self.plotAttribute.plot(("y"),type="line",color="red",name='amp')
+		self.plotAttribute.x_axis.title = "Time (ms)"
+		self.plotAttribute.y_axis.title = "Force Signal (volts)"
+		
+
 		self.plotAttribute.title = self.plotTitle
 
 	
