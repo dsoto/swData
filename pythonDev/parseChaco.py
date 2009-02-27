@@ -1,46 +1,49 @@
 #!/usr/bin/env python
 
-import matplotlib.pyplot as mpl
-import numpy
-import glob
-import roxanne
-import os.path
 
-from enthought.traits.api import Int, HasTraits, Button
+
+from enthought.traits.api import (String, HasTraits, Button, Instance,
+                                  Array)
 from enthought.traits.ui.api import View, Item
 from enthought.traits.ui.menu import OKButton, CancelButton
+from enthought.chaco.api import Plot, ArrayPlotData
+from enthought.enable.component_editor import ComponentEditor
+import numpy
+import glob
+import os.path
 
-class mathBox(HasTraits):
-	plot = Instance(HPlotContainer)
+class plotBox(HasTraits):
+	x = Array
+	y = Array
+	plotAttribute = Instance(Plot)
+
+	traits_view = View(
+	              Item('plotAttribute',
+	                   editor = ComponentEditor(),
+	                   show_label = False),
+                resizable = True,
+	              height = 500,
+                width = 500,
+                title = 'Can Only Hard Code',
+                x = 0.1,
+                y = 0.1,
+	              buttons = [OKButton, CancelButton])
 	
-	fileName = Str
-
-	view = View('fileName',
-	            buttons = [OKButton])
-	            
-	def __init__(self,x,y):
-		self.a = x
-		self.b = y
-		self.c = x + y
+ 	def __init__(self, fileName):
+		self.fileName = fileName
+		self.plotTitle = fileName
+		self.x = numpy.arange(-10,10,0.01)
+		self.y = numpy.sin(self.x)
 		
-	def _mult_fired(self):
-		self.c = self.a * self.b
+		self.plotdata = ArrayPlotData(x=self.x,y=self.y)
+		self.plotAttribute = Plot(self.plotdata)
+		self.plotAttribute.plot(("x","y"),type="line",color="blue",name='amp')
+		self.plotAttribute.title = self.plotTitle
+
 	
-	def _a_changed(self):
-		self.c = self.a + self.b
-	
-	def _b_changed(self):
-		self.c = self.a + self.b
-	
-	view = View('a','b','c', 
-	            Item('mult', show_label=False),
-	            buttons = [OKButton, CancelButton])
+if __name__ == '__main__':
 
-
-
-
-fileNameList = glob.glob('*.data')
-for fileName in fileNameList:
-
-	myPlotBox = plotBox()
-	myPlotBox.configure_traits()
+	fileNameList = glob.glob('*.data')
+	for fileName in fileNameList:
+		myPlotBox = plotBox(fileName)
+		myPlotBox.configure_traits()
