@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 
-import numpy
-from enthought.chaco.api import create_line_plot, OverlayPlotContainer, \
-                                VPlotContainer, Plot, ArrayPlotData
-from enthought.enable.component_editor import ComponentEditor
+from enthought.chaco.api               import (create_line_plot,
+                                               OverlayPlotContainer,
+                                               VPlotContainer, Plot, ArrayPlotData)
+from enthought.chaco.tools.api         import ZoomTool, PanTool
 from enthought.chaco.tools.cursor_tool import CursorTool, BaseCursorTool
-from enthought.chaco.tools.api import ZoomTool, PanTool
-from enthought.traits.api import HasTraits, Instance, Array, Button, Str
-from enthought.traits.ui.menu import Action
-from enthought.traits.ui.api import View, Item, Handler
+
+from enthought.traits.api              import (HasTraits, Instance, Array,
+                                               Button, Str, Bool)
+from enthought.traits.ui.api           import View, Item, Handler
+from enthought.traits.ui.menu          import Action, OKButton
+
+from enthought.enable.component_editor import ComponentEditor
+
+import numpy
 import glob
 import sys
 sys.path.append("../roxanne")
@@ -16,18 +21,26 @@ import roxanne
 
 class plotBoxHandler(Handler):
 
+	def close(self, info, is_ok):
+		if info.object.isAccepted == True:
+			return True
+	
+	def closed(self, info, is_ok):
+		print 'window closed successfully'
+
 	def accept(self, info):
 		info.object.message = 'plot points accepted'
-		close(info)
+		info.object.isAccepted = True
 		
 	def reject(self, info):
 		info.object.message = 'plot points rejected, choose again'
-		
+		info.object.isAccepted = False
 
 class plotBox(HasTraits):
 	index = Array
 	value = Array
 	message = Str
+	isAccepted = Bool
 	accept = Action(name = "Accept", action = "accept")
 	reject = Action(name = "Reject", action = "reject")
 	cursor = Instance(BaseCursorTool)
@@ -80,13 +93,12 @@ class plotBox(HasTraits):
 										      resizable = True,
 										      show_label = False),
 										 Item('message'),
-										 buttons = [accept,reject],
+										 buttons = [accept, reject, OKButton],
                      title = 'Cursor Demo Test',
                      handler = plotBoxHandler(),
                      resizable = True,
                      width = 1400, height = 800,
                      x = 20, y = 40)
-
 		
 def main():
 	fileNameList = glob.glob('*.data')
