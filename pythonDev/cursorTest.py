@@ -4,10 +4,8 @@ from enthought.chaco.api               import (create_line_plot,
                                                OverlayPlotContainer,
                                                VPlotContainer, Plot, ArrayPlotData)
 from enthought.chaco.tools.api         import ZoomTool, PanTool, LineInspector
-from enthought.chaco.tools.cursor_tool import CursorTool, BaseCursorTool
-
 from enthought.traits.api              import (HasTraits, Instance, Array,
-                                               Button, Str, Bool, DelegatesTo)
+                                               Button, Str, Float, Bool, DelegatesTo)
 from enthought.traits.ui.api           import View, Item, Handler, HGroup
 from enthought.traits.ui.menu          import Action, OKButton
 
@@ -49,12 +47,12 @@ class plotBoxHandler(Handler):
 class plotBox(HasTraits):
 	index = Array
 	value = Array
+	value2 = Array
 	message = Str
 	isAccepted = Bool
 	accept = Action(name = "Accept", action = "accept")
 	reject = Action(name = "Reject", action = "reject")
-	cursor = Instance(BaseCursorTool)
-	cursorPos = DelegatesTo('cursor', prefix = 'current_position')
+	cursorPos = Float
 	hPlot = Instance(VPlotContainer)
 	
 	def __init__(self, fileName):
@@ -89,8 +87,6 @@ class plotBox(HasTraits):
 														add_axis=True, index_sort='ascending',
 														orientation = 'h')
 														
-		self.cursor = CursorTool(line,drag_button = 'left',color='blue')
-		self.cursor.current_position = 1000,self.value[1000]
 		line.overlays.append(customTool(component=line,
 		                                   axis = 'index_x',
 		                                   inspect_mode='indexed',
