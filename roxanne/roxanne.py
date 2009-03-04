@@ -70,13 +70,13 @@ def generateTrajectory():
 	# shg;
 	print 'done'
 
-def plotDataFileChaco(fileName):
+def plotDataFileChacoPDF(fileName):
 	import os.path
 	import numpy
 
 	baseFileName = os.path.splitext(fileName)
 	baseFileName = baseFileName[0]
-	plotFileName = baseFileName + '.pdf'
+	plotFileName = baseFileName + 'Chaco.pdf'
 	dataArray = readDataFile(fileName)
 	time = dataArray[0]
 	voltageNormal = dataArray[1]
@@ -111,7 +111,7 @@ def plotDataFileChacoPNG(fileName):
 
 	baseFileName = os.path.splitext(fileName)
 	baseFileName = baseFileName[0]
-	plotFileName = baseFileName + '.png'
+	plotFileName = baseFileName + 'Chaco.png'
 	dataArray = readDataFile(fileName)
 	time = dataArray[0]
 	voltageNormal = dataArray[1]
@@ -140,7 +140,7 @@ def plotDataFileChacoPNG(fileName):
 	gcpng.render_component(p)
 	gcpng.save(plotFileName)
 
-def plotDataFile(fileName):
+def plotDataFileMPLPDF(fileName):
 	import os.path
 	import matplotlib.pyplot
 
