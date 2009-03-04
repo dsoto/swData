@@ -7,8 +7,8 @@ from enthought.chaco.tools.api         import ZoomTool, PanTool
 from enthought.chaco.tools.cursor_tool import CursorTool, BaseCursorTool
 
 from enthought.traits.api              import (HasTraits, Instance, Array,
-                                               Button, Str, Bool)
-from enthought.traits.ui.api           import View, Item, Handler
+                                               Button, Str, Bool, DelegatesTo)
+from enthought.traits.ui.api           import View, Item, Handler, HGroup
 from enthought.traits.ui.menu          import Action, OKButton
 
 from enthought.enable.component_editor import ComponentEditor
@@ -35,7 +35,8 @@ class plotBoxHandler(Handler):
 	def reject(self, info):
 		info.object.message = 'plot points rejected, choose again'
 		info.object.isAccepted = False
-
+		
+	
 class plotBox(HasTraits):
 	index = Array
 	value = Array
@@ -44,6 +45,7 @@ class plotBox(HasTraits):
 	accept = Action(name = "Accept", action = "accept")
 	reject = Action(name = "Reject", action = "reject")
 	cursor = Instance(BaseCursorTool)
+	cursorPos = DelegatesTo('cursor', prefix = 'current_position')
 	hPlot = Instance(VPlotContainer)
 	
 	def __init__(self, fileName):
@@ -92,7 +94,8 @@ class plotBox(HasTraits):
 										      editor = ComponentEditor(),
 										      resizable = True,
 										      show_label = False),
-										 Item('message'),
+										 HGroup(Item('message',width = 400),
+										        Item('cursorPos',width = 400)),
 										 buttons = [accept, reject, OKButton],
                      title = 'Cursor Demo Test',
                      handler = plotBoxHandler(),
