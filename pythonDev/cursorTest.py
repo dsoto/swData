@@ -19,8 +19,17 @@ import roxanne
 
 
 class customTool(LineInspector):
+	
+ 	def __init__(self,*args,**kwargs):
+ 		super(customTool,self).__init__(*args,**kwargs)
+ 		self.theView = kwargs['theView']
+ 		print kwargs['theView']
+		
 	def normal_left_down(self, event):
 		print "Mouse went down at", event.x, event.y
+		self.theView.currentPos = event.x
+		print self.theView.currentPos
+		self.component.title = 'Clicked'+repr(self.theView.currentPos)
 	
 	def normal_left_up(self, event):
 		print "Mouse went up at:", event.x, event.y
@@ -38,12 +47,12 @@ class plotBoxHandler(Handler):
 	def accept(self, info):
 		info.object.message = 'plot points accepted'
 		info.object.isAccepted = True
+		print info.object.currentPos
 		
 	def reject(self, info):
 		info.object.message = 'plot points rejected, choose again'
 		info.object.isAccepted = False
 		
-	
 class plotBox(HasTraits):
 	index = Array
 	value = Array
@@ -76,28 +85,24 @@ class plotBox(HasTraits):
 		self.value = numpy.array(map(float,columnDict['voltageForceNormal']))
 		self.value2 = numpy.array(map(float,columnDict['voltageForceLateral']))
 		self.index = numpy.arange(len(self.value))
-		
-		line = create_line_plot([self.index,self.value], add_grid=True, 
-														add_axis=True, 
-														color = 'blue',
-														index_sort='ascending',
-														orientation = 'h')
-												
-		line2 = create_line_plot([self.index,self.value2], add_grid=True, 
-														add_axis=True, index_sort='ascending',
-														orientation = 'h')
+		self.plotdata = ArrayPlotData(index = self.index,
+		                              value = self.value,
+		                              value2 = self.value2)
+		self.shearPlot = Plot(self.plotdata)
+		self.shearPlot.plot(('index','value'),type='line',color='blue')
+		self.normalPlot = Plot(self.plotdata)
+		self.normalPlot.plot(('index','value2'),type='line',color='green')
 														
-		line.overlays.append(customTool(component=line,
+		self.shearPlot.overlays.append(customTool(theView = self,
+		                                   component=self.shearPlot,
 		                                   axis = 'index_x',
 		                                   inspect_mode='indexed',
 		                                   write_metadata=True,
 		                                   color='black',
 		                                   is_listener = False))
-
-
-		leftPlot.add(line)
-		rightPlot.add(line2)
-		self.hPlot.title = 'asoentuh'
+		self.shearPlot.title = 'Unclicked so far'
+		leftPlot.add(self.shearPlot)
+		rightPlot.add(self.normalPlot)
 
 		
 	traits_view = View(Item('hPlot',
