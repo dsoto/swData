@@ -3,7 +3,7 @@
 from enthought.chaco.api               import (create_line_plot,
                                                OverlayPlotContainer,
                                                VPlotContainer, Plot, ArrayPlotData)
-from enthought.chaco.tools.api         import ZoomTool, PanTool
+from enthought.chaco.tools.api         import ZoomTool, PanTool, LineInspector
 from enthought.chaco.tools.cursor_tool import CursorTool, BaseCursorTool
 
 from enthought.traits.api              import (HasTraits, Instance, Array,
@@ -18,6 +18,15 @@ import glob
 import sys
 sys.path.append("../roxanne")
 import roxanne
+
+
+class customTool(LineInspector):
+	def normal_left_down(self, event):
+		print "Mouse went down at", event.x, event.y
+	
+	def normal_left_up(self, event):
+		print "Mouse went up at:", event.x, event.y
+
 
 class plotBoxHandler(Handler):
 
@@ -82,8 +91,13 @@ class plotBox(HasTraits):
 														
 		self.cursor = CursorTool(line,drag_button = 'left',color='blue')
 		self.cursor.current_position = 1000,self.value[1000]
-		line.overlays.append(self.cursor)
-		line2.tools.append(ZoomTool(line2))
+		line.overlays.append(customTool(component=line,
+		                                   axis = 'index_x',
+		                                   inspect_mode='indexed',
+		                                   write_metadata=True,
+		                                   color='black',
+		                                   is_listener = False))
+
 
 		leftPlot.add(line)
 		rightPlot.add(line2)
