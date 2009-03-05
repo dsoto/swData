@@ -22,14 +22,19 @@ class customTool(LineInspector):
 	
  	def __init__(self,*args,**kwargs):
  		super(customTool,self).__init__(*args,**kwargs)
- 		self.theView = kwargs['theView']
- 		print kwargs['theView']
+ 		self.plotBox = kwargs['plotBox']
+
+	def normal_mouse_move(self, event):
+		LineInspector.normal_mouse_move(self,event)
+		plot = self.component
+		plot.request_redraw()
+		self.plotBox.cursorPos = event.x
+		print 'Screen point:', event.x
 		
 	def normal_left_down(self, event):
 		print "Mouse went down at", event.x, event.y
-		self.theView.currentPos = event.x
-		print self.theView.currentPos
-		self.component.title = 'Clicked'+repr(self.theView.currentPos)
+		self.plotBox.cursorPos = event.x
+		self.component.title = 'Clicked'+repr(self.plotBox.cursorPos)
 	
 	def normal_left_up(self, event):
 		print "Mouse went up at:", event.x, event.y
@@ -47,11 +52,14 @@ class plotBoxHandler(Handler):
 	def accept(self, info):
 		info.object.message = 'plot points accepted'
 		info.object.isAccepted = True
-		print info.object.currentPos
+		print info.object.cursorPos
 		
 	def reject(self, info):
 		info.object.message = 'plot points rejected, choose again'
 		info.object.isAccepted = False
+	
+	def object_currentPos_changed(self,info):
+		print 'handler detected change'
 		
 class plotBox(HasTraits):
 	index = Array
@@ -93,7 +101,7 @@ class plotBox(HasTraits):
 		self.normalPlot = Plot(self.plotdata)
 		self.normalPlot.plot(('index','value2'),type='line',color='green')
 														
-		self.shearPlot.overlays.append(customTool(theView = self,
+		self.shearPlot.overlays.append(customTool(plotBox = self,
 		                                   component=self.shearPlot,
 		                                   axis = 'index_x',
 		                                   inspect_mode='indexed',
