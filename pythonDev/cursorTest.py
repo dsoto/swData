@@ -108,7 +108,7 @@ class plotBox(HasTraits):
 		                                   write_metadata=True,
 		                                   color='black',
 		                                   is_listener = False))
-		self.shearPlot.title = 'Unclicked so far'
+		self.shearPlot.title = 'Unclicked so far' + fileName
 		leftPlot.add(self.shearPlot)
 		rightPlot.add(self.normalPlot)
 
