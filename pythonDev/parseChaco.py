@@ -3,7 +3,8 @@
 from enthought.chaco.api               import (create_line_plot,
                                                OverlayPlotContainer,
                                                VPlotContainer, Plot, ArrayPlotData)
-from enthought.chaco.tools.api         import ZoomTool, PanTool, LineInspector
+from enthought.chaco.tools.api         import (ZoomTool, PanTool, LineInspector,                
+                                               DragZoom)
 from enthought.traits.api              import (HasTraits, Instance, Array,
                                                Button, Str, Int, Float, Bool, DelegatesTo, Property, Disallow, cached_property, Tuple)
 from enthought.traits.ui.api           import View, Item, Handler, HGroup
@@ -19,6 +20,7 @@ import roxanne
 
 
 class customTool(LineInspector):
+	pointsClicked = Int
 	
  	def __init__(self,*args,**kwargs):
  		super(customTool,self).__init__(*args,**kwargs)
@@ -28,19 +30,25 @@ class customTool(LineInspector):
 		LineInspector.normal_mouse_move(self,event)
 		plot = self.component
 		plot.request_redraw()
-		cursorPosX, cursorPosY = self.component.map_data([event.x,event.y])
+		cursorPosX = self.component.map_data([event.x,event.y])[0]
 		self.plotBox.cursorPosX = int(cursorPosX)
-		self.plotBox.cursorPosY = cursorPosY
+		self.plotBox.cursorPosY = self.plotBox.value[self.plotBox.cursorPosX]
 		
 	def normal_left_down(self, event):
-		cursorPosX, cursorPosY = self.component.map_data([event.x,event.y])	
-		cursorPosY = self.plotBox.value[int(cursorPosX)]
-		print "Mouse went down at", cursorPosX, cursorPosY
+		cursorPosX = self.component.map_data([event.x,event.y])[0]
 		self.plotBox.cursorPosX = int(cursorPosX)
-		self.component.title = 'Clicked'+repr(self.plotBox.cursorPos)
-	
+		self.plotBox.cursorPosY = self.plotBox.value[self.plotBox.cursorPosX]
+		if self.pointsClicked < 3:
+			#print self.pointsClicked,self.plotBox.cursorPosX, self.plotBox.cursorPosY
+			self.plotBox.pointX[self.pointsClicked]=self.plotBox.cursorPosX
+			self.plotBox.pointY[self.pointsClicked]=self.plotBox.cursorPosY
+			print self.plotBox.pointX, self.plotBox.pointY
+			self.plotBox.plotdata.set_data('pointX',self.plotBox.pointX)
+			self.plotBox.plotdata.set_data('pointY',self.plotBox.pointY)
+			self.pointsClicked += 1
+			
 	def normal_left_up(self, event):
-		print "Mouse went up at:", event.x, event.y
+		pass
 
 
 class plotBoxHandler(Handler):
@@ -50,23 +58,30 @@ class plotBoxHandler(Handler):
 			return True
 	
 	def closed(self, info, is_ok):
-		print 'window closed successfully'
+		pass
+		#print 'window closed successfully'
 
 	def accept(self, info):
 		info.object.message = 'plot points accepted'
 		info.object.isAccepted = True
+		print info.object.pointX
 		
 	def reject(self, info):
 		info.object.message = 'plot points rejected, choose again'
 		info.object.isAccepted = False
 	
-	def object_currentPos_changed(self,info):
-		print 'handler detected change'
+	def object_pointX_changed(self,info):
+		print info.object.pointX
+		pass
 		
 class plotBox(HasTraits):
 	index = Array
 	value = Array
 	value2 = Array
+	pointX = Array(dtype=float,value=([0.0,100.0,200.0]))
+#	pointX = numpy.array([0.0,0.0,0.0],dtype = float)
+	pointY = Array(dtype=float,value=([0.0,0.0,0.0]))
+#	pointY = numpy.array([0.0,0.0,0.0],dtype = float)
 	message = Str
 	isAccepted = Bool
 	accept = Action(name = "Accept", action = "accept")
@@ -77,9 +92,8 @@ class plotBox(HasTraits):
 	
 	def __init__(self, fileName):
 		super(plotBox, self).__init__()
-		print fileName
-		
-		self.message = 'you like?'
+
+		self.message = 'Analysis Acceptable?'
 		self.hPlot = VPlotContainer(padding = 10)
 		leftPlot = OverlayPlotContainer(padding = 10)
 		self.hPlot.add(leftPlot)
@@ -98,9 +112,12 @@ class plotBox(HasTraits):
 		self.index = numpy.arange(len(self.value))
 		self.plotdata = ArrayPlotData(index = self.index,
 		                              value = self.value,
-		                              value2 = self.value2)
+		                              value2 = self.value2,
+		                              pointX = self.pointX,
+		                              pointY = self.pointY)
 		self.shearPlot = Plot(self.plotdata)
 		self.shearPlot.plot(('index','value'),type='line',color='blue')
+		self.shearPlot.plot(('pointX','pointY'),type='scatter',color='red')
 		self.normalPlot = Plot(self.plotdata)
 		self.normalPlot.plot(('index','value2'),type='line',color='green')
 														
@@ -111,6 +128,10 @@ class plotBox(HasTraits):
 		                                   write_metadata=True,
 		                                   color='black',
 		                                   is_listener = False))
+		                                   
+		self.shearPlot.tools.append(ZoomTool(self.shearPlot))
+		self.shearPlot.tools.append(PanTool(self.shearPlot,drag_button='right'))
+		
 		self.shearPlot.title = 'Unclicked so far' + fileName
 		leftPlot.add(self.shearPlot)
 		rightPlot.add(self.normalPlot)
