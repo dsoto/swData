@@ -5,7 +5,7 @@ from enthought.chaco.api               import (create_line_plot,
                                                VPlotContainer, Plot, ArrayPlotData)
 from enthought.chaco.tools.api         import ZoomTool, PanTool, LineInspector
 from enthought.traits.api              import (HasTraits, Instance, Array,
-                                               Button, Str, Float, Bool, DelegatesTo)
+                                               Button, Str, Int, Float, Bool, DelegatesTo, Property, Disallow, cached_property, Tuple)
 from enthought.traits.ui.api           import View, Item, Handler, HGroup
 from enthought.traits.ui.menu          import Action, OKButton
 
@@ -28,12 +28,15 @@ class customTool(LineInspector):
 		LineInspector.normal_mouse_move(self,event)
 		plot = self.component
 		plot.request_redraw()
-		self.plotBox.cursorPos = event.x
-		print 'Screen point:', event.x
+		cursorPosX, cursorPosY = self.component.map_data([event.x,event.y])
+		self.plotBox.cursorPos = int( cursorPosX)
+		
 		
 	def normal_left_down(self, event):
-		print "Mouse went down at", event.x, event.y
-		self.plotBox.cursorPos = event.x
+		cursorPosX, cursorPosY = self.component.map_data([event.x,event.y])	
+		cursorPosY = self.plotBox.value[int(cursorPosX)]
+		print "Mouse went down at", cursorPosX, cursorPosY
+		self.plotBox.cursorPos = int(cursorPosX)
 		self.component.title = 'Clicked'+repr(self.plotBox.cursorPos)
 	
 	def normal_left_up(self, event):
@@ -69,7 +72,7 @@ class plotBox(HasTraits):
 	isAccepted = Bool
 	accept = Action(name = "Accept", action = "accept")
 	reject = Action(name = "Reject", action = "reject")
-	cursorPos = Float
+	cursorPos = Int
 	hPlot = Instance(VPlotContainer)
 	
 	def __init__(self, fileName):
