@@ -58,7 +58,8 @@ class plotBoxHandler(Handler):
 			return True
 	
 	def closed(self, info, is_ok):
-		outString = (str(info.object.pointX[0]) + '\t' +
+		outString = (info.object.fileName       + '\t' +
+		             str(info.object.pointX[0]) + '\t' +
 		             str(info.object.pointX[1]) + '\t' +
 		             str(info.object.pointX[2]) + '\n')
 		info.object.fOut.write(outString)
@@ -173,7 +174,14 @@ class plotBox(HasTraits):
 def main():
 	fileNameList = glob.glob('*.data')
 	fOut = open('testOut.dat','w')
-	
+	outputList = ['dataFileName',
+							  'indexContact',
+							  'indexMaxPreload',
+							  'indexMaxAdhesion\n']	
+	sep = '\t'
+	headerString = sep.join(outputList)
+	fOut.write(headerString)
+
 	for fileName in fileNameList:
 		myPlotBox = plotBox(fileName,fOut)
 		myPlotBox.configure_traits()
