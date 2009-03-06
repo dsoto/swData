@@ -8,71 +8,61 @@
 # perform max/min analysis to find points
 # store point in Array
 
-import numpy   as np
+import matplotlib.pyplot as mpl
+import numpy      as np
 import sys
 sys.path.append("../roxanne")
-import roxanne as rx
+import roxanne    as rx
 
 fileName = 'sws10-ls-155936.data'
 fileIn = open(fileName,'r')
+# header dictionary
 hD = rx.readDataFileHeader(fileIn)
+# data dictionary
 dD = rx.readDataFileArray(fileIn)
 
-print dD
 print hD
 	
-# 	for fileName in fileNameList:
-# 
-# 		print 'processing file : ' + fileName
-# 
-# 		# TODO - pulloff angle from trajectory file name
-# 
-# 		fileIn = open(fileName)
-# 		headerDict = roxanne.readDataFileHeader(fileIn)
-# 		dataDict = roxanne.readDataFileArray(fileIn)
-# 
-# 		voltageLateral        =  map(float,dataDict['voltageForceLateral'])
-# 		voltageNormal         =  map(float,dataDict['voltageForceNormal'])
-# 		positionNormalMicron  =  map(float,dataDict['voltagePositionX']) * 10
-# 		positionLateralMicron =  map(float,dataDict['voltagePositionY']) * 10
-# 
-# 		voltageLateral        = -numpy.array(voltageLateral)
-# 		voltageNormal         =  numpy.array(voltageNormal)
-# 		positionNormalMicron  =  numpy.array(positionNormalMicron) * 10
-# 		positionLateralMicron =  numpy.array(positionLateralMicron) * 10
-# 
-# 		cantileverDict = roxanne.getCantileverData(headerDict['cantilever'])
-# 
-# 		normalStiffness      = cantileverDict['normalStiffness']
-# 		lateralStiffness     = cantileverDict['lateralStiffness']
-# 		normalDisplacement   = cantileverDict['normalDisplacement']
-# 		lateralDisplacement  = cantileverDict['lateralDisplacement']
-# 		lateralAmplification = float(headerDict['latAmp'])
-# 		normalAmplification  = float(headerDict['norAmp'])
-# 		rollAngle            = float(headerDict['rollAngle'])
-# 		pitchAngle           = float(headerDict['pitchAngle'])
-# #		anglePulloff         = float(headerDict['anglePulloff'])
-# 
-# 		defaultAmplification = 100
-# 		lateralDisplacement = (lateralDisplacement * lateralAmplification /
-# 													 defaultAmplification)
-# 		normalDisplacement = (normalDisplacement * normalAmplification /
-#  												 defaultAmplification)
-# 
-# 		# use cantilever values to convert voltages to forces
-# 		lateralForceMuN = (voltageLateral *
-# 		                           lateralStiffness / lateralDisplacement)
-# 		normalForceMuN  = (voltageNormal * normalStiffness /
-# 		                           normalDisplacement)
-# 	% flags to perform analysis and plotting
-# 	analyze = 1       % perform analysis of forces
-# 	stdOutput = 0     % output to command line
-# 	filterSpikes = 0  % filter sharp piezo spikes
-# 	doDisplayPlot = 1  % display plot
-# 	doPrintPlot = 1     % output a pdf plot 
-# 	% doDisplayPlot doesn't work
-# 	
-# 	
+voltageLateral        =  map(float,dD['voltageForceLateral'])
+voltageNormal         =  map(float,dD['voltageForceNormal'])
+positionNormalMicron  =  map(float,dD['voltagePositionX']) * 10
+positionLateralMicron =  map(float,dD['voltagePositionY']) * 10
+
+voltageLateral        = -np.array(voltageLateral)
+voltageNormal         =  np.array(voltageNormal)
+positionNormalMicron  =  np.array(positionNormalMicron) * 10
+positionLateralMicron =  np.array(positionLateralMicron) * 10
+
+# cantilever dictionary
+cD = rx.getCantileverData(hD['cantilever'])
+ 
+normalStiffness      = cD['normalStiffness']
+lateralStiffness     = cD['lateralStiffness']
+normalDisplacement   = cD['normalDisplacement']
+lateralDisplacement  = cD['lateralDisplacement']
+lateralAmplification = float(hD['latAmp'])
+normalAmplification  = float(hD['norAmp'])
+rollAngle            = float(hD['rollAngle'])
+pitchAngle           = float(hD['pitchAngle'])
+#anglePulloff         = float(hD['anglePulloff'])
+# how do i get parameters from filename
+
+defaultAmplification = 100
+lateralDisplacement = (lateralDisplacement * lateralAmplification /
+											 defaultAmplification)
+normalDisplacement = (normalDisplacement * normalAmplification /
+										 defaultAmplification)
+
+# use cantilever values to convert voltages to forces
+lateralForceMuN = (voltageLateral *
+													 lateralStiffness / lateralDisplacement)
+normalForceMuN  = (voltageNormal * normalStiffness /
+													 normalDisplacement)
+
+mpl.plot(lateralForceMuN,'g')
+mpl.plot(normalForceMuN,'b')
+mpl.show()
+
 # 	% need to extract only file name from trajectory file name
 # 	% since the file string is on a PC this is all fucked 
 # 	% search for PC path separator
@@ -138,54 +128,54 @@ print hD
 # 	end
 # 	
 # 	% use cantilever values to convert voltages to forces
-# 	lateralForceMicroNewton = ... 
+# 	lateralForceMuN = ... 
 # 		lateralVoltage * lateralStiffness / lateralDisplacement
-# 	normalForceMicroNewton = ... 
+# 	normalForceMuN = ... 
 # 		normalVoltage * normalStiffness / normalDisplacement
 # 	
 # 	%
 # 	% automated point detection 
 # 	
 # 	% find maximum (negative) adhesion value this is pulloff
-# 	[maxAdhesionUncompensatedMicroNewton,indexMaxAdhesion] = ...
-# 		min(normalForceMicroNewton)
+# 	[maxAdhesionUncompensatedMuN,indexMaxAdhesion] = ...
+# 		min(normalForceMuN)
 # 	% store shear value corresponding to max adhesion
-# 	maxShearUncompensatedMicroNewton = lateralForceMicroNewton(indexMaxAdhesion)
+# 	maxShearUncompensatedMuN = lateralForceMuN(indexMaxAdhesion)
 # 	% back up and find maximum normal value this is max preload
-# 	[maxPreloadMicroNewton,indexMaxPreload] = ...
-# 		max(normalForceMicroNewton(1:indexMaxAdhesion))
+# 	[maxPreloadMuN,indexMaxPreload] = ...
+# 		max(normalForceMuN(1:indexMaxAdhesion))
 # 	% back up and find min normal value this is point of contact
-# 	[normalForceContactMicroNewton, indexContact] = ...
-# 		min(normalForceMicroNewton(1:indexMaxPreload))
+# 	[normalForceContactMuN, indexContact] = ...
+# 		min(normalForceMuN(1:indexMaxPreload))
 # 	% find corresponding value of contact for shear
-# 	shearForceContactMicroNewton = lateralForceMicroNewton(indexContact)
+# 	shearForceContactMuN = lateralForceMuN(indexContact)
 # 	
 # 	%
 # 	% automated plot presentation
 # 	
 # 	% plot normal and shear traces 
-# 	plot(lateralForceMicroNewton,'g')
+# 	plot(lateralForceMuN,'g')
 # 	hold on
-# 	plot(normalForceMicroNewton,'b')
+# 	plot(normalForceMuN,'b')
 # 	
 # 	% plot maximum adhesion point
-# 	plot(indexMaxAdhesion, maxAdhesionUncompensatedMicroNewton,'bo')
+# 	plot(indexMaxAdhesion, maxAdhesionUncompensatedMuN,'bo')
 # 	
 # 	% plot corresponding max shear point
-# 	plot(indexMaxAdhesion, maxShearUncompensatedMicroNewton,'go')
+# 	plot(indexMaxAdhesion, maxShearUncompensatedMuN,'go')
 # 	
 # 	% plot maximum preload point
-# 	plot(indexMaxPreload, maxPreloadMicroNewton,'ro')
+# 	plot(indexMaxPreload, maxPreloadMuN,'ro')
 # 	
 # 	% plot normal contact position
-# 	plot(indexContact, normalForceContactMicroNewton,'bd')
+# 	plot(indexContact, normalForceContactMuN,'bd')
 # 	
 # 	% plot shear contact position
-# 	plot(indexContact, shearForceContactMicroNewton,'gd')
+# 	plot(indexContact, shearForceContactMuN,'gd')
 # 	hold off
 # 	
 # 	xlabel('Time (ms)')
-# 	ylabel('Force (microNewtons)')
+# 	ylabel('Force (MuNs)')
 # 	legend('Shear','Normal','Max Normal Adhesion', ...
 # 				 'Max Shear Adhesion', 'Max Preload', ...
 # 				 'Normal Contact Point', 'Shear Contact Point')		
