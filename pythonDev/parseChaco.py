@@ -38,14 +38,14 @@ class customTool(LineInspector):
 		cursorPosX = self.component.map_data([event.x,event.y])[0]
 		self.plotBox.cursorPosX = int(cursorPosX)
 		self.plotBox.cursorPosY = self.plotBox.value[self.plotBox.cursorPosX]
-		if self.pointsClicked < 3:
+		if self.plotBox.pointsClicked < 3:
 			#print self.pointsClicked,self.plotBox.cursorPosX, self.plotBox.cursorPosY
-			self.plotBox.pointX[self.pointsClicked]=self.plotBox.cursorPosX
-			self.plotBox.pointY[self.pointsClicked]=self.plotBox.cursorPosY
-			print self.plotBox.pointX, self.plotBox.pointY
+			self.plotBox.pointX[self.plotBox.pointsClicked]=self.plotBox.cursorPosX
+			self.plotBox.pointY[self.plotBox.pointsClicked]=self.plotBox.cursorPosY
+			#print self.plotBox.pointX, self.plotBox.pointY
 			self.plotBox.plotdata.set_data('pointX',self.plotBox.pointX)
 			self.plotBox.plotdata.set_data('pointY',self.plotBox.pointY)
-			self.pointsClicked += 1
+			self.plotBox.pointsClicked += 1
 			
 	def normal_left_up(self, event):
 		pass
@@ -68,20 +68,24 @@ class plotBoxHandler(Handler):
 		
 	def reject(self, info):
 		info.object.message = 'plot points rejected, choose again'
+		info.object.pointX = numpy.array([0.0,100.0,200.0])
+		info.object.pointY = numpy.array([0.0,0.0,0.0])
+		info.object.plotdata.set_data('pointX',info.object.pointX)
+		info.object.plotdata.set_data('pointY',info.object.pointY)
 		info.object.isAccepted = False
+		info.object.pointsClicked = 0
 	
 	def object_pointX_changed(self,info):
 		print info.object.pointX
 		pass
 		
 class plotBox(HasTraits):
+	pointsClicked = Int
 	index = Array
 	value = Array
 	value2 = Array
 	pointX = Array(dtype=float,value=([0.0,100.0,200.0]))
-#	pointX = numpy.array([0.0,0.0,0.0],dtype = float)
 	pointY = Array(dtype=float,value=([0.0,0.0,0.0]))
-#	pointY = numpy.array([0.0,0.0,0.0],dtype = float)
 	message = Str
 	isAccepted = Bool
 	accept = Action(name = "Accept", action = "accept")
@@ -117,7 +121,7 @@ class plotBox(HasTraits):
 		                              pointY = self.pointY)
 		self.shearPlot = Plot(self.plotdata)
 		self.shearPlot.plot(('index','value'),type='line',color='blue')
-		self.shearPlot.plot(('pointX','pointY'),type='scatter',color='red')
+		self.shearPlot.plot(('pointX','pointY'),type='scatter',color='red',marker='dot')
 		self.normalPlot = Plot(self.plotdata)
 		self.normalPlot.plot(('index','value2'),type='line',color='green')
 														
