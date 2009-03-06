@@ -58,8 +58,10 @@ class plotBoxHandler(Handler):
 			return True
 	
 	def closed(self, info, is_ok):
-		pass
-		#print 'window closed successfully'
+		outString = (str(info.object.pointX[0]) + '\t' +
+		             str(info.object.pointX[1]) + '\t' +
+		             str(info.object.pointX[2]) + '\n')
+		info.object.fOut.write(outString)
 
 	def accept(self, info):
 		info.object.message = 'plot points accepted'
@@ -94,9 +96,10 @@ class plotBox(HasTraits):
 	cursorPosY = Float
 	hPlot = Instance(VPlotContainer)
 	
-	def __init__(self, fileName):
+	def __init__(self, fileName, fOut):
 		super(plotBox, self).__init__()
 
+		self.fOut = fOut
 		self.message = 'Analysis Acceptable?'
 		self.hPlot = VPlotContainer(padding = 10)
 		leftPlot = OverlayPlotContainer(padding = 10)
@@ -169,8 +172,10 @@ class plotBox(HasTraits):
 		
 def main():
 	fileNameList = glob.glob('*.data')
+	fOut = open('testOut.dat','w')
+	
 	for fileName in fileNameList:
-		myPlotBox = plotBox(fileName)
+		myPlotBox = plotBox(fileName,fOut)
 		myPlotBox.configure_traits()
 
 
