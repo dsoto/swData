@@ -29,14 +29,14 @@ class customTool(LineInspector):
 		plot = self.component
 		plot.request_redraw()
 		cursorPosX, cursorPosY = self.component.map_data([event.x,event.y])
-		self.plotBox.cursorPos = int( cursorPosX)
-		
+		self.plotBox.cursorPosX = int(cursorPosX)
+		self.plotBox.cursorPosY = cursorPosY
 		
 	def normal_left_down(self, event):
 		cursorPosX, cursorPosY = self.component.map_data([event.x,event.y])	
 		cursorPosY = self.plotBox.value[int(cursorPosX)]
 		print "Mouse went down at", cursorPosX, cursorPosY
-		self.plotBox.cursorPos = int(cursorPosX)
+		self.plotBox.cursorPosX = int(cursorPosX)
 		self.component.title = 'Clicked'+repr(self.plotBox.cursorPos)
 	
 	def normal_left_up(self, event):
@@ -55,7 +55,6 @@ class plotBoxHandler(Handler):
 	def accept(self, info):
 		info.object.message = 'plot points accepted'
 		info.object.isAccepted = True
-		print info.object.cursorPos
 		
 	def reject(self, info):
 		info.object.message = 'plot points rejected, choose again'
@@ -72,7 +71,8 @@ class plotBox(HasTraits):
 	isAccepted = Bool
 	accept = Action(name = "Accept", action = "accept")
 	reject = Action(name = "Reject", action = "reject")
-	cursorPos = Int
+	cursorPosX = Int
+	cursorPosY = Float
 	hPlot = Instance(VPlotContainer)
 	
 	def __init__(self, fileName):
@@ -121,7 +121,8 @@ class plotBox(HasTraits):
 										      resizable = True,
 										      show_label = False),
 										 HGroup(Item('message',width = 400),
-										        Item('cursorPos',width = 400)),
+										        Item('cursorPosX',width = 400),
+										        Item('cursorPosY',width = 400)),
 										 buttons = [accept, reject, OKButton],
                      title = 'Cursor Demo Test',
                      handler = plotBoxHandler(),
