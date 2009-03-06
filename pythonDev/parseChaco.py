@@ -64,7 +64,7 @@ class plotBoxHandler(Handler):
 	def accept(self, info):
 		info.object.message = 'plot points accepted'
 		info.object.isAccepted = True
-		print info.object.pointX
+		#print info.object.pointX
 		
 	def reject(self, info):
 		info.object.message = 'plot points rejected, choose again'
@@ -76,7 +76,7 @@ class plotBoxHandler(Handler):
 		info.object.pointsClicked = 0
 	
 	def object_pointX_changed(self,info):
-		print info.object.pointX
+		#print info.object.pointX
 		pass
 		
 class plotBox(HasTraits):
@@ -111,8 +111,6 @@ class plotBox(HasTraits):
 		hD = rx.readDataFileHeader(fileIn)
 		dD = rx.readDataFileArray(fileIn)
 		
-		print dD.keys()
-		
 		self.value = numpy.array(map(float,dD['voltageForceNormal']))
 		self.value2 = numpy.array(map(float,dD['voltageForceLateral']))
 		self.index = numpy.arange(len(self.value))
@@ -125,8 +123,6 @@ class plotBox(HasTraits):
 		self.pointY[1] = self.value[iD['indexMaxPreload']]
 		self.pointX[2] = iD['indexMaxAdhesion']
 		self.pointY[2] = self.value[iD['indexMaxAdhesion']]
-
-		# we can pass these arrays to parse analysis
 
 		self.plotdata = ArrayPlotData(index = self.index,
 		                              value = self.value,

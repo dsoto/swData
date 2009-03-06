@@ -345,15 +345,6 @@ def parseForceTrace(hD,dD):
 	import matplotlib.pyplot as mpl
 	import numpy      as np
 	import sys
-#	sys.path.append("../roxanne")
-#	import roxanne    as rx
-	
-#	fileName = 'sws10-ls-155936.data'
-#	fileIn = open(fileName,'r')
-	# header dictionary
-#	hD = rx.readDataFileHeader(fileIn)
-	# data dictionary
-#	dD = rx.readDataFileArray(fileIn)
 	
 	voltageLateral        =  map(float,dD['voltageForceLateral'])
 	voltageNormal         =  map(float,dD['voltageForceNormal'])
@@ -372,56 +363,23 @@ def parseForceTrace(hD,dD):
 	lateralStiffness     = cD['lateralStiffness']
 	normalDisplacement   = cD['normalDisplacement']
 	lateralDisplacement  = cD['lateralDisplacement']
-	lateralAmplification = float(hD['latAmp'])
-	normalAmplification  = float(hD['norAmp'])
-	rollAngle            = float(hD['rollAngle'])
-	pitchAngle           = float(hD['pitchAngle'])
-	#anglePulloff         = float(hD['anglePulloff'])
-	# how do i get parameters from filename
-	
-	defaultAmplification = 100
-	lateralDisplacement = (lateralDisplacement * lateralAmplification /
-												 defaultAmplification)
-	normalDisplacement = (normalDisplacement * normalAmplification /
-											 defaultAmplification)
-	
-	# use cantilever values to convert voltages to forces
-	lateralForceMuN = (voltageLateral *
-														 lateralStiffness / lateralDisplacement)
-	normalForceMuN  = (voltageNormal * normalStiffness /
-														 normalDisplacement)
 	
 	# filter spikes
-	
-	
-	
-	normalForceZip = zip(normalForceMuN,
-											 np.arange(len(normalForceMuN)))
+
+	normalForceZip = zip(voltageNormal,
+											 np.arange(len(voltageNormal)))
 	indexMaxAdhesion = min(normalForceZip)[1]
-	
-	normalForceZip = zip(normalForceMuN[0:indexMaxAdhesion],
+	normalForceZip = zip(voltageNormal[0:indexMaxAdhesion],
 											 np.arange(indexMaxAdhesion))
 	indexMaxPreload = max(normalForceZip)[1]
-	
-	normalForceZip = zip(normalForceMuN[0:indexMaxPreload],
+	normalForceZip = zip(voltageNormal[0:indexMaxPreload],
 											 np.arange(indexMaxPreload))
 	indexContact = min(normalForceZip)[1]
 	
 	index = {'indexContact'     : indexContact,
 	         'indexMaxPreload'  : indexMaxPreload,
 	         'indexMaxAdhesion' : indexMaxAdhesion}
-	
 	return index
 	
-# 	mpl.plot(lateralForceMuN,'g')
-# 	mpl.plot(normalForceMuN,'b')
-# 	
-# 	mpl.plot([indexMaxPreload],  [normalForceMuN[indexMaxPreload]],'ro')
-# 	mpl.plot([indexContact],     [normalForceMuN[indexContact]],'bd')
-# 	mpl.plot([indexMaxAdhesion], [normalForceMuN[indexMaxAdhesion]],'gd')
-# 	
-# 	mpl.show()
-
-
 if __name__ == '__main__':
 	main()
