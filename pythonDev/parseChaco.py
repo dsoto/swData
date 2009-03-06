@@ -16,7 +16,7 @@ import numpy
 import glob
 import sys
 sys.path.append("../roxanne")
-import roxanne
+import roxanne as rx
 
 
 class customTool(LineInspector):
@@ -108,20 +108,36 @@ class plotBox(HasTraits):
 		self.plotTitle = fileName
 		
 		fileIn = open(fileName,'r')
-		roxanne.readDataFileHeader(fileIn)
-		columnDict = roxanne.readDataFileArray(fileIn)
+		hD = rx.readDataFileHeader(fileIn)
+		dD = rx.readDataFileArray(fileIn)
 		
-		self.value = numpy.array(map(float,columnDict['voltageForceNormal']))
-		self.value2 = numpy.array(map(float,columnDict['voltageForceLateral']))
+		print dD.keys()
+		
+		self.value = numpy.array(map(float,dD['voltageForceNormal']))
+		self.value2 = numpy.array(map(float,dD['voltageForceLateral']))
 		self.index = numpy.arange(len(self.value))
+
+		# index dictionary
+		iD = rx.parseForceTrace(hD,dD)
+		self.pointX[0] = iD['indexContact']
+		self.pointY[0] = self.value[iD['indexContact']]
+		self.pointX[1] = iD['indexMaxPreload']
+		self.pointY[1] = self.value[iD['indexMaxPreload']]
+		self.pointX[2] = iD['indexMaxAdhesion']
+		self.pointY[2] = self.value[iD['indexMaxAdhesion']]
+
+		# we can pass these arrays to parse analysis
+
 		self.plotdata = ArrayPlotData(index = self.index,
 		                              value = self.value,
 		                              value2 = self.value2,
 		                              pointX = self.pointX,
 		                              pointY = self.pointY)
 		self.shearPlot = Plot(self.plotdata)
-		self.shearPlot.plot(('index','value'),type='line',color='blue')
-		self.shearPlot.plot(('pointX','pointY'),type='scatter',color='red',marker='dot')
+		self.shearPlot.plot(('index','value'),  type='line',
+		                                        color='blue')
+		self.shearPlot.plot(('pointX','pointY'),type='scatter',
+		                                        color='red',marker='dot')
 		self.normalPlot = Plot(self.plotdata)
 		self.normalPlot.plot(('index','value2'),type='line',color='green')
 														
@@ -136,7 +152,7 @@ class plotBox(HasTraits):
 		self.shearPlot.tools.append(ZoomTool(self.shearPlot))
 		self.shearPlot.tools.append(PanTool(self.shearPlot,drag_button='right'))
 		
-		self.shearPlot.title = 'Unclicked so far' + fileName
+		self.shearPlot.title = fileName
 		leftPlot.add(self.shearPlot)
 		rightPlot.add(self.normalPlot)
 
