@@ -165,41 +165,6 @@ def plotDataFileMPLPDF(fileName):
 	matplotlib.pyplot.close()
 	return 0
 
-def getContactPoint(fileName):
-	import os.path
-#	import matplotlib.pyplot
-	import pylab
-	
-	baseFileName = os.path.splitext(fileName)
-	baseFileName = baseFileName[0]
-	plotFileName = baseFileName + '.pdf'
-	dataArray = readDataFile(fileName)
-	time = dataArray[0]
-	voltageNormal = dataArray[1]
-	voltageShear = dataArray[2]
-	positionX = dataArray[3]
-	positionY = dataArray[4]
-	
-	pylab.figure(1)
-	pylab.plot(voltageNormal)
-#	pylab.hold(True)
-	pylab.plot(voltageShear)
-	pylab.xlabel('Time (ms)')
-	pylab.ylabel('Piezo Voltage Signal (V)')
-	pylab.title(plotFileName)
-	points = pylab.ginput(2)
-	points = pylab.array(points)
-#	points = points[0]
-	print points
-	pylab.plot(points[:,0],points[:,1],'bo')
-	# why won't this plot now???
-	pylab.figure(1)
-#	pylab.scatter(points,s=1,c='b',marker='o')
-	pylab.waitforbuttonpress()
-	pylab.savefig(plotFileName,transparent=True)
-	pylab.close(1)
-	return 0
-
 def readDataFile(fileName):
 	# read in file
 	fileIn = open(fileName,'r')
@@ -287,27 +252,6 @@ def readDataFileHeader(fileIn):
 			keepReading = 0
 
 	return kvDict
-
-def readDataFileArrayOld(fileIn):
-	tempData = fileIn.readlines()
-	# initialize data arrays
-	strings=[]
-	column1=[]
-	column2=[]
-	column3=[]
-	column4=[]
-	# loop through data and append arrays
-	for line in tempData:
-		line=line.replace('\n','')
-		value=line.split('\t')
-		strings.append(value[0])
-		column1.append(float(value[1]))
-		column2.append(float(value[2]))
-		column3.append(float(value[3]))
-		column4.append(float(value[4]))
-	# tidy up and return values
-	fileIn.close()
-	return [strings,column1,column2,column3,column4]
 
 def readDataFileArray(fileIn):
 	
