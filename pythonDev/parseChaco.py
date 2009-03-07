@@ -3,15 +3,14 @@
 from enthought.chaco.api               import (create_line_plot,
                                                OverlayPlotContainer,
                                                VPlotContainer, Plot, ArrayPlotData)
-from enthought.chaco.tools.api         import (ZoomTool, PanTool, LineInspector,                
-                                               DragZoom)
+from enthought.chaco.tools.api         import (PanTool, LineInspector)
 from enthought.traits.api              import (HasTraits, Instance, Array,
                                                Button, Str, Int, Float, Bool, DelegatesTo, Property, Disallow, cached_property, Tuple)
 from enthought.traits.ui.api           import View, Item, Handler, HGroup
 from enthought.traits.ui.menu          import Action, OKButton
 
 from enthought.enable.component_editor import ComponentEditor
-from simple_zoom                    import SimpleZoom
+from simple_zoom                       import SimpleZoom
 import numpy
 import glob
 import sys

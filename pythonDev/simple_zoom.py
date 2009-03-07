@@ -513,7 +513,8 @@ class SimpleZoom(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
                     # Ignore other axes, we're done.
                     event.handled = True
                     return
-                todo_list.append((mapper,newlow,newhigh))
+                if ndx == 0:
+                    todo_list.append((mapper,newlow,newhigh))
 
             # Check the domain limits on each dimension, and rescale the zoom
             # amount if necessary. 
