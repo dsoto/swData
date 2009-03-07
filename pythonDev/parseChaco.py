@@ -10,7 +10,6 @@ from enthought.traits.ui.api           import View, Item, Handler, HGroup
 from enthought.traits.ui.menu          import Action, OKButton
 
 from enthought.enable.component_editor import ComponentEditor
-from simple_zoom                       import SimpleZoom
 import numpy
 import glob
 import sys
@@ -150,7 +149,7 @@ class plotBox(HasTraits):
 		                                   is_listener = False))
 		                                   
 #		self.shearPlot.tools.append(customZoomTool(self.shearPlot))
-		self.shearPlot.tools.append(SimpleZoom(self.shearPlot))		
+		self.shearPlot.tools.append(rx.SimpleZoom(self.shearPlot))
 		self.shearPlot.tools.append(PanTool(self.shearPlot,drag_button='right'))
 		
 		self.shearPlot.title = fileName
