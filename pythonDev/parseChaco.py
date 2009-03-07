@@ -20,7 +20,7 @@ import roxanne as rx
 
 class customTool(LineInspector):
 	pointsClicked = Int
-	
+
  	def __init__(self,*args,**kwargs):
  		super(customTool,self).__init__(*args,**kwargs)
  		self.plotBox = kwargs['plotBox']
@@ -32,7 +32,7 @@ class customTool(LineInspector):
 		cursorPosX = self.component.map_data([event.x,event.y])[0]
 		self.plotBox.cursorPosX = int(cursorPosX)
 		self.plotBox.cursorPosY = self.plotBox.value[self.plotBox.cursorPosX]
-		
+
 	def normal_left_down(self, event):
 		cursorPosX = self.component.map_data([event.x,event.y])[0]
 		self.plotBox.cursorPosX = int(cursorPosX)
@@ -45,7 +45,7 @@ class customTool(LineInspector):
 			self.plotBox.plotdata.set_data('pointX',self.plotBox.pointX)
 			self.plotBox.plotdata.set_data('pointY',self.plotBox.pointY)
 			self.plotBox.pointsClicked += 1
-			
+
 	def normal_left_up(self, event):
 		pass
 
@@ -55,7 +55,7 @@ class plotBoxHandler(Handler):
 	def close(self, info, is_ok):
 		if info.object.isAccepted == True:
 			return True
-	
+
 	def closed(self, info, is_ok):
 		outString = (info.object.fileName       + '\t' +
 		             str(info.object.pointX[0]) + '\t' +
@@ -67,7 +67,7 @@ class plotBoxHandler(Handler):
 		info.object.message = 'plot points accepted'
 		info.object.isAccepted = True
 		#print info.object.pointX
-		
+
 	def reject(self, info):
 		info.object.message = 'plot points rejected, choose again'
 		info.object.pointX = numpy.array([0.0,100.0,200.0])
@@ -76,11 +76,11 @@ class plotBoxHandler(Handler):
 		info.object.plotdata.set_data('pointY',info.object.pointY)
 		info.object.isAccepted = False
 		info.object.pointsClicked = 0
-	
+
 	def object_pointX_changed(self,info):
 		#print info.object.pointX
 		pass
-		
+
 class plotBox(HasTraits):
 	pointsClicked = Int
 	index = Array
@@ -95,7 +95,7 @@ class plotBox(HasTraits):
 	cursorPosX = Int
 	cursorPosY = Float
 	hPlot = Instance(VPlotContainer)
-	
+
 	def __init__(self, fileName, fOut):
 		super(plotBox, self).__init__()
 
@@ -106,14 +106,14 @@ class plotBox(HasTraits):
 		self.hPlot.add(leftPlot)
 		rightPlot = OverlayPlotContainer(padding = 10)
 		self.hPlot.add(rightPlot)
-		
+
 		self.fileName = fileName
 		self.plotTitle = fileName
-		
+
 		fileIn = open(fileName,'r')
 		hD = rx.readDataFileHeader(fileIn)
 		dD = rx.readDataFileArray(fileIn)
-		
+
 		self.value = numpy.array(map(float,dD['voltageForceNormal']))
 		self.value2 = numpy.array(map(float,dD['voltageForceLateral']))
 		self.index = numpy.arange(len(self.value))
@@ -137,9 +137,10 @@ class plotBox(HasTraits):
 		                                        color='blue')
 		self.shearPlot.plot(('pointX','pointY'),type='scatter',
 		                                        color='red',marker='dot')
+		self.shearPlot.value_range.set_bounds(-1,1)
 		self.normalPlot = Plot(self.plotdata)
 		self.normalPlot.plot(('index','value2'),type='line',color='green')
-														
+
 		self.shearPlot.overlays.append(customTool(plotBox = self,
 		                                   component=self.shearPlot,
 		                                   axis = 'index_x',
@@ -147,16 +148,16 @@ class plotBox(HasTraits):
 		                                   write_metadata=True,
 		                                   color='black',
 		                                   is_listener = False))
-		                                   
+
 #		self.shearPlot.tools.append(customZoomTool(self.shearPlot))
 		self.shearPlot.tools.append(rx.SimpleZoom(self.shearPlot))
 		self.shearPlot.tools.append(PanTool(self.shearPlot,drag_button='right'))
-		
+
 		self.shearPlot.title = fileName
 		leftPlot.add(self.shearPlot)
 		rightPlot.add(self.normalPlot)
 
-		
+
 	traits_view = View(Item('hPlot',
 										      editor = ComponentEditor(),
 										      resizable = True,
@@ -170,14 +171,14 @@ class plotBox(HasTraits):
                      resizable = True,
                      width = 1400, height = 800,
                      x = 20, y = 40)
-		
+
 def main():
 	fileNameList = glob.glob('*.data')
 	fOut = open('testOut.dat','w')
 	outputList = ['dataFileName',
 							  'indexContact',
 							  'indexMaxPreload',
-							  'indexMaxAdhesion\n']	
+							  'indexMaxAdhesion\n']
 	sep = '\t'
 	headerString = sep.join(outputList)
 	fOut.write(headerString)
