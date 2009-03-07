@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 
-from enthought.chaco.api               import (create_line_plot,
-                                               OverlayPlotContainer,
+from enthought.chaco.api               import (OverlayPlotContainer,
                                                VPlotContainer, Plot, ArrayPlotData)
 from enthought.chaco.tools.api         import (PanTool, LineInspector)
 from enthought.traits.api              import (HasTraits, Instance, Array,
-                                               Button, Str, Int, Float, Bool, DelegatesTo, Property, Disallow, cached_property, Tuple)
-from enthought.traits.ui.api           import View, Item, Handler, HGroup
+                                               Button, Str, Int, Float, Bool, Tuple)
+from enthought.traits.ui.api           import (View, Item, Handler, HGroup)
 from enthought.traits.ui.menu          import Action, OKButton
-
 from enthought.enable.component_editor import ComponentEditor
 import numpy
 import glob
@@ -17,9 +15,7 @@ sys.path.append("../roxanne")
 import roxanne as rx
 
 
-
 class customTool(LineInspector):
-	pointsClicked = Int
 
  	def __init__(self,*args,**kwargs):
  		super(customTool,self).__init__(*args,**kwargs)
@@ -49,7 +45,6 @@ class customTool(LineInspector):
 	def normal_left_up(self, event):
 		pass
 
-
 class plotBoxHandler(Handler):
 
 	def close(self, info, is_ok):
@@ -66,7 +61,6 @@ class plotBoxHandler(Handler):
 	def accept(self, info):
 		info.object.message = 'plot points accepted'
 		info.object.isAccepted = True
-		#print info.object.pointX
 
 	def reject(self, info):
 		info.object.message = 'plot points rejected, choose again'
@@ -76,10 +70,6 @@ class plotBoxHandler(Handler):
 		info.object.plotdata.set_data('pointY',info.object.pointY)
 		info.object.isAccepted = False
 		info.object.pointsClicked = 0
-
-	def object_pointX_changed(self,info):
-		#print info.object.pointX
-		pass
 
 class plotBox(HasTraits):
 	pointsClicked = Int
@@ -116,8 +106,8 @@ class plotBox(HasTraits):
 		dD = rx.readDataFileArray(fileIn)
 
 		self.normal = numpy.array(map(float,dD['voltageForceNormal']))
-		self.shear = numpy.array(map(float,dD['voltageForceLateral']))
-		self.index = numpy.arange(len(self.normal))
+		self.shear  = numpy.array(map(float,dD['voltageForceLateral']))
+		self.index  = numpy.arange(len(self.normal))
 
 		# index dictionary
 		iD = rx.parseForceTrace(hD,dD)
@@ -134,10 +124,12 @@ class plotBox(HasTraits):
 		                              pointX = self.pointX,
 		                              pointY = self.pointY)
 		self.normalPlot = Plot(self.plotdata)
+		self.normalPlot.plot(('pointX','pointY'),type = 'scatter',
+		                                        marker = 'circle',
+		                                        color = 'white',
+		                                        outline_color='red')
 		self.normalPlot.plot(('index','normal'),  type='line',
 		                                        color='blue')
-		self.normalPlot.plot(('pointX','pointY'),type='scatter',
-		                                        color='red',marker='dot')
 		self.normalPlot.value_range.set_bounds(-1,1)
 		self.shearPlot = Plot(self.plotdata)
 		self.shearPlot.plot(('index','shear'),type='line',color='green')
