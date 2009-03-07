@@ -31,12 +31,12 @@ class customTool(LineInspector):
 		plot.request_redraw()
 		cursorPosX = self.component.map_data([event.x,event.y])[0]
 		self.plotBox.cursorPosX = int(cursorPosX)
-		self.plotBox.cursorPosY = self.plotBox.value[self.plotBox.cursorPosX]
+		self.plotBox.cursorPosY = self.plotBox.normal[self.plotBox.cursorPosX]
 
 	def normal_left_down(self, event):
 		cursorPosX = self.component.map_data([event.x,event.y])[0]
 		self.plotBox.cursorPosX = int(cursorPosX)
-		self.plotBox.cursorPosY = self.plotBox.value[self.plotBox.cursorPosX]
+		self.plotBox.cursorPosY = self.plotBox.normal[self.plotBox.cursorPosX]
 		if self.plotBox.pointsClicked < 3:
 			#print self.pointsClicked,self.plotBox.cursorPosX, self.plotBox.cursorPosY
 			self.plotBox.pointX[self.plotBox.pointsClicked]=self.plotBox.cursorPosX
@@ -84,8 +84,8 @@ class plotBoxHandler(Handler):
 class plotBox(HasTraits):
 	pointsClicked = Int
 	index = Array
-	value = Array
-	value2 = Array
+	normal = Array
+	shear = Array
 	pointX = Array(dtype=float,value=([0.0,100.0,200.0]))
 	pointY = Array(dtype=float,value=([0.0,0.0,0.0]))
 	message = Str
@@ -94,18 +94,19 @@ class plotBox(HasTraits):
 	reject = Action(name = "Reject", action = "reject")
 	cursorPosX = Int
 	cursorPosY = Float
-	hPlot = Instance(VPlotContainer)
+	vPlot = Instance(VPlotContainer)
 
 	def __init__(self, fileName, fOut):
 		super(plotBox, self).__init__()
 
 		self.fOut = fOut
 		self.message = 'Analysis Acceptable?'
-		self.hPlot = VPlotContainer(padding = 10)
-		leftPlot = OverlayPlotContainer(padding = 10)
-		self.hPlot.add(leftPlot)
-		rightPlot = OverlayPlotContainer(padding = 10)
-		self.hPlot.add(rightPlot)
+		self.vPlot = VPlotContainer(padding = 10)
+		self.vPlot.stack_order = 'top_to_bottom'
+		topPlot = OverlayPlotContainer(padding = 10)
+		self.vPlot.add(topPlot)
+		bottomPlot = OverlayPlotContainer(padding = 10)
+		self.vPlot.add(bottomPlot)
 
 		self.fileName = fileName
 		self.plotTitle = fileName
@@ -114,51 +115,52 @@ class plotBox(HasTraits):
 		hD = rx.readDataFileHeader(fileIn)
 		dD = rx.readDataFileArray(fileIn)
 
-		self.value = numpy.array(map(float,dD['voltageForceNormal']))
-		self.value2 = numpy.array(map(float,dD['voltageForceLateral']))
-		self.index = numpy.arange(len(self.value))
+		self.normal = numpy.array(map(float,dD['voltageForceNormal']))
+		self.shear = numpy.array(map(float,dD['voltageForceLateral']))
+		self.index = numpy.arange(len(self.normal))
 
 		# index dictionary
 		iD = rx.parseForceTrace(hD,dD)
 		self.pointX[0] = iD['indexContact']
-		self.pointY[0] = self.value[iD['indexContact']]
+		self.pointY[0] = self.normal[iD['indexContact']]
 		self.pointX[1] = iD['indexMaxPreload']
-		self.pointY[1] = self.value[iD['indexMaxPreload']]
+		self.pointY[1] = self.normal[iD['indexMaxPreload']]
 		self.pointX[2] = iD['indexMaxAdhesion']
-		self.pointY[2] = self.value[iD['indexMaxAdhesion']]
+		self.pointY[2] = self.normal[iD['indexMaxAdhesion']]
 
 		self.plotdata = ArrayPlotData(index = self.index,
-		                              value = self.value,
-		                              value2 = self.value2,
+		                              normal = self.normal,
+		                              shear = self.shear,
 		                              pointX = self.pointX,
 		                              pointY = self.pointY)
-		self.shearPlot = Plot(self.plotdata)
-		self.shearPlot.plot(('index','value'),  type='line',
-		                                        color='blue')
-		self.shearPlot.plot(('pointX','pointY'),type='scatter',
-		                                        color='red',marker='dot')
-		self.shearPlot.value_range.set_bounds(-1,1)
 		self.normalPlot = Plot(self.plotdata)
-		self.normalPlot.plot(('index','value2'),type='line',color='green')
+		self.normalPlot.plot(('index','normal'),  type='line',
+		                                        color='blue')
+		self.normalPlot.plot(('pointX','pointY'),type='scatter',
+		                                        color='red',marker='dot')
+		self.normalPlot.value_range.set_bounds(-1,1)
+		self.shearPlot = Plot(self.plotdata)
+		self.shearPlot.plot(('index','shear'),type='line',color='green')
 
-		self.shearPlot.overlays.append(customTool(plotBox = self,
-		                                   component=self.shearPlot,
+		self.normalPlot.overlays.append(customTool(plotBox = self,
+		                                   component=self.normalPlot,
 		                                   axis = 'index_x',
 		                                   inspect_mode='indexed',
 		                                   write_metadata=True,
 		                                   color='black',
 		                                   is_listener = False))
 
-#		self.shearPlot.tools.append(customZoomTool(self.shearPlot))
-		self.shearPlot.tools.append(rx.SimpleZoom(self.shearPlot))
-		self.shearPlot.tools.append(PanTool(self.shearPlot,drag_button='right'))
+		self.normalPlot.tools.append(rx.SimpleZoom(self.normalPlot))
+		self.normalPlot.tools.append(PanTool(self.normalPlot,drag_button='right'))
 
-		self.shearPlot.title = fileName
-		leftPlot.add(self.shearPlot)
-		rightPlot.add(self.normalPlot)
+		self.normalPlot.title = 'Normal Force Trace'
+		self.shearPlot.title  = 'Shear Force Trace'
+		topPlot.add(self.shearPlot)
+		bottomPlot.add(self.normalPlot)
 
+		self.shearPlot.index_range = self.normalPlot.index_range
 
-	traits_view = View(Item('hPlot',
+	traits_view = View(Item('vPlot',
 										      editor = ComponentEditor(),
 										      resizable = True,
 										      show_label = False),
@@ -166,7 +168,7 @@ class plotBox(HasTraits):
 										        Item('cursorPosX',width = 400),
 										        Item('cursorPosY',width = 400)),
 										 buttons = [accept, reject, OKButton],
-                     title = 'Cursor Demo Test',
+                     title = 'Roxanne Parse Application',
                      handler = plotBoxHandler(),
                      resizable = True,
                      width = 1400, height = 800,
