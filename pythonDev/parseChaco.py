@@ -11,6 +11,7 @@ from enthought.enable.component_editor import ComponentEditor
 import numpy
 import glob
 import sys
+import os.path
 sys.path.append("../roxanne")
 import roxanne as rx
 
@@ -98,9 +99,15 @@ class plotBox(HasTraits):
 		bottomPlot = OverlayPlotContainer(padding = 10)
 		self.vPlot.add(bottomPlot)
 
+		# def parseFileName():
 		self.fileName = fileName
-		self.plotTitle = fileName
+		# get complete path of data file
+		fullFileName = os.path.abspath(fileName)
+		self.fileName = os.path.split(fullFileName)[1]
+		self.shortFileName = os.path.splitext(self.fileName)[1]
+		self.plotTitle = self.shortFileName
 
+		# def readData():
 		fileIn = open(fileName,'r')
 		hD = rx.readDataFileHeader(fileIn)
 		dD = rx.readDataFileArray(fileIn)
@@ -118,6 +125,7 @@ class plotBox(HasTraits):
 		self.pointX[2] = iD['indexMaxAdhesion']
 		self.pointY[2] = self.normal[iD['indexMaxAdhesion']]
 
+		# def constructPlots():
 		self.plotdata = ArrayPlotData(index = self.index,
 		                              normal = self.normal,
 		                              shear = self.shear,
@@ -168,7 +176,7 @@ class plotBox(HasTraits):
                      x = 20, y = 40)
 
 def main():
-	fileNameList = glob.glob('*.data')
+	fileNameList = glob.glob('./data/*.data')
 	fOut = open('testOut.dat','w')
 	outputList = ['dataFileName',
 							  'indexContact',
