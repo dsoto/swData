@@ -124,26 +124,27 @@ class plotBox(HasTraits):
 		                              pointX = self.pointX,
 		                              pointY = self.pointY)
 		self.normalPlot = Plot(self.plotdata)
-		self.normalPlot.plot(('pointX','pointY'),type = 'scatter',
-		                                        marker = 'circle',
-		                                        color = 'white',
-		                                        outline_color='red')
-		self.normalPlot.plot(('index','normal'),  type='line',
-		                                        color='blue')
+		self.normalPlot.plot(('index','normal'), type = 'line',
+		                                         color = 'blue')
+		self.normalPlot.plot(('pointX','pointY'), type = 'scatter',
+		                                          marker = 'diamond',
+		                                          marker_size = 5,
+		                                          color = (0.0,0.0,1.0,0.5),
+		                                          outline_color = 'none')
 		self.normalPlot.value_range.set_bounds(-1,1)
 		self.shearPlot = Plot(self.plotdata)
 		self.shearPlot.plot(('index','shear'),type='line',color='green')
 
 		self.normalPlot.overlays.append(customTool(plotBox = self,
-		                                   component=self.normalPlot,
+		                                   component = self.normalPlot,
 		                                   axis = 'index_x',
-		                                   inspect_mode='indexed',
-		                                   write_metadata=True,
-		                                   color='black',
+		                                   inspect_mode = 'indexed',
+		                                   write_metadata = True,
+		                                   color = 'black',
 		                                   is_listener = False))
 
 		self.normalPlot.tools.append(rx.SimpleZoom(self.normalPlot))
-		self.normalPlot.tools.append(PanTool(self.normalPlot,drag_button='right'))
+		self.normalPlot.tools.append(PanTool(self.normalPlot,drag_button = 'right'))
 
 		self.normalPlot.title = 'Normal Force Trace'
 		self.shearPlot.title  = 'Shear Force Trace'
@@ -156,9 +157,9 @@ class plotBox(HasTraits):
 										      editor = ComponentEditor(),
 										      resizable = True,
 										      show_label = False),
-										 HGroup(Item('message',width = 400),
-										        Item('cursorPosX',width = 400),
-										        Item('cursorPosY',width = 400)),
+										 HGroup(Item('message',    width = 400),
+										        Item('cursorPosX', width = 400),
+										        Item('cursorPosY', width = 400)),
 										 buttons = [accept, reject, OKButton],
                      title = 'Roxanne Parse Application',
                      handler = plotBoxHandler(),
