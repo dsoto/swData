@@ -5,7 +5,10 @@
 # these columns of data will be assigned to a dictionary
 # returned values are all strings
 
+import sys
+sys.path.append('../roxanne')
 import roxanne
+import numpy as np
 
 def main():
 	fileName = 'analyzed.data'
@@ -14,12 +17,14 @@ def main():
 	
 	shearForce = columnDict['forceMaxShear']
 	normalForce = columnDict['forceMaxAdhesion']
+	shearForce = np.array(shearForce)
+	normalForce = np.array(normalForce)
 	
-	import matplotlib
-	params = {'font.family': 'serif',
-	          'font.serif' : 'Computer Modern Roman',
-	          'text.usetex': True}
-	matplotlib.rcParams.update(params)
+# 	import matplotlib
+# 	params = {'font.family': 'serif',
+# 	          'font.serif' : 'Computer Modern Roman',
+# 	          'text.usetex': True}
+# 	matplotlib.rcParams.update(params)
 	
 	import matplotlib.pyplot
 	import matplotlib.axis

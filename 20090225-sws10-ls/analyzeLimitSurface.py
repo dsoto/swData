@@ -3,6 +3,8 @@
 
 
 def main():
+	import sys
+	sys.path.append('../../roxanne')
 	import roxanne
 	import glob
 	import os.path
