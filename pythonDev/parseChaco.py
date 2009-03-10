@@ -34,14 +34,13 @@ class customTool(LineInspector):
 		cursorPosX = self.component.map_data([event.x,event.y])[0]
 		self.plotBox.cursorPosX = int(cursorPosX)
 		self.plotBox.cursorPosY = self.plotBox.normal[self.plotBox.cursorPosX]
+
 		if self.plotBox.pointsClicked == 3:
 			self.plotBox.pointsClicked = 0
-		temp = numpy.array([self.plotBox.pointX[0],
-												self.plotBox.pointX[1],
-												self.plotBox.pointX[2]])
-		temp[self.plotBox.pointsClicked]=self.plotBox.cursorPosX
+		self.plotBox.pointX[self.plotBox.pointsClicked]=self.plotBox.cursorPosX
 		self.plotBox.pointY[self.plotBox.pointsClicked]=self.plotBox.cursorPosY
-		self.plotBox.pointX = temp
+		self.plotBox.pointX = self.plotBox.pointX
+		self.plotBox.pointY = self.plotBox.pointY
 		self.plotBox.plotdata.set_data('pointX',self.plotBox.pointX)
 		self.plotBox.plotdata.set_data('pointY',self.plotBox.pointY)
 		self.plotBox.pointsClicked += 1
@@ -84,8 +83,8 @@ class plotBox(HasTraits):
 	index = Array
 	normal = Array
 	shear = Array
-	pointX = Array(dtype=int,value=([0.0,100.0,200.0]))
-	pointY = Array(dtype=float,value=([0.0,0.0,0.0]))
+	pointX = Array(dtype = int, value = ([0.0,100.0,200.0]), comparison_mode = 0)
+	pointY = Array(dtype = float, value = ([0.0,0.0,0.0]), comparison_mode = 0)
 	message = Str
 	isAccepted = Bool
 	accept = Action(name = "Accept", action = "accept")
@@ -173,10 +172,11 @@ class plotBox(HasTraits):
 										      editor = ComponentEditor(),
 										      resizable = True,
 										      show_label = False),
-										 HGroup(Item('message',    width = 300),
-										        Item('cursorPosX', width = 300),
-										        Item('cursorPosY', width = 300),
-										        Item('pointX', style='readonly', width = 300)),
+										 HGroup(Item('message',    width = 200),
+										        Item('cursorPosX', width = 200),
+										        Item('cursorPosY', width = 200),
+										        Item('pointX', style='readonly', width = 200),
+										        Item('pointY', style='readonly', width = 200)),
 										        buttons = [accept, reject, OKButton],
                      title = 'Roxanne Parse Application',
                      handler = plotBoxHandler(),
