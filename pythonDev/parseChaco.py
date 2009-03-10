@@ -34,14 +34,18 @@ class customTool(LineInspector):
 		cursorPosX = self.component.map_data([event.x,event.y])[0]
 		self.plotBox.cursorPosX = int(cursorPosX)
 		self.plotBox.cursorPosY = self.plotBox.normal[self.plotBox.cursorPosX]
-		if self.plotBox.pointsClicked < 3:
-			#print self.pointsClicked,self.plotBox.cursorPosX, self.plotBox.cursorPosY
-			self.plotBox.pointX[self.plotBox.pointsClicked]=self.plotBox.cursorPosX
-			self.plotBox.pointY[self.plotBox.pointsClicked]=self.plotBox.cursorPosY
-			#print self.plotBox.pointX, self.plotBox.pointY
-			self.plotBox.plotdata.set_data('pointX',self.plotBox.pointX)
-			self.plotBox.plotdata.set_data('pointY',self.plotBox.pointY)
-			self.plotBox.pointsClicked += 1
+		if self.plotBox.pointsClicked == 3:
+			self.plotBox.pointsClicked = 0
+		temp = numpy.array([self.plotBox.pointX[0],
+												self.plotBox.pointX[1],
+												self.plotBox.pointX[2]])
+		temp[self.plotBox.pointsClicked]=self.plotBox.cursorPosX
+		self.plotBox.pointY[self.plotBox.pointsClicked]=self.plotBox.cursorPosY
+		self.plotBox.pointX = temp
+		self.plotBox.plotdata.set_data('pointX',self.plotBox.pointX)
+		self.plotBox.plotdata.set_data('pointY',self.plotBox.pointY)
+		self.plotBox.pointsClicked += 1
+
 
 	def normal_left_up(self, event):
 		pass
@@ -71,13 +75,16 @@ class plotBoxHandler(Handler):
 		info.object.plotdata.set_data('pointY',info.object.pointY)
 		info.object.isAccepted = False
 		info.object.pointsClicked = 0
+	
+	def object_pointX_changed(self, info):
+		pass
 
 class plotBox(HasTraits):
 	pointsClicked = Int
 	index = Array
 	normal = Array
 	shear = Array
-	pointX = Array(dtype=float,value=([0.0,100.0,200.0]))
+	pointX = Array(dtype=int,value=([0.0,100.0,200.0]))
 	pointY = Array(dtype=float,value=([0.0,0.0,0.0]))
 	message = Str
 	isAccepted = Bool
@@ -90,6 +97,7 @@ class plotBox(HasTraits):
 	def __init__(self, fileName, fOut):
 		super(plotBox, self).__init__()
 
+		self.isAccepted = True
 		self.fOut = fOut
 		self.message = 'Analysis Acceptable?'
 		self.vPlot = VPlotContainer(padding = 10)
@@ -165,10 +173,11 @@ class plotBox(HasTraits):
 										      editor = ComponentEditor(),
 										      resizable = True,
 										      show_label = False),
-										 HGroup(Item('message',    width = 400),
-										        Item('cursorPosX', width = 400),
-										        Item('cursorPosY', width = 400)),
-										 buttons = [accept, reject, OKButton],
+										 HGroup(Item('message',    width = 300),
+										        Item('cursorPosX', width = 300),
+										        Item('cursorPosY', width = 300),
+										        Item('pointX', style='readonly', width = 300)),
+										        buttons = [accept, reject, OKButton],
                      title = 'Roxanne Parse Application',
                      handler = plotBoxHandler(),
                      resizable = True,
