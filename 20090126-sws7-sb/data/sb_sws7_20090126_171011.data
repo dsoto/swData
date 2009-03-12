@@ -7,7 +7,7 @@ pitch angle = 0
 roll angle = 310
 
 \* Data Starts Here *\
-Time Stamp	X Output	Y Output	Capacitive Feedback 1	Capacitive Feedback 2
+time	voltageForceLateral	voltageForceNormal	voltagePositionX	voltagePositionY
 17:09:54.7656	4.058838E-1	3.271484E-1	6.713867E-3	4.272461E-3
 17:09:54.7656	4.031372E-1	3.216553E-1	7.019043E-3	3.967285E-3
 17:09:54.7656	3.997803E-1	3.250122E-1	7.019043E-3	4.272461E-3
