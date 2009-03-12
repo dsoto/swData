@@ -94,6 +94,7 @@ class plotBox(HasTraits):
 	vPlot = Instance(VPlotContainer)
 
 	def __init__(self, fileName, fOut):
+		print 'init plotBox'
 		super(plotBox, self).__init__()
 
 		self.isAccepted = True
@@ -115,22 +116,26 @@ class plotBox(HasTraits):
 		self.plotTitle = self.shortFileName
 
 		# def readData():
+		print fileName
 		fileIn = open(fileName,'r')
 		hD = rx.readDataFileHeader(fileIn)
+		print 'hD'
 		dD = rx.readDataFileArray(fileIn)
 
-		self.normal = numpy.array(map(float,dD['voltageForceNormal']))
-		self.shear  = numpy.array(map(float,dD['voltageForceLateral']))
+		self.normal = numpy.array(map(float,dD['voltageForceLateral']))
+		self.shear  = numpy.array(map(float,dD['voltageForceNormal']))
 		self.index  = numpy.arange(len(self.normal))
 
 		# index dictionary
-		iD = rx.parseForceTrace(hD,dD)
-		self.pointX[0] = iD['indexContact']
-		self.pointY[0] = self.normal[iD['indexContact']]
-		self.pointX[1] = iD['indexMaxPreload']
-		self.pointY[1] = self.normal[iD['indexMaxPreload']]
-		self.pointX[2] = iD['indexMaxAdhesion']
-		self.pointY[2] = self.normal[iD['indexMaxAdhesion']]
+# 		iD = rx.parseForceTrace(hD,dD)
+# 		self.pointX[0] = iD['indexContact']
+# 		self.pointY[0] = self.normal[iD['indexContact']]
+# 		self.pointX[1] = iD['indexMaxPreload']
+# 		self.pointY[1] = self.normal[iD['indexMaxPreload']]
+# 		self.pointX[2] = iD['indexMaxAdhesion']
+# 		self.pointY[2] = self.normal[iD['indexMaxAdhesion']]
+
+		
 
 		# def constructPlots():
 		self.plotdata = ArrayPlotData(index = self.index,
@@ -185,8 +190,8 @@ class plotBox(HasTraits):
                      x = 20, y = 40)
 
 def main():
-	fileNameList = glob.glob('./data/*.data')
-	fOut = open('testOut.dat','w')
+	fileNameList = glob.glob('./data/*sws*.data')
+	fOut = open('parsed.data','w')
 	outputList = ['dataFileName',
 							  'indexContact',
 							  'indexMaxPreload',
