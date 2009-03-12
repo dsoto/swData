@@ -6,7 +6,7 @@ normal amp = 100
 pitch angle = 0
 roll angle = 40
 
-\* Data Starts Here *\
+<data>
 time	voltageForceLateral	voltageForceNormal	voltagePositionX	voltagePositionY
 16:08:44.9531	1.791382E-1	6.927490E-2	6.408691E-3	4.272461E-3
 16:08:44.9531	1.733398E-1	7.537842E-2	7.019043E-3	3.662109E-3
