@@ -1,0 +1,38 @@
+20080821_sws6_ldp
+
+6 November 2008 10:49:30 PST
+
+note these notes are being written far after data was taken since original notes were not very complete.
+
+this test was to test simple shear friction on the single microwedge
+structures.  information regarding this test is in lab book 2008_1 pg
+50.  
+
+trajectories used were 
+LDP_p01_d50.txt - LDP_p15_d50.txt  
+and 
+LDP_p01_d80_v20.txt - LDP_p15_d80_v20.txt
+
+cantilever used
+629A03
+
+unfortunately, there are no angles in these trajectory files to parse.  for that reason, there will be some hacks in the analysis code to add angles.  i'm doing this so that the output will be consistent with the other limit surface data sets.  
+
+angle will be hard coded to be 0 degrees for pure drag.
+
+6 November 2008 10:50:01 PST
+ran plotAllForceTraceLoadDragPull.m
+script processed 30 files as expected but because drag was not included in output file name, the first 15 files at 50um drag were overwritten by the later 80 um drag files.  
+
+6 November 2008 11:03:59 PST
+fixed this previous bug with overwriting files.  now drag is also recorded and output in both plot title and filename.  also added console output to echo name of plotfile.
+
+6 November 2008 11:12:21 PST
+there is a bug in the logfile that i need to fix where there is no column header for the drag distance i have added.  also added code to put the plots in a separate 'plots' directory.
+
+6 November 2008 11:27:50 PST
+ok.  so far this morning, i ran plotAllForceTraceLoadDragPull.m which calls plotForceTraceLoadDragPull.m to generate pdf plots and a log file.  looking through the data i'm noticing that for the lower preloads the initial contact region doesn't make sense to me.  
+
+first, it seems like the stage was repositioned for the 50 micron drag and 80 micron drag trials.  the initial contact at identical preloads looks very different which doesn't make sense.  
+
+there are also some curves that suggest that there was some sort of interference that occured between the sample and parts of the cantilever that were not in the focal plane of observation.  

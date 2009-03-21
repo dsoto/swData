@@ -1,0 +1,39 @@
+20081107-2 experiment description
+
+same as 20081107-1 but with other cantilever
+
+used cantilever 529b02
+knormKK	0.659 N/m
+klatKK  3.898 N/m
+dsnorm	0.2241 V/um @100x
+dslat		1.184 V/um @100x
+
+11 November 2008 08:18:51 PST
+this is the first analysis with a cantilever other than 629a03.  so i need to perform an analysis with the new values.  the plan is to create a function that takes the cantilever string as an argument and passes back the values for the spring constants and displacement sensitivities.
+
+11 November 2008 08:37:05 PST
+made this function.  now regenerate plots and compare with 629a03 data to see if there is a large discrepancy in the forces measured.
+
+11 November 2008 08:43:10 PST
+this cantilever has sharp spikes that look like delta functions in the data.  these aren't hurting the shape of the data, but they are throwing off the scales and confusing the algorithms to find max forces and contact points.
+i could fix this by filtering.  if filtering leaves artifacts, i could try to find the spikes, remove them, and interpolate using neighboring data points.
+
+11 November 2008 09:03:22 PST
+i tried filtering using a 3rd order butterworth filter with cutoff frequency parameter 0.05.  this only added artifacts by causing ringing around the spikes.  this is confusing me though.  i searched through a data file looking for these spikes and couldn't see them...
+
+11 November 2008 09:10:49 PST
+to remove and interpolate, we need to take the discrete derivative and look for a neighboring values that are large and opposite in sign.  maybe this could be done by taking a second discrete derivative?
+
+11 November 2008 16:06:32 PST
+was able to remove all but one spike with filterSpikes.m 
+trial with spike remaining is sws6_p87_d80_a00_v100
+this is in data file ldp_sws6_20081107_182534.txt
+it looks like the problem is that this is a 3 sample wide spike.  so the spike has been attenuated by about a factor of 10, but is still prominent.
+
+12 November 2008 18:06:08 PST
+test of change to local repository without pushing to darthmaul repo
+
+18 November 2008 08:57:38 PST
+planning to regenerate plots as well as create figs so that some quick manual analysis can be done.  will run plotAllForceTraceLoadDragPull.m to generate plots.  
+
+

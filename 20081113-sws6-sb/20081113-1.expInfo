@@ -1,0 +1,30 @@
+20081113-1.expInfo
+
+this experiment is a shear bending analysis
+
+sample = sws6
+cantilever = 529b02
+
+13 November 2008 11:57:28 PST
+plan is to now create the trajectory files for this.  
+
+13 November 2008 12:07:42 PST
+trajectory files created
+
+13 November 2008 14:08:34 PST
+just finished taking data and copying it to laptop.  
+will now commit to the repository.
+
+14 November 2008 08:17:47 PST
+file names do not have sample information.  i changed filenames to add sws6 and changed extension to .data
+
+14 November 2008 09:02:24 PST
+generated plots and also generated .fig files.  this is useful for later data analysis that can be done manually.
+
+14 November 2008 09:03:09 PST
+currently the automatic finding of contact points and pulloff points using the simple methods in the scripts is failing.  i need to make these more sophisticated.  also, i need to add in the spike filtering.
+
+14 November 2008 13:25:59 PST
+creating a post merge commit to see how the tree looks afterwards
+
+

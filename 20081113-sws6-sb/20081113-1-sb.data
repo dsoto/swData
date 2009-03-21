@@ -1,0 +1,8 @@
+         Sample	     Cantilever	     Cantilever	          Stage	        Preload	     Microwedge	         Spring	
+		     Deflection	        Preload	          Force	     Deflection	       Constant	
+		           (um)	           (um)	           (uN)	           (um)	          (N/m)	
+           sws6	         529b02	          0.161	          8.081	          0.626	          7.920	          0.079	
+           sws6	         529b02	          0.258	          9.497	          1.004	          9.239	          0.109	
+           sws6	         529b02	          0.286	         10.507	          1.115	         10.221	          0.109	
+           sws6	         529b02	          0.329	          9.991	          1.282	          9.663	          0.133	
+           sws6	         529b02	          0.367	         10.544	          1.432	         10.177	          0.141	

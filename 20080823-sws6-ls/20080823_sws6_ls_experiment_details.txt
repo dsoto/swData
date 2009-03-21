@@ -1,0 +1,28 @@
+20080823_sws_ls
+
+6 November 2008 12:01:07 PST
+note these notes are being written far after data was taken since original notes were not very complete.
+
+this test was to create a limit surface for a single microwedge structure using the dual axis force cantilever.  information regarding this test is in lab book 2008_1 pg 52.
+
+trajectories used were 
+LS_p85_a00_v20.txt - LS_p85_a90_v20.txt
+LS_p90_a00_v20.txt - LS_p90_a90_v20.txt
+LS_p95_a00_v20.txt - LS_p95_a90_v20.txt
+
+cantilever used
+629A03
+
+now we encounter the problem that the drag value we used in the analysis of 
+20080821_sws6_ldp has a different meaning.
+
+6 November 2008 12:38:24 PST
+this directory was created by branching the master branch and then adding the data.  
+
+what i want to do when i re-analyze this data is use as much of the code i just wrote for the LDP experiment.  so, i'll use plotAllForceTraceLoadDragPull.m to analyze and will attempt to keep it backward compatible.
+
+6 November 2008 13:44:03 PST
+used 
+plotAllForceTraceLoadDragPull.m 
+to plot files and create log file
+20080823_sws6_ls.data 
