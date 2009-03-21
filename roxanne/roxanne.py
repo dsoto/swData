@@ -1,5 +1,14 @@
 #!/usr/bin/env python
 
+from enthought.traits.api import HasTraits
+from enthought.traits.api import Enum
+from enthought.traits.api import HasTraits, Instance, Int, List
+from enthought.enable.api import KeySpec
+from enthought.chaco.api import AbstractOverlay
+from enthought.enable.api import ColorTrait, KeySpec
+from enthought.traits.api \
+    import Bool, Enum, Float, Instance, Int, Str, Trait, Tuple
+
 def main():
 	print 'roxanne.py'
 	return 0
@@ -326,13 +335,12 @@ def parseForceTrace(hD,dD):
 	return index
 
 
-from numpy import allclose, inf
-from enthought.traits.api import Enum, Float, HasTraits
 class BaseZoomTool(HasTraits):
     """ Defines traits and methods to actually perform the logic of zooming
     onto a plot.
     """
-
+    from numpy import allclose, inf
+    from enthought.traits.api import Float
     # If the tool only applies to a particular axis, this attribute is used to
     # determine which mapper and range to use.
     axis = Enum("index", "value")
@@ -430,20 +438,6 @@ class BaseZoomTool(HasTraits):
         return low, high
 
 
-""" Defines the SimpleZoom class.
-"""
-from numpy import array
-from enthought.enable.api import ColorTrait, KeySpec
-from enthought.traits.api \
-    import Bool, Enum, Float, Instance, Int, Str, Trait, Tuple
-from enthought.chaco.api import AbstractOverlay
-#from base_zoom_tool import BaseZoomTool
-#from tool_history_mixin import ToolHistoryMixin
-
-""" Defines the ToolHistoryMixin class.
-"""
-from enthought.traits.api import HasTraits, Instance, Int, List
-from enthought.enable.api import KeySpec
 class ToolHistoryMixin(HasTraits):
     """ A mix-in class for tools to maintain a tool state history and to move
     backwards and forwards through that history stack.
@@ -585,7 +579,7 @@ class SimpleZoom(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
     Implements a basic "zoom stack" so the user move go backwards and forwards
     through previous zoom regions.
     """
-
+    from numpy import array
     # The selection mode:
     #
     # range:
@@ -1201,13 +1195,6 @@ class SimpleZoom(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
                 del state[key]
 
         return state
-
-
-
-
-
-# EOF
-
 
 if __name__ == '__main__':
 	main()
