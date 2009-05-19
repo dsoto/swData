@@ -1,12 +1,12 @@
 January 30, 2009 14:39 
-529b02
+cantilever = 529b02
 H:\swData\20090130-sws7-ls\traj\LS_p30_a01_v20.traj
 lateral amplification = 100
 normal amp = 100
 pitch angle = 0
 roll angle = 40
-\* Data Starts Here *\
-Time Stamp	X Output	Y Output	Capacitive Feedback 1	Capacitive Feedback 2
+<data>
+time	voltageForceLateral	voltageForceNormal	voltagePositionX	voltagePositionY
 14:38:26.1875	2.899170E-2	3.753662E-2	7.324219E-3	4.272461E-3
 14:38:26.1875	3.112793E-2	4.364014E-2	7.019043E-3	3.967285E-3
 14:38:26.2031	3.173828E-2	3.234863E-2	6.713867E-3	4.272461E-3
