@@ -1,0 +1,97 @@
+#!/usr/bin/env python
+
+import numpy as np
+
+class trajectory:
+
+
+
+    # time in milliseconds
+    outputTimeStep      = 1
+    acquisitionTimeStep = 1
+    xPoints = [0]
+    yPoints = [0]
+
+    def __init__(self):
+        pass
+
+    def plotPath(self):
+        print 'plot'
+
+    def printPath(self):
+        for this in zip(self.xPoints, self.yPoints):
+            print "x = %.1f,  y = %.1f" % (this[0],this[1])
+
+    def saveTrajectory(self, fileName):
+        fOut = open(fileName,'w')
+        outString = '%.2f\t%.2f\n' % (self.outputTimeStep, 
+                                      self.acquisitionTimeStep)
+        fOut.write(outString)
+        for this in zip(self.xPoints, self.yPoints):
+            outString = '%.2f\t%.2f\n' % (this[0], this[1])
+            fOut.write(outString)
+            
+    def setVertices(self,vertices):
+        # takes list or np.array
+        # converts to array
+        # stores as member variable
+        self.vertices = np.array(vertices)
+
+    def setVelocities(self, velocities):
+        self.velocities = velocities
+
+    def printVertices(self):
+        for pair in self.vertices:
+            print 'x = ' + str(pair[0]) + ', y = ' + str(pair[1])
+
+    def printVelocities(self):
+        for velocity in self.velocities:
+            print velocity
+
+    def createPoints(self):
+        numLegs = self.vertices.shape[0] # number of rows in 
+        for i in range(numLegs-1):
+            distance = np.linalg.norm(self.vertices[i] - 
+                                      self.vertices[i+1])
+            #if distance = 0 velocity interpreted as time?
+            numSteps = np.floor(distance/self.velocities[i])
+            xLeg = np.linspace(self.vertices[i,   0],
+                               self.vertices[i+1, 0],
+                               numSteps+1)
+            yLeg = np.linspace(self.vertices[i,   1],
+                               self.vertices[i+1, 1],
+                               numSteps+1)
+            self.xPoints = np.hstack([self.xPoints[0:-1], xLeg])
+            self.yPoints = np.hstack([self.yPoints[0:-1], yLeg])
+
+    def clearPoints(self):
+        self.xPoints = [0]
+        self.yPoints = [0]
+
+    def addBeginningZeros(self, numZeros):
+         # prepend points with beginning zeros
+        self.xPoints = np.hstack([np.zeros(numZeros),self.xPoints])
+        self.yPoints = np.hstack([np.zeros(numZeros),self.yPoints])
+
+    def addTrailingZeros(self, numZeros):
+        # append points with trailing zeros
+        self.xPoints = np.hstack([self.xPoints,np.zeros(numZeros)])
+        self.yPoints = np.hstack([self.yPoints,np.zeros(numZeros)])
+
+    def getPointsLength(self):
+        return len(self.xPoints)
+
+traj = trajectory()
+traj.setVertices([[0,0],[1,0],[1,1],[0,0]])
+traj.setVelocities([0.5,0.5,0.5])
+traj.createPoints()
+traj.printPath()
+print traj.getPointsLength()
+#traj.clearPoints()
+#traj.printPath()
+traj.createPoints()
+#traj.addBeginningZeros(2)
+#traj.addTrailingZeros(2)
+traj.printPath()
+#traj.saveTrajectory('trajectory.traj')
+print traj.getPointsLength()
