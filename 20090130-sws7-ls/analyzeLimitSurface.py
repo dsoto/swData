@@ -4,7 +4,7 @@
 
 def main():
 	import sys
-	sys.path.append('../../roxanne')
+	sys.path.append('../../../roxanne')
 	import roxanne
 	import glob
 	import os.path
@@ -15,7 +15,7 @@ def main():
 	print parseDict.keys()
 	
 	fOut = open('analyzed.data','w')
-	fileNameList = glob.glob('sws10*.data')
+	fileNameList = glob.glob('ls*.data')
 	outputList = ['fileName',
 	              'anglePitch',
 	              'forceMaxAdhesion',
@@ -24,6 +24,7 @@ def main():
 	sep = '\t'
 	headerString = sep.join(outputList)
 	fOut.write(headerString)
+	print fileNameList
 	
 	for fileName in fileNameList:
 
@@ -71,8 +72,8 @@ def main():
 
 		# get location of filename in parseDict
 		# and pull data from same index in the other arrays
-		fileName = os.path.splitext(fileName)
-		fileName = fileName[0]
+		#fileName = os.path.splitext(fileName)
+		#fileName = fileName[0]
 		fileNames = parseDict['dataFileName']
 		indexFileName = fileNames.index(fileName)
 

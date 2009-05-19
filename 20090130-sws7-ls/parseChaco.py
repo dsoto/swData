@@ -176,7 +176,7 @@ class plotBox(HasTraits):
                      x = 20, y = 40)
 
 def main():
-	fileNameList = glob.glob('./data/sws*.data')
+	fileNameList = glob.glob('./data/040/ls_sws7*.data')
 	fOut = open('testOut.dat','w')
 	outputList = ['dataFileName',
 							  'indexContact',

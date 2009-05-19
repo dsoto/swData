@@ -37,9 +37,9 @@ def main():
 	                       markeredgecolor = 'g')
 	matplotlib.pyplot.xlabel('Shear Force (microNewtons)')
 	matplotlib.pyplot.ylabel('Adhesion Force (microNewtons)')
-	matplotlib.pyplot.title('sws10 - 529b02 - Limit Surface - 20090225')
+	matplotlib.pyplot.title('sws7 - 529b02 - Limit Surface - 20090130')
 	matplotlib.pyplot.grid(True)
-	matplotlib.pyplot.axis([0, 10, -5, 0])
+#	matplotlib.pyplot.axis([0, 10, -5, 0])
 	matplotlib.pyplot.savefig('mplLimitSurface.pdf',transparent=True)
 #	matplotlib.pyplot.show()
 
