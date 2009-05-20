@@ -6,9 +6,9 @@ class trajectory:
 
 
 
-    # time in milliseconds
-    outputTimeStep      = 1
-    acquisitionTimeStep = 1
+    # time in seconds
+    outputTimeStep      =  0.001
+    acquisitionTimeStep =  0.001
     xPoints = [0]
     yPoints = [0]
 
@@ -31,6 +31,11 @@ class trajectory:
             outString = '%.2f\t%.2f\n' % (this[0], this[1])
             fOut.write(outString)
             
+
+    def setTimeStepMS(self, timeStep):
+        self.outputTimeStep = timeStep / 1000.0
+        self.acquisitionTimeStep = timeStep / 1000.0
+
     def setVertices(self,vertices):
         # takes list or np.array
         # converts to array
@@ -38,7 +43,7 @@ class trajectory:
         self.vertices = np.array(vertices)
 
     def setVelocities(self, velocities):
-        self.velocities = velocities
+        self.velocities = np.array(velocities,dtype=float)
 
     def printVertices(self):
         for pair in self.vertices:
@@ -53,8 +58,11 @@ class trajectory:
         for i in range(numLegs-1):
             distance = np.linalg.norm(self.vertices[i] - 
                                       self.vertices[i+1])
+            #print distance
+            #print self.velocities[i]
             #if distance = 0 velocity interpreted as time?
-            numSteps = np.floor(distance/self.velocities[i])
+            numSteps = np.floor(distance/self.velocities[i]/self.outputTimeStep)
+            #print numSteps
             xLeg = np.linspace(self.vertices[i,   0],
                                self.vertices[i+1, 0],
                                numSteps+1)
@@ -81,17 +89,22 @@ class trajectory:
     def getPointsLength(self):
         return len(self.xPoints)
 
-traj = trajectory()
-traj.setVertices([[0,0],[1,0],[1,1],[0,0]])
-traj.setVelocities([0.5,0.5,0.5])
-traj.createPoints()
-traj.printPath()
-print traj.getPointsLength()
-#traj.clearPoints()
-#traj.printPath()
-traj.createPoints()
-#traj.addBeginningZeros(2)
-#traj.addTrailingZeros(2)
-traj.printPath()
-#traj.saveTrajectory('trajectory.traj')
-print traj.getPointsLength()
+def main():
+    print 'generateTrajectory.py main running'
+    traj = trajectory()
+    traj.setVertices([[0,0],[1,0],[1,1],[0,0]])
+    traj.setVelocities([0.5,0.5,0.5])
+    traj.createPoints()
+    traj.printPath()
+    print traj.getPointsLength()
+    #traj.clearPoints()
+    #traj.printPath()
+    traj.createPoints()
+    #traj.addBeginningZeros(2)
+    #traj.addTrailingZeros(2)
+    traj.printPath()
+    #traj.saveTrajectory('trajectory.traj')
+    print traj.getPointsLength()
+
+if __name__ == '__main__':
+    main()
