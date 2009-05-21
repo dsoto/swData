@@ -329,7 +329,6 @@ def parseForceTrace(hD,dD):
              'indexMaxAdhesion' : indexMaxAdhesion}
     return index
 
-
 class BaseZoomTool(HasTraits):
     """ Defines traits and methods to actually perform the logic of zooming
     onto a plot.
@@ -431,7 +430,6 @@ class BaseZoomTool(HasTraits):
             low[axis_index] = low_val
             high[axis_index] = high_val
         return low, high
-
 
 class ToolHistoryMixin(HasTraits):
     """ A mix-in class for tools to maintain a tool state history and to move
@@ -563,7 +561,6 @@ class ToolHistoryMixin(HasTraits):
             event.handled = True
         else:
             return
-
 
 class SimpleZoom(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
     """ Selects a range along the index or value axis.

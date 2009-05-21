@@ -4,8 +4,6 @@ import numpy as np
 
 class trajectory:
 
-
-
     # time in seconds
     outputTimeStep      =  0.001
     acquisitionTimeStep =  0.001
@@ -24,8 +22,8 @@ class trajectory:
 
     def saveTrajectory(self, fileName):
         fOut = open(fileName,'w')
-        outString = '%.2f\t%.2f\n' % (self.outputTimeStep, 
-                                      self.acquisitionTimeStep)
+        outString = '%.2f\t%.2f\n' % (self.outputTimeStep*1000, 
+                                      self.acquisitionTimeStep*1000)
         fOut.write(outString)
         for this in zip(self.xPoints, self.yPoints):
             outString = '%.2f\t%.2f\n' % (this[0], this[1])

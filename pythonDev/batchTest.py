@@ -3,28 +3,23 @@
 import numpy              as np
 import generateTrajectory as gt
 
-formatString = 'LS_p%02.0f_a%02.0f_v%02.0f_dt%02.0f.traj'
-startPreload = 30
-endPreload = 35
+formatString = 'LS_p%02.0f_a%02.0f_v%02.0f.traj'
 
-preload = range(startPreload, endPreload+1)
-
-#angle = range(0,10)
-#angleDegree = np.hstack([angle, range(10,100,10)])
-angleDegree = np.linspace(0,90,10)
+angleDegree = np.array([0, 45, 90])
 angleRadian = angleDegree * np.pi / 180.0
 
-drag = 80
-timeStep = 10
-velocity = [20, 20, 100, 100]
-numZeros = 100
+drag = 5
+velocity = [1, 1, 1, 1]
+numZeros = 5
 
 traj = gt.trajectory()
-traj.setTimeStepMS(timeStep)
+traj.setTimeStepMS(1000)
 
 
-preload = [20]
-angleRadian = [0]
+preload = [5]
+#angleRadian = [0]
+
+
 for p in preload:
     for i, a in enumerate(angleRadian):
         if (p - drag*np.sin(a) >= 0):
@@ -41,10 +36,7 @@ for p in preload:
                         [0,                  drag*np.cos(a)],
                         [0,                  drag*np.cos(a)],
                         [0,                  0]])
-        fileName = formatString % (p, 
-                                   angleDegree[i], 
-                                   velocity[1],
-                                   timeStep)
+        fileName = formatString % (p, angleDegree[i], velocity[1])
 
         traj.setVertices(vertices)
         traj.setVelocities(velocity)
@@ -60,5 +52,4 @@ for p in preload:
         print fileName, startIndex, endIndex
         
         
-traj.saveTrajectory(fileName)
-#traj.saveTrajectory('batch_dt01.traj')
+traj.saveTrajectory('30preload.traj')
