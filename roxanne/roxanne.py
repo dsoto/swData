@@ -265,8 +265,10 @@ def readDataFileArray(fileIn):
 
     # loop through data and append arrays
     for line in tempData:
-        line=line.replace('\n','')
-        value=line.split('\t')
+        #line = line.replace('\n','')
+        line = line.rstrip('\r\n')
+        line = line.replace('\r','')
+        value = line.split('\t')
         for i in range(numColumns):
             columnList[i].append(value[i])
 
@@ -313,6 +315,11 @@ def parseForceTrace(hD,dD):
              'indexMaxPreload'  : indexMaxPreload,
              'indexMaxAdhesion' : indexMaxAdhesion}
     return index
+
+def getTimeStamp():
+    from datetime import datetime
+    dt = datetime.now()
+    return dt.strftime('%Y%m%d%H%M')
 
 class BaseZoomTool(HasTraits):
     """ Defines traits and methods to actually perform the logic of zooming
