@@ -321,11 +321,13 @@ def getTimeStamp():
     dt = datetime.now()
     return dt.strftime('%Y%m%d%H%M')
 
+# numpy import must be outside to work
+from numpy import allclose, inf
 class BaseZoomTool(HasTraits):
     """ Defines traits and methods to actually perform the logic of zooming
     onto a plot.
     """
-    from numpy import allclose, inf
+
     from enthought.traits.api import Float
     # If the tool only applies to a particular axis, this attribute is used to
     # determine which mapper and range to use.
