@@ -4,27 +4,30 @@ import numpy              as np
 import generateTrajectory as gt
 
 formatString = 'LS_p%02.0f_a%02.0f_v%02.0f_dt%02.0f.traj'
-startPreload = 30
-endPreload = 35
+formatString = 'LS_p%02.0f_d%02.0f_vp%02.0f_vd%02.0f'
 
-preload = range(startPreload, endPreload+1)
-
-#angle = range(0,10)
-#angleDegree = np.hstack([angle, range(10,100,10)])
-angleDegree = np.linspace(0,90,10)
+angleDegree = np.hstack([np.linspace(0,9,10), np.linspace(10,90,9)])
 angleRadian = angleDegree * np.pi / 180.0
 
-drag = 80
-timeStep = 10
-velocity = [20, 20, 100, 100]
+preload  = [40.0]
+drag     = 80.0
+timeStep = 10.0
+velocity = [20.0, 20.0, 100.0, 100.0]
 numZeros = 100
+
+fileName = formatString % (preload[0], 
+                           drag, 
+                           velocity[0],
+                           velocity[1])        
+
+indexFile = open(fileName+'.index','w')
+indexHeaderString = 'startIndex'+'\t'+'endIndex'+'\t'+'angle'+'\n'
+indexFile.write(indexHeaderString)
+
 
 traj = gt.trajectory()
 traj.setTimeStepMS(timeStep)
 
-
-preload = [20]
-angleRadian = [0]
 for p in preload:
     for i, a in enumerate(angleRadian):
         if (p - drag*np.sin(a) >= 0):
@@ -41,10 +44,6 @@ for p in preload:
                         [0,                  drag*np.cos(a)],
                         [0,                  drag*np.cos(a)],
                         [0,                  0]])
-        fileName = formatString % (p, 
-                                   angleDegree[i], 
-                                   velocity[1],
-                                   timeStep)
 
         traj.setVertices(vertices)
         traj.setVelocities(velocity)
@@ -56,9 +55,14 @@ for p in preload:
         traj.addTrailingZeros(numZeros)
 
         endIndex = traj.getPointsLength()
+        outString = str(startIndex) + '\t' + str(endIndex) + '\t' +str(angleDegree[i]) + '\n'
         
-        print fileName, startIndex, endIndex
+        print outString
+        indexFile.write(outString)
         
-        
-traj.saveTrajectory(fileName)
-#traj.saveTrajectory('batch_dt01.traj')
+indexFile.close()
+#traj.plotPath()
+# save trajectory file
+traj.saveTrajectory(fileName+'.traj')
+
+# save index
