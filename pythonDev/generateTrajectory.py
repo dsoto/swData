@@ -15,6 +15,9 @@ class trajectory:
 
     def plotPath(self):
         print 'plot'
+        import matplotlib.pyplot as plt
+        plt.plot(self.xPoints, self.yPoints)
+        plt.show()
 
     def printPath(self):
         for this in zip(self.xPoints, self.yPoints):
