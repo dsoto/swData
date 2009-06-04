@@ -307,8 +307,25 @@ def parseForceTrace(hD,dD):
     # filter spikes
     
     # finding points of interest
-    indexMaxAdhesion = np.argmin(voltageNormal)
-    indexMaxPreload = np.argmax(voltageNormal[0:indexMaxAdhesion+1])
+    # 03 june 2009 - changing to be more robust
+    # idea is to find maximum value -> preload
+    # then find next local minimum, that is pulloff
+    
+    # original algorithm
+    #indexMaxAdhesion = np.argmin(voltageNormal)
+    #indexMaxPreload = np.argmax(voltageNormal[0:indexMaxAdhesion+1])
+    #indexContact = np.argmin(voltageNormal[0:indexMaxPreload+1])
+
+    indexMaxPreload = np.argmax(voltageNormal)
+    indexMaxAdhesion = 0 # here find local min
+    forwardWindow = 8
+    backwardWindow = 2
+    for i in range(indexMaxPreload+backwardWindow, 
+                   len(voltageNormal)-forwardWindow):
+        #if np.average(voltageNormal[i-backwardWindow:i-1])>voltageNormal[i] and np.average(voltageNormal[i+3:i+forwardWindow])>voltageNormal[i]:
+        if np.average(voltageNormal[i-backwardWindow:i])>voltageNormal[i] and np.average(voltageNormal[i:i+forwardWindow])>voltageNormal[i]:
+            indexMaxAdhesion = i+3
+            break
     indexContact = np.argmin(voltageNormal[0:indexMaxPreload+1])
     
     index = {'indexContact'     : indexContact,
@@ -319,7 +336,7 @@ def parseForceTrace(hD,dD):
 def getTimeStamp():
     from datetime import datetime
     dt = datetime.now()
-    return dt.strftime('%Y%m%d%H%M')
+    return dt.strftime('%Y%m%d_%H%M')
 
 # numpy import must be outside to work
 from numpy import allclose, inf
