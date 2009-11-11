@@ -3,6 +3,11 @@
 arg 1 : batch data file
 arg 2 : index file
 arg 3 : prefix
+
+this script takes a large batch of data from a limit surface test
+and separates it accourding to an index file
+the index file contains the start and end index for the data
+and the angle associated with that block of data
 '''
 
 import sys
