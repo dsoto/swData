@@ -8,6 +8,21 @@ from enthought.traits.api              import (HasTraits, Instance, Array,
 from enthought.traits.ui.api           import (View, Item, Handler, HGroup)
 from enthought.traits.ui.menu          import Action, OKButton
 from enthought.enable.component_editor import ComponentEditor
+from enthought.traits.ui.key_bindings \
+    import KeyBinding, KeyBindings
+
+key_bindings = KeyBindings(
+    KeyBinding( binding1    = 'a',
+                description = 'accept',
+                method_name = 'accept' ),
+    KeyBinding( binding1    = 'r',
+                description = 'reject',
+                method_name = 'reject' ),
+    KeyBinding( binding1    = 'o',
+                description = 'OKButton',
+                method_name = 'OKButton' )  
+)  
+
 import numpy
 import glob
 import sys
@@ -180,6 +195,7 @@ class plotBox(HasTraits):
 										        buttons = [accept, reject, OKButton],
                      title = 'Roxanne Parse Application',
                      handler = plotBoxHandler(),
+                     key_bindings = key_bindings,
                      resizable = True,
                      width = 1400, height = 800,
                      x = 20, y = 40)
