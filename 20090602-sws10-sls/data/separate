@@ -1,0 +1,31 @@
+#!/bin/bash
+# script to separate all files
+
+./separateData.py ls_sws10_20090602_162003.data LS_p30_d80_vp20_vd20.index p30_pa-20_
+./separateData.py ls_sws10_20090602_162245.data LS_p33_d80_vp20_vd20.index p33_pa-20_
+./separateData.py ls_sws10_20090602_162543.data LS_p36_d80_vp20_vd20.index p36_pa-20_
+./separateData.py ls_sws10_20090602_163230.data LS_p30_d80_vp20_vd20.index p30_pa-15_
+./separateData.py ls_sws10_20090602_163518.data LS_p33_d80_vp20_vd20.index p33_pa-15_
+./separateData.py ls_sws10_20090602_163806.data LS_p36_d80_vp20_vd20.index p36_pa-15_
+./separateData.py ls_sws10_20090602_164556.data LS_p30_d80_vp20_vd20.index p30_pa-10_
+./separateData.py ls_sws10_20090602_164837.data LS_p33_d80_vp20_vd20.index p33_pa-10_
+./separateData.py ls_sws10_20090602_165119.data LS_p36_d80_vp20_vd20.index p36_pa-10_
+./separateData.py ls_sws10_20090602_170157.data LS_p30_d80_vp20_vd20.index p30_pa-05_
+./separateData.py ls_sws10_20090602_170440.data LS_p33_d80_vp20_vd20.index p33_pa-05_
+./separateData.py ls_sws10_20090602_170740.data LS_p36_d80_vp20_vd20.index p36_pa-05_
+./separateData.py ls_sws10_20090602_171917.data LS_p30_d80_vp20_vd20.index p30_pa+00_
+./separateData.py ls_sws10_20090602_172158.data LS_p33_d80_vp20_vd20.index p33_pa+00_
+./separateData.py ls_sws10_20090602_172448.data LS_p36_d80_vp20_vd20.index p36_pa+00_
+./separateData.py ls_sws10_20090602_173038.data LS_p30_d80_vp20_vd20.index p30_pa+05_
+./separateData.py ls_sws10_20090602_173328.data LS_p33_d80_vp20_vd20.index p33_pa+05_
+./separateData.py ls_sws10_20090602_173616.data LS_p36_d80_vp20_vd20.index p36_pa+05_
+./separateData.py ls_sws10_20090602_174311.data LS_p30_d80_vp20_vd20.index p30_pa+10_
+./separateData.py ls_sws10_20090602_174550.data LS_p33_d80_vp20_vd20.index p33_pa+10_
+./separateData.py ls_sws10_20090602_174841.data LS_p36_d80_vp20_vd20.index p36_pa+10_
+./separateData.py ls_sws10_20090602_175819.data LS_p30_d80_vp20_vd20.index p30_pa+15_
+./separateData.py ls_sws10_20090602_180101.data LS_p33_d80_vp20_vd20.index p33_pa+15_
+./separateData.py ls_sws10_20090602_180344.data LS_p36_d80_vp20_vd20.index p36_pa+15_
+./separateData.py ls_sws10_20090602_180918.data LS_p30_d80_vp20_vd20.index p30_pa+20_
+./separateData.py ls_sws10_20090602_181219.data LS_p33_d80_vp20_vd20.index p33_pa+20_
+./separateData.py ls_sws10_20090602_181518.data LS_p36_d80_vp20_vd20.index p36_pa+20_
+
