@@ -152,7 +152,7 @@ def plotDataFileChacoPNG(fileName):
 def plotDataFileMPLPDF(fileName):
     import os.path
     import matplotlib.pyplot as plt
-
+    
     baseFileName = os.path.splitext(fileName)
     baseFileName = baseFileName[0]
     print 'reading file ',fileName
@@ -162,27 +162,51 @@ def plotDataFileMPLPDF(fileName):
     header = readDataFileHeader(fileIn)
     dataArray = readDataFileArray(fileIn)
 
-    time = dataArray['time']
-    #print time
-    # send this array of strings to get a proper time
+    time = map(float,dataArray['time'])
+    timeOffset = time[0]
+    time = [x-timeOffset for x in time]
     voltageNormal = map(float,dataArray['voltageForceNormal'])
     voltageLateral = map(float,dataArray['voltageForceLateral'])
-    positionX = map(float,dataArray['voltagePositionX'])
-    positionY = map(float,dataArray['voltagePositionY'])
+    #positionX = map(float,dataArray['voltagePositionX'])
+    #positionY = map(float,dataArray['voltagePositionY'])
 
     figure = plt.figure()
-    axes = figure.add_subplot(111)
+    axesNormal  = figure.add_subplot(211)
+    axesLateral = figure.add_subplot(212, sharex=axesNormal, sharey=axesNormal)
     
     # have to turn off TeX if i want to print the filename
-    axes.plot(voltageNormal, label='normal voltage')
-    axes.plot(voltageLateral, label='lateral voltage')
-    axes.plot(positionX, label='x position')
-    axes.plot(positionY, label='y position')
-    axes.set_xlabel('Sample Number')
-    axes.set_ylabel('Piezo Voltage Signal (V)')
-    #axes.set_title(plotFileName)
-    axes.legend()
+    axesNormal.plot(time, voltageNormal, label='Normal Voltage', color='b')
+    axesLateral.plot(time, voltageLateral, label='Lateral Voltage', color='g')
+    #axes.plot(positionX, label='x position')
+    #axes.plot(positionY, label='y position')
+    axesLateral.set_xlabel('Time (sec)')
+    axesLateral.set_ylabel('Piezo Voltage Signal (V)')
+    axesNormal.set_ylabel('Piezo Voltage Signal (V)')
+    axesNormal.grid(True,color=((0.5,0.5,0.5)))
+    axesLateral.grid(True,color=((0.5,0.5,0.5)))
     
+    # construct title for figure
+    # have to escape underscores to accomodate TeX interpreter
+    titleFileName = plotFileName.replace('_','\_')    
+    figureTitle=(titleFileName)
+    figureTitle += '\n' + 'cantilever = ' + header['cantilever']
+    figureTitle += '\n' + 'sample = ' + header['sample']
+    figure.suptitle(figureTitle)
+
+    # set transparent legends
+    l = axesLateral.legend()
+    l.legendPatch.set_alpha(0.0)
+    l = axesNormal.legend()
+    l.legendPatch.set_alpha(0.0)
+    
+    
+    width = 6
+    height = 8
+    figure.set_figheight(height)
+    figure.set_figwidth(width)
+    # figure.set_size_inches((width,height))
+
+    figure.set_dpi(100)
     figure.savefig(plotFileName,transparent=True)
 
 def addToDict(kvDict, key, tempLine):
