@@ -241,6 +241,9 @@ def readDataFileHeader(fileIn):
         if tempLine.find('cantilever') != -1:
             key = 'cantilever'
             kvDict = addToDict(kvDict, key, tempLine)
+        if tempLine.find('sample') != -1:
+            key = 'sample'
+            kvDict = addToDict(kvDict, key, tempLine)
 
         if tempLine.find('<data>')!=-1:
             keepReading = 0
