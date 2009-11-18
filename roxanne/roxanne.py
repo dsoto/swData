@@ -208,6 +208,91 @@ def plotDataFileMPLPDF(fileName):
 
     figure.set_dpi(100)
     figure.savefig(plotFileName,transparent=True)
+    
+def plotDataFileForce(fileName):
+    import os.path
+    import matplotlib.pyplot as plt
+    import numpy
+
+    baseFileName = os.path.splitext(fileName)
+    baseFileName = baseFileName[0]
+    print 'reading file ',fileName
+    plotFileName = baseFileName + '.pdf'
+
+    fileIn = open(fileName,'r')
+    headerDict = readDataFileHeader(fileIn)
+    dataDict = readDataFileArray(fileIn)    
+    
+    time = map(float,dataDict['time'])
+    timeOffset = time[0]
+    time = [x-timeOffset for x in time]
+
+    voltageLateral        =  map(float,dataDict['voltageForceLateral'])
+    voltageNormal         =  map(float,dataDict['voltageForceNormal'])
+    voltageLateral        = -numpy.array(voltageLateral)
+    voltageNormal         =  numpy.array(voltageNormal)
+
+    cantileverDict = getCantileverData(headerDict['cantilever'])
+
+    normalStiffness      = cantileverDict['normalStiffness']
+    lateralStiffness     = cantileverDict['lateralStiffness']
+    normalDisplacement   = cantileverDict['normalDisplacement']
+    lateralDisplacement  = cantileverDict['lateralDisplacement']
+    lateralAmplification = float(headerDict['latAmp'])
+    normalAmplification  = float(headerDict['norAmp'])
+
+    defaultAmplification = 100
+    lateralDisplacement = (lateralDisplacement * lateralAmplification /
+                                                 defaultAmplification)
+    normalDisplacement = (normalDisplacement * normalAmplification /
+                                              defaultAmplification)
+
+    # use cantilever values to convert voltages to forces
+    lateralForceMuN = (voltageLateral *
+                               lateralStiffness / lateralDisplacement)
+    normalForceMuN  = (voltageNormal * normalStiffness /
+                               normalDisplacement)    
+
+    figure = plt.figure()
+    axesNormal  = figure.add_subplot(211)
+    axesLateral = figure.add_subplot(212, sharex=axesNormal, sharey=axesNormal)
+    
+    # have to turn off TeX if i want to print the filename
+    axesNormal.plot(time, normalForceMuN, 
+                    label='Normal Force ($\mu$N)', color='b')
+    axesLateral.plot(time, lateralForceMuN, 
+                    label='Lateral Voltage ($\mu$N)', color='g')
+    axesLateral.set_xlabel('Time (sec)')
+    axesLateral.set_ylabel('Lateral Voltage ($\mu$N)')
+    axesNormal.set_ylabel('Normal Force ($\mu$N)')
+    axesNormal.grid(True,color=((0.5,0.5,0.5)))
+    axesLateral.grid(True,color=((0.5,0.5,0.5)))
+    
+    # construct title for figure
+    # have to escape underscores to accomodate TeX interpreter
+    titleFileName = plotFileName.replace('_','\_')    
+    figureTitle=(titleFileName)
+    figureTitle += '\n' + 'cantilever = ' + headerDict['cantilever']
+    figureTitle += '\n' + 'sample = ' + headerDict['sample']
+    figure.suptitle(figureTitle)
+
+    # set transparent legends
+    l = axesLateral.legend()
+    l.legendPatch.set_alpha(0.0)
+    l = axesNormal.legend()
+    l.legendPatch.set_alpha(0.0)
+    
+    
+    width = 6
+    height = 8
+    figure.set_figheight(height)
+    figure.set_figwidth(width)
+    # figure.set_size_inches((width,height))
+
+    figure.set_dpi(100)
+    figure.savefig(plotFileName,transparent=True)
+
+
 
 def addToDict(kvDict, key, tempLine):
     index = tempLine.find('=')+1
