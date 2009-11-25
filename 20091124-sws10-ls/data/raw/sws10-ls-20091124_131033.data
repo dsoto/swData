@@ -6,6 +6,7 @@ normal amp = 500
 pitch angle = -12
 roll angle = 156
 cantilever = 629a03
+sample = sws10
 <data>
 time	voltageForceLateral	voltageForceNormal	voltagePositionX	voltagePositionY
 13:08:00.6406	-2.258301E-2	-4.638672E-2	8.239746E-3	5.493164E-3
