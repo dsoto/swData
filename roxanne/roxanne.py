@@ -261,9 +261,9 @@ def plotDataFileForce(fileName):
     axesNormal.plot(time, normalForceMuN, 
                     label='Normal Force ($\mu$N)', color='b')
     axesLateral.plot(time, lateralForceMuN, 
-                    label='Lateral Voltage ($\mu$N)', color='g')
+                    label='Lateral Force ($\mu$N)', color='g')
     axesLateral.set_xlabel('Time (sec)')
-    axesLateral.set_ylabel('Lateral Voltage ($\mu$N)')
+    axesLateral.set_ylabel('Lateral Force ($\mu$N)')
     axesNormal.set_ylabel('Normal Force ($\mu$N)')
     axesNormal.grid(True,color=((0.5,0.5,0.5)))
     axesLateral.grid(True,color=((0.5,0.5,0.5)))
