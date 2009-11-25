@@ -5,9 +5,13 @@ arg 2 : index file
 arg 3 : prefix
 '''
 
+''' 
+fixme - files currently placed in /raw, instead place in /separated
+fixme - zero out timestamp in each separated file
+'''
+
 import sys
-sys.path.append('../roxanne/')
-sys.path.append('../../roxanne/')
+sys.path.append('/Users/dsoto/current/swDataFlat/roxanne/')
 import roxanne as rx
 
 
@@ -36,7 +40,13 @@ def getHeader(fileIn):
 
 
 # get data file
-fileIn = open(sys.argv[1])
+#fileIn = open(sys.argv[1])
+fileInFull = sys.argv[1]
+# pull apart fileIn to get place to save files
+import os.path
+fileInPath = os.path.split(fileInFull)[0]
+fileIn = open(fileInFull)
+
 # get index file
 fileIndex = open(sys.argv[2])
 # get file prefix
@@ -63,7 +73,11 @@ index = zip(map(int,(index['startIndex'])),
 
 numFiles = len(index)
 for i in range(numFiles):
-    fileOut = open(prefix + 'a%s.data' % index[i][2],'w')
+    fileOutPath = fileInPath
+    fileOutName = prefix + 'a%s.data' % index[i][2]
+    fileOutName = os.path.join(fileOutPath, fileOutName)
+    print 'writing ' + fileOutName
+    fileOut = open(fileOutName,'w')
     fileOut.write('\n'.join(header))
     fileOut.write('\n')
     fileOut.write('time\tvoltageForceLateral\tvoltageForceNormal\tvoltagePositionX\tvoltagePositionY\n')
@@ -74,49 +88,3 @@ for i in range(numFiles):
         fileOut.write('\n')
     #fileNameOut = '%s.data' % index['angle'][i]
     #fileOut = open(fileNameOut,'w')
-    
-
-
-
-
-    
-'''
-import matplotlib.pyplot as plt
-
-def plotTime(fileIn):
-    rx.readDataFileHeader(fileIn)
-    data = rx.readDataFileArray(fileIn)
-    
-    timeStrings = data['time']
-    
-    timeSeconds = [float(ts[0:2])*3600+float(ts[3:5])*60+float(ts[6:]) for ts in timeStrings]
-    
-    import numpy as np
-    timeSeconds = np.array(timeSeconds)
-    timeSeconds = timeSeconds - timeSeconds[0]
-    
-    #print timeSeconds
-    
-    plt.plot(timeSeconds,'o')
-
-import glob
-fileNameList = glob.glob('*.data')
-for fileName in fileNameList:
-    fileIn = open(fileName)
-    plotTime(fileIn)
-
-import numpy as np
-x = np.array(range(6000))
-y = x * 0.010
-y1 = x * 0.005
-y2 = x * 0.002
-y3 = x * 0.001
-
-plt.plot(x,y)
-plt.plot(x,y1)
-plt.plot(x,y2)
-plt.plot(x,y3)
-
-plt.show()
-    
-'''
