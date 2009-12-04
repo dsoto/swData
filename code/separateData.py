@@ -3,6 +3,7 @@
 arg 1 : batch data file
 arg 2 : index file
 arg 3 : prefix
+see usage in separateData.sh
 '''
 
 ''' 

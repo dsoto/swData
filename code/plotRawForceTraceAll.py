@@ -6,7 +6,8 @@ import roxanne
 import glob
 
 # fileNameList = glob.glob('../20091124-sws10-ls/data/separated/p3*.data')
-fileNameList = glob.glob('../20091124-sws11-ls/data/separated/p3*.data')
+# fileNameList = glob.glob('../20091124-sws11-ls/data/separated/p3*.data')
+fileNameList = glob.glob('../026-20091203-sws12-ls/data/separated/p3*.data')
 
 '''
 fixme : put plots in /plot directory instead of data directory

@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+'''
+fixme : put parsed*.dat file in directory with data
+'''
+
 from enthought.chaco.api               import (OverlayPlotContainer,
                                                VPlotContainer, Plot, ArrayPlotData)
 from enthought.chaco.tools.api         import (PanTool, LineInspector)
@@ -193,9 +197,11 @@ class plotBox(HasTraits):
                      x = 20, y = 40)
 
 def main():
-    fileNameList = glob.glob('*.data')
+    # fileNameList = glob.glob('../20091124-sws10-ls/data/separated/p3*.data')
+    # fileNameList = glob.glob('../20091124-sws11-ls/data/separated/p3*.data')
+    fileNameList = glob.glob('../026-20091203-sws12-ls/data/separated/*')
     timeStamp = rx.getTimeStamp()
-    fOut = open('parsed_'+timeStamp+'.dat','w')
+    fOut = open('parsed_' + timeStamp + '.dat', 'w')
     outputList = ['dataFileName',
                               'indexContact',
                               'indexMaxPreload',
@@ -206,7 +212,7 @@ def main():
 
     numFiles = len(fileNameList)
     for i,fileName in enumerate(fileNameList):
-        print fileName,i+1,' in ',numFiles
+        print fileName, i+1, ' in ', numFiles
         myPlotBox = plotBox(fileName,fOut)
         myPlotBox.configure_traits()
 
