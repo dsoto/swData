@@ -2,6 +2,7 @@
 
 '''
 fixme : put parsed*.dat file in directory with data
+fixme : add keybinding to get return key to do OKButton
 '''
 
 from enthought.chaco.api               import (OverlayPlotContainer,
@@ -199,7 +200,7 @@ class plotBox(HasTraits):
 def main():
     # fileNameList = glob.glob('../20091124-sws10-ls/data/separated/p3*.data')
     # fileNameList = glob.glob('../20091124-sws11-ls/data/separated/p3*.data')
-    fileNameList = glob.glob('../026-20091203-sws12-ls/data/separated/*')
+    fileNameList = glob.glob('../027-20091203-sws13-ls/data/separated/*')
     timeStamp = rx.getTimeStamp()
     fOut = open('parsed_' + timeStamp + '.dat', 'w')
     outputList = ['dataFileName',
