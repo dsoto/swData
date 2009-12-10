@@ -6,6 +6,7 @@ normal amp = 100
 pitch angle = -3
 roll angle = 70
 cantilever = 629a03
+sample = sws14
 <data>
 time	voltageForceLateral	voltageForceNormal	voltagePositionX	voltagePositionY
 14:56:58.7656	-3.173828E-2	-2.258301E-2	7.019043E-3	4.882812E-3
