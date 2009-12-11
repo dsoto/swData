@@ -292,7 +292,9 @@ def plotDataFileForce(fileName):
     figure.set_dpi(100)
     figure.savefig(plotFileName,transparent=True)
 
-def plotDataFileAnalyzed(fileName):
+def plotDataFileAnnotated(fileName, indexContact, 
+                          indexMaxPreload, indexFailure):
+    print 'entered plotDataFileAnnotated'
     import os.path
     import matplotlib.pyplot as plt
     import numpy
@@ -340,11 +342,53 @@ def plotDataFileAnalyzed(fileName):
     axesNormal  = figure.add_subplot(211)
     axesLateral = figure.add_subplot(212, sharex=axesNormal, sharey=axesNormal)
     
-    # have to turn off TeX if i want to print the filename
+
+    # plotting force traces
     axesNormal.plot(time, normalForceMuN, 
                     label='Normal Force ($\mu$N)', color='b')
     axesLateral.plot(time, lateralForceMuN, 
                     label='Lateral Force ($\mu$N)', color='g')
+
+    # plot points of interest
+    axesNormal.plot(time[indexContact], normalForceMuN[indexContact], 
+                    markeredgecolor = 'm',
+                    markerfacecolor = 'None',
+                    color = 'None',
+                    label = 'Initial Contact',
+                    marker = 'o')
+    axesLateral.plot(time[indexContact], lateralForceMuN[indexContact], 
+                    markeredgecolor = 'm',
+                    color = 'None',
+                    markerfacecolor = 'None',
+                    label = 'Initial Contact',
+                    marker = 'o')
+    axesNormal.plot(time[indexMaxPreload], normalForceMuN[indexMaxPreload], 
+                    markeredgecolor = 'c',
+                    markerfacecolor = 'None',
+                    color = 'None',
+                    label = 'Initial Compression',
+                    marker = 'o')
+    axesLateral.plot(time[indexMaxPreload], lateralForceMuN[indexMaxPreload], 
+                    markeredgecolor = 'c',
+                    color = 'None',
+                    markerfacecolor = 'None',
+                    label = 'Initial Compression',
+                    marker = 'o')
+    axesNormal.plot(time[indexFailure], normalForceMuN[indexFailure], 
+                    markeredgecolor = 'r',
+                    color = 'None',
+                    markerfacecolor = 'None',
+                    label = 'Interface Failure',
+                    marker = 'o')
+    axesLateral.plot(time[indexFailure], lateralForceMuN[indexFailure], 
+                    markeredgecolor = 'r',
+                    color = 'None',
+                    markerfacecolor = 'None',
+                    label = 'Interface Failure',
+                    marker = 'o')
+    
+    
+    # set up titles and labels for plot
     axesLateral.set_xlabel('Time (sec)')
     axesLateral.set_ylabel('Lateral Force ($\mu$N)')
     axesNormal.set_ylabel('Normal Force ($\mu$N)')
@@ -374,7 +418,6 @@ def plotDataFileAnalyzed(fileName):
 
     figure.set_dpi(100)
     figure.savefig(plotFileName,transparent=True)
-
 
 def addToDict(kvDict, key, tempLine):
     index = tempLine.find('=')+1
