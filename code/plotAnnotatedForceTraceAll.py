@@ -4,7 +4,7 @@ import sys
 sys.path.append('/Users/dsoto/current/swDataFlat/roxanne')
 import roxanne as rx
 
-parsedFileDirectory = '../027-20091203-sws13-ls/data/separated/'
+parsedFileDirectory = '../029-20091211-sws14-ls/data/separated/'
 parsedFileName = parsedFileDirectory + 'parsed.dat'
 parsedFileObject = open(parsedFileName)
 
