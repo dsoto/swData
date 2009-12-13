@@ -292,8 +292,12 @@ def plotDataFileForce(fileName):
     figure.set_dpi(100)
     figure.savefig(plotFileName,transparent=True)
 
-def plotDataFileAnnotated(fileName, indexContact, 
-                          indexMaxPreload, indexFailure):
+def plotDataFileAnnotated(fileName, 
+                          indexContact, 
+                          indexMaxPreload, 
+                          indexFailure,
+                          excludeStart = 0,
+                          excludeEnd = 0):
     print 'entered plotDataFileAnnotated'
     import os.path
     import matplotlib.pyplot as plt
@@ -308,15 +312,31 @@ def plotDataFileAnnotated(fileName, indexContact,
     headerDict = readDataFileHeader(fileIn)
     dataDict = readDataFileArray(fileIn)    
     
-    time = map(float,dataDict['time'])
-    timeOffset = time[0]
-    time = [x-timeOffset for x in time]
+    # grab data arrays
+    time           = map(float,dataDict['time'])
+    voltageLateral =  map(float,dataDict['voltageForceLateral'])
+    voltageNormal  =  map(float,dataDict['voltageForceNormal'])
 
-    voltageLateral        =  map(float,dataDict['voltageForceLateral'])
-    voltageNormal         =  map(float,dataDict['voltageForceNormal'])
-    voltageLateral        = -numpy.array(voltageLateral)
-    voltageNormal         =  numpy.array(voltageNormal)
+    # convert to numpy objects
+    time           = numpy.array(time)
+    voltageLateral = -numpy.array(voltageLateral)
+    voltageNormal  =  numpy.array(voltageNormal)
+    
+    # trim arrays according to excludeStart and excludeEnd
+    time           = time[excludeStart:len(time)-excludeEnd]
+    voltageLateral = voltageLateral[excludeStart:len(voltageLateral)-excludeEnd]
+    voltageNormal  = voltageNormal[excludeStart:len(voltageNormal)-excludeEnd]
 
+    # adjust indices for excludeStart
+    indexContact -= excludeStart
+    indexMaxPreload -= excludeStart
+    indexFailure -= excludeStart
+
+    # remove offsets    
+    voltageLateral = voltageLateral - voltageLateral[0]
+    voltageNormal  = voltageNormal  - voltageNormal[0]
+    time           = time           - time[0]
+    
     cantileverDict = getCantileverData(headerDict['cantilever'])
 
     normalStiffness      = cantileverDict['normalStiffness']
