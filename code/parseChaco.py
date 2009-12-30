@@ -200,7 +200,7 @@ class plotBox(HasTraits):
 def main():
     # fileNameList = glob.glob('../20091124-sws10-ls/data/separated/p3*.data')
     # fileNameList = glob.glob('../20091124-sws11-ls/data/separated/p3*.data')
-    fileNameList = glob.glob('../029-20091211-sws14-ls/data/separated/p33_a08.data')
+    fileNameList = glob.glob('../030-20091230-sws15-ls/data/separated/p3*.data')
     timeStamp = rx.getTimeStamp()
     fOut = open('parsed_' + timeStamp + '.dat', 'w')
     outputList = ['dataFileName',
