@@ -41,8 +41,8 @@ def main():
 
         voltageLateral        =  map(float,dataDict['voltageForceLateral'])
         voltageNormal         =  map(float,dataDict['voltageForceNormal'])
-        positionNormalMicron  =  map(float,dataDict['voltagePositionX']) * 10
-        positionLateralMicron =  map(float,dataDict['voltagePositionY']) * 10
+        positionNormalMicron  =  map(float,dataDict['voltagePositionX'])
+        positionLateralMicron =  map(float,dataDict['voltagePositionY'])
 
         voltageLateral        = -numpy.array(voltageLateral)
         voltageNormal         =  numpy.array(voltageNormal)
