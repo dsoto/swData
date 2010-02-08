@@ -9,6 +9,14 @@
 # ./separateData.py ../029-20091211-sws14-ls/data/raw/029-p33.data ../029-20091211-sws14-ls/traj/LS_p33_d80_vp20_vd20.index p33_
 # ./separateData.py ../029-20091211-sws14-ls/data/raw/029-p36.data ../029-20091211-sws14-ls/traj/LS_p36_d80_vp20_vd20.index p36_
 
-./separateData.py ../030-20091230-sws15-ls/data/raw/030-p30.data ../030-20091230-sws15-ls/traj/LS_p30_d80_vp20_vd20.index p30_
-./separateData.py ../030-20091230-sws15-ls/data/raw/030-p33.data ../030-20091230-sws15-ls/traj/LS_p33_d80_vp20_vd20.index p33_
-./separateData.py ../030-20091230-sws15-ls/data/raw/030-p36.data ../030-20091230-sws15-ls/traj/LS_p36_d80_vp20_vd20.index p36_
+# ./separateData.py ../030-20091230-sws15-ls/data/raw/030-p30.data ../030-20091230-sws15-ls/traj/LS_p30_d80_vp20_vd20.index p30_
+# ./separateData.py ../030-20091230-sws15-ls/data/raw/030-p33.data ../030-20091230-sws15-ls/traj/LS_p33_d80_vp20_vd20.index p33_
+# ./separateData.py ../030-20091230-sws15-ls/data/raw/030-p36.data ../030-20091230-sws15-ls/traj/LS_p36_d80_vp20_vd20.index p36_
+
+# ./separateData.py ../031-20100111-sws16-ls/data/raw/031-p30.data ../031-20100111-sws16-ls/traj/LS_p30_d80_vp20_vd20.index p30-
+# ./separateData.py ../031-20100111-sws16-ls/data/raw/031-p33.data ../031-20100111-sws16-ls/traj/LS_p33_d80_vp20_vd20.index p33-
+# ./separateData.py ../031-20100111-sws16-ls/data/raw/031-p36.data ../031-20100111-sws16-ls/traj/LS_p36_d80_vp20_vd20.index p36-
+# mv ../031-20100111-sws16-ls/data/raw/p3*.data ../031-20100111-sws16-ls/data/separated/
+
+./separateData.py ../032-20100114-test/front.data ../032-20100114-test/LP-series.index front-
+./separateData.py ../032-20100114-test/back.data ../032-20100114-test/LP-series.index back-
