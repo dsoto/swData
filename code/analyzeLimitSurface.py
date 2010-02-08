@@ -11,13 +11,14 @@ def main():
     import numpy
 
     # parseFileIn = open('../20091124-sws10-ls/data/separated/parsed.dat','r')
-    parseFileIn = open('../030-20091230-sws15-ls/data/separated/parsed.dat','r')
+    parseFileIn = open('../031-20100111-sws16-ls/data/separated/031-parsed.dat',
+                       'r')
     parseDict = roxanne.readDataFileArray(parseFileIn)
     print parseDict.keys()
     
     fOut = open('analyzed.data','w')
     # fileNameList = glob.glob('../20091124-sws10-ls/data/separated/p3*.data')
-    fileNameList = glob.glob('../030-20091230-sws15-ls/data/separated/p3*.data')
+    fileNameList = glob.glob('../031-20100111-sws16-ls/data/separated/p3*.data')
     outputList = ['fileName',
                   'anglePitch',
                   'forceMaxAdhesion',
@@ -108,29 +109,30 @@ def main():
 
         # calculate effective stage preload
         normalStagePreload = (normalStagePositionMaxAdhesion -
-                                                    normalStagePositionContact)
+                              normalStagePositionContact)
         # calculate effective cantilever deflection
         normalCantileverDeflection = ((normalCantileverVoltageContact -
-                                                                     normalCantileverVoltageMaxAdhesion)/
-                                                                     normalDisplacement)
+                                       normalCantileverVoltageMaxAdhesion)/
+                                       normalDisplacement)
         # calculate effective microwedge deflection (effective preload)
         effectivePreload = normalCantileverDeflection + normalStagePreload
         # adhesion force = maxAdhesion - force at contact
         maxAdhesionMuN = (normalForcePulloffMuN -
-                                                            normalForceContactMuN)
+                          normalForceContactMuN)
         # shear force = maxShear - force at contact
         maxShearMuN = (shearForcePulloffMuN -
-                                                     shearForceContactMuN)
+                       shearForceContactMuN)
         # calculate effective stiffness of structure
         # force at preload - force at contact = force of preload
         forcePreload = normalForcePreloadMuN - normalForceContactMuN
         stageMovement = normalStagePositionPreload - normalStagePositionContact
         normalCantileverDeflection = ((normalCantileverVoltageContact -
-                                   normalCantileverVoltagePreload)/
-                                   normalDisplacement)
+                                       normalCantileverVoltagePreload)/
+                                       normalDisplacement)
 
         # stage movement between contact and preload - cantilever deflection
-        effectiveStiffness = forcePreload/(stageMovement-normalCantileverDeflection)
+        effectiveStiffness = forcePreload/(stageMovement-
+                                           normalCantileverDeflection)
 
 #        print indexContact
 #        input()
