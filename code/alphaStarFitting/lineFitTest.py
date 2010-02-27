@@ -1,43 +1,33 @@
 #!/usr/bin/env python
 
-# simple interactive plot example using
-# ComponentEditor and ArrayPlotData
-
-from enthought.traits.api import HasTraits, Instance, Array, Range, Button
+from enthought.traits.api import HasTraits, Instance, Array, Range, Button, File
 from enthought.traits.ui.api import View, Item
 from enthought.chaco.api import Plot, ArrayPlotData
 from enthought.enable.component_editor import ComponentEditor
 from enthought.traits.ui.menu import OKButton
 from numpy import linspace, random,array
 from enthought.chaco.tools.api import RegressionLasso, RegressionOverlay
+from enthought.traits.ui.file_dialog import open_file
 
 import sys
 sys.path.append('/Users/dsoto/current/swDataFlat/roxanne')
 import roxanne as rx
 
-
 class dataView(HasTraits):
     x = Array
     y = Array
-    #slope = Range(low=-10,high=10.0,value=0.0)
 
     traits_view = View(
                   Item('myPlot',
                        editor=ComponentEditor(),
                        show_label=False),
-     #             Item(name='slope'),
                   buttons = [OKButton],
                   resizable=True,
                   title='Window Title',
                   width=500,height=600)
 
-    def __init__(self):
-
-        self.getData()
-        # data ranges
-        #self.x = linspace(-10,10,100)
-        #self.y = self.calc_y()
-
+    def __init__(self,fileName):
+        self.getData(fileName)
         self.plotdata = ArrayPlotData(x=self.x,y=self.y)
         self.myPlot = Plot(self.plotdata)
         scatterplot = self.myPlot.plot(("x","y"),
@@ -55,31 +45,28 @@ class dataView(HasTraits):
         scatterplot.tools.append(regressionLasso)
         scatterplot.overlays.append(regressionOverlay)
 
-        '''
-        def _slope_changed(self):
-        self.y = self.calc_y()
-        # set_data is necessary to update ArrayPlotData object
-        # which then updates the plots
-        self.plotdata.set_data("y",self.y)
-        
-        def calc_y(self):
-        return self.slope*self.x + random.rand(100)
-        '''
-
-    def getData(self):
-        pass
-        fileName = 'FA-analyzed.data'
+    def getData(self,fileName):
         fileIn = open(fileName,'r')
         columnDict = rx.readDataFileArray(fileIn)
         shearForce = columnDict['forceMaxShear']
         normalForce = columnDict['forceMaxAdhesion']
         shearForce = array(shearForce,dtype=float)
         normalForce = array(normalForce,dtype=float)
-        print shearForce
         self.x = shearForce
         self.y = normalForce
 
-        
+class fileDialog(HasTraits):
+    fileName = File
+    open = Button('Open')
+    view = View(Item('open'),Item('fileName',style='readonly'), width=0.5)
+    
+    def _open_changed(self):
+        fileName = open_file()
+        if fileName != '':
+            self.fileName = fileName
+            viewer = dataView(fileName)
+            viewer.configure_traits()            
+            
 if __name__ == '__main__':
-    viewer = dataView()
-    viewer.configure_traits()
+    fileOpen = fileDialog()
+    fileOpen.configure_traits()
