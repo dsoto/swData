@@ -11,14 +11,14 @@ def main():
     import numpy
 
     # parseFileIn = open('../20091124-sws10-ls/data/separated/parsed.dat','r')
-    parseFileIn = open('../031-20100111-sws16-ls/data/separated/031-parsed.dat',
+    parseFileIn = open('../033-20100302-sws17-ls/data/separated/033-parsed.dat',
                        'r')
     parseDict = roxanne.readDataFileArray(parseFileIn)
     print parseDict.keys()
     
     fOut = open('analyzed.data','w')
     # fileNameList = glob.glob('../20091124-sws10-ls/data/separated/p3*.data')
-    fileNameList = glob.glob('../031-20100111-sws16-ls/data/separated/p3*.data')
+    fileNameList = glob.glob('../033-20100302-sws17-ls/data/separated/p3*.data')
     outputList = ['fileName',
                   'anglePitch',
                   'forceMaxAdhesion',

@@ -420,7 +420,8 @@ def plotDataFileAnnotated(fileName,
     titleFileName = plotFileName.replace('_','\_')    
     figureTitle=(titleFileName)
     figureTitle += '\n' + 'cantilever = ' + headerDict['cantilever']
-    figureTitle += '\n' + 'sample = ' + headerDict['sample']
+    #figureTitle += '\n' + 'sample = ' + headerDict['sample']
+    figureTitle += '\n' + 'sample = sws17'
     figure.suptitle(figureTitle)
 
     # set transparent legends
@@ -580,7 +581,9 @@ def parseForceTrace(hD,dD):
     for i in range(indexMaxPreload+backwardWindow, 
                    len(voltageNormal)-forwardWindow):
         #if np.average(voltageNormal[i-backwardWindow:i-1])>voltageNormal[i] and np.average(voltageNormal[i+3:i+forwardWindow])>voltageNormal[i]:
-        if np.average(voltageNormal[i-backwardWindow:i])>voltageNormal[i] and np.average(voltageNormal[i:i+forwardWindow])>voltageNormal[i]:
+        if (np.average(voltageNormal[i-backwardWindow:i])>voltageNormal[i] 
+            and 
+            np.average(voltageNormal[i:i+forwardWindow])>voltageNormal[i]):
             indexMaxAdhesion = i+3
             break
     indexContact = np.argmin(voltageNormal[0:indexMaxPreload+1])

@@ -13,7 +13,7 @@ import numpy as np
 def main():
 	# fileName = '../20091124-sws10-ls/data/separated/analyzed.data'
 	# fileName = '../026-20091203-sws12-ls/data/separated/analyzed.data'
-	fileName = '../031-20100111-sws16-ls/data/separated/031-analyzed.data'
+	fileName = '../033-20100302-sws17-ls/data/separated/033-analyzed.data'
 	fileIn = open(fileName,'r')
 	columnDict = roxanne.readDataFileArray(fileIn)
 	
@@ -39,7 +39,7 @@ def main():
 	                       markeredgecolor = 'g')
 	matplotlib.pyplot.xlabel('Shear Force (microNewtons)')
 	matplotlib.pyplot.ylabel('Adhesion Force (microNewtons)')
-	matplotlib.pyplot.title('sws16 - 529b02 - Limit Surface - 20100111')
+	matplotlib.pyplot.title('sws17 - 529b02 - Limit Surface - 20100302')
 	matplotlib.pyplot.grid(True)
 #	matplotlib.pyplot.axis([0, 5, -3, 3])
 	matplotlib.pyplot.savefig('limitSurface.pdf',transparent=True)

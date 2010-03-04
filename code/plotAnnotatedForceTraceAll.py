@@ -4,8 +4,8 @@ import sys
 sys.path.append('/Users/dsoto/current/swDataFlat/roxanne')
 import roxanne as rx
 
-parsedFileDirectory = '../031-20100111-sws16-ls/data/separated/'
-parsedFileName = parsedFileDirectory + '031-parsed.dat'
+parsedFileDirectory = '../033-20100302-sws17-ls/data/separated/'
+parsedFileName = parsedFileDirectory + '033-parsed.dat'
 parsedFileObject = open(parsedFileName)
 
 parsedDict = rx.readDataFileArray(parsedFileObject)
