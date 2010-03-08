@@ -5,8 +5,8 @@ import generateTrajectory as gt
 
 formatString = 'LDP-vp%02.0f-vd%02.0f'
 
-preload  = np.linspace(25, 35, 5)
-drag     = np.linspace( 0, 10, 11)
+preload  = np.linspace(25, 35, 6)
+drag     = np.linspace( 0, 40, 11)
 timeStep = 10.0
 velocity = [20.0, 20.0, 20.0, 100.0]
 numZeros = 100
@@ -48,7 +48,7 @@ for p in preload:
         outString += str(p)          + '\t'
         outString += str(d)          + '\n'
         
-        print outString
+        print outString,
         indexFile.write(outString)
 
 indexFile.close()
