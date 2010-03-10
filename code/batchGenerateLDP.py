@@ -52,7 +52,7 @@ for p in preload:
         indexFile.write(outString)
 
 indexFile.close()
-traj.plotPath()
+traj.plotPath(fileName)
 # save trajectory file
 traj.saveTrajectory(fileName+'.traj')
 

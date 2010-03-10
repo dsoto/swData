@@ -13,11 +13,12 @@ class trajectory:
     def __init__(self):
         pass
 
-    def plotPath(self):
+    def plotPath(self, fileName):
         print 'plot'
         import matplotlib.pyplot as plt
         plt.plot(self.xPoints, self.yPoints)
         plt.show()
+        #plt.savefig(fileName + '.pdf')
 
     def printPath(self):
         for this in zip(self.xPoints, self.yPoints):
