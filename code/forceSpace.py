@@ -21,6 +21,7 @@ import roxanne as rx
 import glob
 import os.path
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 def convertToFloatArray(dataList):
@@ -29,11 +30,13 @@ def convertToFloatArray(dataList):
     return returnList
     
 def main():
-    dataDirectory = '../031-20100111-sws16-ls/data/separated/'
-    dataDirectory = '../20090610-sws12-ls/data/'
-    parsedFileName = dataDirectory + 'parsed.dat'
+    #dataDirectory = '../031-20100111-sws16-ls/data/separated/'
+    dataDirectory = '../033-20100302-sws17-ls/data/separated/'
+    parsedFileName = dataDirectory + '033-analyzedAngle.data'
+    parsedFileName = dataDirectory + '033-parsed.dat'
     parseFileIn = open(parsedFileName)
     parseDict = rx.readDataFileArray(parseFileIn)
+    angle = convertToFloatArray(parseDict['angle'])
     
     fileNameList = parseDict['dataFileName']
     
@@ -112,14 +115,25 @@ def main():
         lateralForceMuN -= shearForceContactMuN
         normalForceMuN -= normalForceContactMuN
         
+        x = angle[i]/90.0
+        myColor = (x,0,1-x)
+        #print(myColor)
+        
         plt.grid()
-        plt.plot(lateralForceMuN, normalForceMuN, label = str(i))
+        plt.plot(lateralForceMuN, normalForceMuN, 
+                 color = mpl.cm.get_cmap('jet')(x), 
+                 label = str(i),
+                 linewidth = 0.1,
+                 alpha = 0.5)
+        plt.title('force space')
         
         # plot forces on plot thang
 
 
-    plt.legend()
-    plt.show()
+    #plt.legend()
+    #plt.colorbar()
+    #plt.show()
+    plt.savefig(dataDirectory+'forceSpace.pdf')
     return
 
 
