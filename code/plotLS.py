@@ -15,42 +15,44 @@ import roxanne
 import numpy as np
 
 def plotLimitSurface(fileName):
-	# fileName = '../20091124-sws10-ls/data/separated/analyzed.data'
-	# fileName = '../026-20091203-sws12-ls/data/separated/analyzed.data'
-	#fileName = '../033-20100302-sws17-ls/data/separated/033-analyzed.data'
-	fileIn = open(fileName,'r')
-	columnDict = roxanne.readDataFileArray(fileIn)
-	
-	shearForce = columnDict['forceMaxShear']
-	normalForce = columnDict['forceMaxAdhesion']
-	shearForce = np.array(shearForce)
-	normalForce = np.array(normalForce)
-	
-# 	import matplotlib
-# 	params = {'font.family': 'serif',
-# 	          'font.serif' : 'Computer Modern Roman',
-# 	          'text.usetex': True}
-# 	matplotlib.rcParams.update(params)
-	
-	import matplotlib.pyplot
-	import matplotlib.axis
-	
-	
-	matplotlib.pyplot.plot(shearForce,normalForce,
-									       linestyle = 'None',
-									       marker = 'o',
-	                       markerfacecolor = 'w',
-	                       markeredgecolor = 'g')
-	matplotlib.pyplot.xlabel('Shear Force (microNewtons)')
-	matplotlib.pyplot.ylabel('Adhesion Force (microNewtons)')
-	matplotlib.pyplot.title('Limit Surface')
-	matplotlib.pyplot.grid(True)
-#	matplotlib.pyplot.axis([0, 5, -3, 3])
-	matplotlib.pyplot.savefig('limitSurface.pdf',transparent=True)
-#	matplotlib.pyplot.show()
+    import os
+    
+    fileDirectory = os.path.split(fileName)[0]
+    plotFileName = os.path.join(fileDirectory, 'limitSurfaceTest.pdf')
+    
+    fileIn = open(fileName,'r')
+    columnDict = roxanne.readDataFileArray(fileIn)
+    
+    shearForce = columnDict['forceMaxShear']
+    normalForce = columnDict['forceMaxAdhesion']
+    shearForce = np.array(shearForce)
+    normalForce = np.array(normalForce)
+    
+#     import matplotlib
+#     params = {'font.family': 'serif',
+#               'font.serif' : 'Computer Modern Roman',
+#               'text.usetex': True}
+#     matplotlib.rcParams.update(params)
+    
+    import matplotlib.pyplot
+    import matplotlib.axis
+    
+    
+    matplotlib.pyplot.plot(shearForce,normalForce,
+                                           linestyle = 'None',
+                                           marker = 'o',
+                           markerfacecolor = 'w',
+                           markeredgecolor = 'g')
+    matplotlib.pyplot.xlabel('Shear Force (microNewtons)')
+    matplotlib.pyplot.ylabel('Adhesion Force (microNewtons)')
+    matplotlib.pyplot.title('Limit Surface')
+    matplotlib.pyplot.grid(True)
+#    matplotlib.pyplot.axis([0, 5, -3, 3])
+    matplotlib.pyplot.savefig(plotFileName,transparent=True)
+#    matplotlib.pyplot.show()
 
-	import os
-	os.system('open limitSurface.pdf')
+    import os
+    os.system('open '+plotFileName)
 
 class fileDialog(HasTraits):
 
@@ -67,7 +69,7 @@ class fileDialog(HasTraits):
 # TODO : format plot with fonts and size
 
 if __name__ == '__main__':
-	fileDialog = fileDialog()
-	fileDialog.configure_traits()
+    fileDialog = fileDialog()
+    fileDialog.configure_traits()
 
 
