@@ -1,0 +1,147 @@
+#!/usr/bin/env python
+
+
+
+def main():
+    import sys
+    sys.path.append('/Users/dsoto/current/swDataFlat/roxanne')
+    import roxanne
+    import glob
+    import os.path
+    import numpy
+
+    # parseFileIn = open('../20091124-sws10-ls/data/separated/parsed.dat','r')
+    parseFileIn = open('../033-20100302-sws17-ls/data/separated/033-parsed.dat',
+                       'r')
+    parseDict = roxanne.readDataFileArray(parseFileIn)
+    print parseDict.keys()
+    
+    fOut = open('analyzed.data','w')
+    # fileNameList = glob.glob('../20091124-sws10-ls/data/separated/p3*.data')
+    fileNameList = glob.glob('../033-20100302-sws17-ls/data/separated/p3*.data')
+    outputList = ['fileName',
+                  'anglePitch',
+                  'forceMaxAdhesion',
+                  'forceMaxShear']
+
+    # removed angle pulloff from output list
+    sep = '\t'
+    headerString = sep.join(outputList)
+    fOut.write(headerString)
+    fOut.write('\n')
+    
+    for fileName in fileNameList:
+
+        print 'processing file : ' + fileName
+
+        # TODO - pulloff angle from trajectory file name
+
+        fileIn = open(fileName)
+        headerDict = roxanne.readDataFileHeader(fileIn)
+        dataDict = roxanne.readDataFileArray(fileIn)
+
+        voltageLateral        =  map(float,dataDict['voltageForceLateral'])
+        voltageNormal         =  map(float,dataDict['voltageForceNormal'])
+        positionNormalMicron  =  map(float,dataDict['voltagePositionX'])
+        positionLateralMicron =  map(float,dataDict['voltagePositionY'])
+
+        voltageLateral        = -numpy.array(voltageLateral)
+        voltageNormal         =  numpy.array(voltageNormal)
+        positionNormalMicron  =  numpy.array(positionNormalMicron) * 10
+        positionLateralMicron =  numpy.array(positionLateralMicron) * 10
+
+        cantileverDict = roxanne.getCantileverData(headerDict['cantilever'])
+
+        normalStiffness      = cantileverDict['normalStiffness']
+        lateralStiffness     = cantileverDict['lateralStiffness']
+        normalDisplacement   = cantileverDict['normalDisplacement']
+        lateralDisplacement  = cantileverDict['lateralDisplacement']
+        lateralAmplification = float(headerDict['latAmp'])
+        normalAmplification  = float(headerDict['norAmp'])
+        rollAngle            = float(headerDict['rollAngle'])
+        pitchAngle           = float(headerDict['pitchAngle'])
+#        anglePulloff         = float(headerDict['anglePulloff'])
+
+        defaultAmplification = 100
+        lateralDisplacement = (lateralDisplacement * lateralAmplification /
+                                                     defaultAmplification)
+        normalDisplacement = (normalDisplacement * normalAmplification /
+                                                  defaultAmplification)
+
+        # use cantilever values to convert voltages to forces
+        lateralForceMuN = (voltageLateral *
+                                   lateralStiffness / lateralDisplacement)
+        normalForceMuN  = (voltageNormal * normalStiffness /
+                                   normalDisplacement)
+
+        # get location of filename in parseDict
+        # and pull data from same index in the other arrays
+        #fileName = os.path.splitext(fileName)
+        #fileName = fileName[0]
+        fileNames = parseDict['dataFileName']
+        fileNameNoPath = os.path.split(fileName)[1]
+        indexFileName = fileNames.index(fileNameNoPath)
+
+        indexContact     = parseDict['indexContact'][indexFileName]
+        indexPreload     = parseDict['indexMaxPreload'][indexFileName]
+        indexMaxAdhesion = parseDict['indexMaxAdhesion'][indexFileName]
+        
+        indexContact = int(indexContact)
+        indexPreload = int(indexPreload)
+        indexMaxAdhesion = int(indexMaxAdhesion)
+
+        # get forces at contact, preload, pulloff
+        normalForceContactMuN = normalForceMuN[indexContact]
+        normalForcePreloadMuN = normalForceMuN[indexPreload]
+        normalForcePulloffMuN = normalForceMuN[indexMaxAdhesion]
+
+        shearForceContactMuN  = lateralForceMuN[indexContact]
+        shearForcePreloadMuN  = lateralForceMuN[indexPreload]
+        shearForcePulloffMuN  = lateralForceMuN[indexMaxAdhesion]
+
+        normalCantileverVoltageContact     = voltageNormal[indexContact]
+        normalCantileverVoltagePreload     = voltageNormal[indexPreload]
+        normalCantileverVoltageMaxAdhesion = voltageNormal[indexMaxAdhesion]
+
+        normalStagePositionContact     = positionNormalMicron[indexContact]
+        normalStagePositionPreload     = positionNormalMicron[indexPreload]
+        normalStagePositionMaxAdhesion = positionNormalMicron[indexMaxAdhesion]
+
+        # calculate effective stage preload
+        normalStagePreload = (normalStagePositionMaxAdhesion -
+                              normalStagePositionContact)
+        # calculate effective cantilever deflection
+        normalCantileverDeflection = ((normalCantileverVoltageContact -
+                                       normalCantileverVoltageMaxAdhesion)/
+                                       normalDisplacement)
+        # calculate effective microwedge deflection (effective preload)
+        effectivePreload = normalCantileverDeflection + normalStagePreload
+        # adhesion force = maxAdhesion - force at contact
+        maxAdhesionMuN = (normalForcePulloffMuN -
+                          normalForceContactMuN)
+        # shear force = maxShear - force at contact
+        maxShearMuN = (shearForcePulloffMuN -
+                       shearForceContactMuN)
+        # calculate effective stiffness of structure
+        # force at preload - force at contact = force of preload
+        forcePreload = normalForcePreloadMuN - normalForceContactMuN
+        stageMovement = normalStagePositionPreload - normalStagePositionContact
+        normalCantileverDeflection = ((normalCantileverVoltageContact -
+                                       normalCantileverVoltagePreload)/
+                                       normalDisplacement)
+
+        # stage movement between contact and preload - cantilever deflection
+        effectiveStiffness = forcePreload/(stageMovement-
+                                           normalCantileverDeflection)
+
+        fOut.write(fileName + '\t')
+        fOut.write('% 5.1f\t' % preload)
+        fOut.write('% 5.1f\t' % drag)
+        fOut.write('% 5.3f\t' % maxAdhesionMuN)
+        fOut.write('% 5.3f\t' % maxShearMuN)
+        fOut.write('\n')
+
+    fOut.close()
+
+if __name__ == '__main__':
+    main()
