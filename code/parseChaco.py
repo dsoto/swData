@@ -201,7 +201,7 @@ def main():
     # fileNameList = glob.glob('../20091124-sws10-ls/data/separated/p3*.data')
     # fileNameList = glob.glob('../20091124-sws11-ls/data/separated/p3*.data')
     # fileNameList=glob.glob('../030-20091230-sws15-ls/data/separated/p3*.data')
-    fileNameList=glob.glob('../033-20100302-sws17-ls/data/separated/p3*.data')
+    fileNameList=glob.glob('../034-sws17-ldp/data/separated/ldp*.data')
     
     timeStamp = rx.getTimeStamp()
     fOut = open('parsed_' + timeStamp + '.dat', 'w')
