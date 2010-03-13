@@ -74,7 +74,7 @@ def convertData(data, cantileverDict):
 
 '''raw stuff'''
 # open data file
-rawFile = open('test.data','r')
+rawFile = open('/Users/dsoto/current/swDataFlat/999-test-data/data/raw/test.data','r')
 # read header, rip into dictionary
 rawHeaderDict = getHeader(rawFile)
 # grab data
@@ -86,7 +86,7 @@ data = convertData(data,cantileverDict)
 
 '''index stuff'''
 # open index file
-indexFile = open('test.index','r')
+indexFile = open('/Users/dsoto/current/swDataFlat/999-test-data/traj/test.index','r')
 # use matrix open from roxanne
 # create dictionary from index entries
 indexDict = rx.readDataFileArray(indexFile)
@@ -98,7 +98,7 @@ indexDict['angle'] = map(float,indexDict['angle'])
 # todo:check if file name exists (to deal with multiple trials)
 for i in range(len(indexDict['angle'])):
     # construct file name
-    fileOutName = 'pre-'
+    fileOutName = '/Users/dsoto/current/swDataFlat/999-test-data/data/separated/pre-'
     fileOutName += 'a%02d.data' % indexDict['angle'][i]
     print fileOutName,
     print 'opening',
