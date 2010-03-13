@@ -1,91 +1,129 @@
 #!/usr/bin/env python
-'''
-arg 1 : batch data file
-arg 2 : index file
-arg 3 : prefix
-see usage in separateData.sh
-'''
 
-''' 
-fixme - files currently placed in /raw, instead place in /separated
-fixme - zero out timestamp in each separated file
-'''
-
-import sys
-sys.path.append('/Users/dsoto/current/swDataFlat/roxanne/')
+# file to separate data file and convert to force and micron data
 import roxanne as rx
+import numpy as np
 
-
-
-def convertTime(data):
-    timeStrings = data['time']
-    timeSeconds = [float(ts[0:2])*3600+float(ts[3:5])*60+float(ts[6:]) for ts in timeStrings]
-    
-    import numpy as np
-    timeSeconds = np.array(timeSeconds)
-    timeSeconds = timeSeconds - timeSeconds[0]
-    data['time'] = map(str,timeSeconds)
-
-
+# this function should be in roxanne
 def getHeader(fileIn):
-    # loop through header and return header in string
-    header = []
+    # loop through header and return header in dictionary
+    # if line has equals sign put lhs of equals as string for dict key
+    # and put rhs as value
+    header = {}
     keepReading = 1
     while keepReading == 1:
         tempLine = fileIn.readline()
-        tempLine = tempLine.strip()
-        header.append(tempLine)    
+        if tempLine.find('=') != -1:
+            (key,value) = tempLine.split('=')
+            key = key.strip()
+            value = value.strip()
+            header[key] = value
         if tempLine.find('<data>') != -1:
             keepReading = 0
     return header
 
+def outputDictAsText(dict, fileOut):
+    for key in dict.keys():
+        fileOut.write(key + ' = ' + str(dict[key])+ '\n')
 
-# get data file
-#fileIn = open(sys.argv[1])
-fileInFull = sys.argv[1]
-# pull apart fileIn to get place to save files
-import os.path
-fileInPath = os.path.split(fileInFull)[0]
-fileIn = open(fileInFull)
+def outputDictAsTextByIndex(dict, i, fileOut):
+    newDict = {}
+    for key in dict.keys():
+        newDict[key]=dict[key][i]
+    outputDictAsText(newDict, fileOut)
 
-# get index file
-fileIndex = open(sys.argv[2])
-# get file prefix
-prefix = sys.argv[3]
+def convertTime(timeStrings):
+    timeStrings = data['time']
+    timeSeconds = [float(ts[0:2])*3600+float(ts[3:5])*60+float(ts[6:]) for ts in timeStrings]
+    timeSeconds = np.array(timeSeconds)
+    timeSeconds = timeSeconds - timeSeconds[0]
+    timeSeconds = map(str,timeSeconds)
+    return timeSeconds
 
-header = getHeader(fileIn)
-# read in dictionary
-data = rx.readDataFileArray(fileIn)
-convertTime(data)
-# zip into list of tuples
-data = zip(data['time'],
-           data['voltageForceLateral'],
-           data['voltageForceNormal'],
-           data['voltagePositionX'],
-           data['voltagePositionY'])
+def convertData(data, cantileverDict):
+    # convert time to list of floats
+    data['time'] = convertTime(data['time'])
 
-
-index = rx.readDataFileArray(fileIndex)
-index['angle'] = [('%02.0f' % float(a)) for a in index['angle']]
-index = zip(map(int,(index['startIndex'])),
-            map(int,(index['endIndex'])),
-            index['angle'])
+    # convert all lists to numpy arrays for ease of manipulation
+    #keys = data.keys()
+    for key in data.keys():
+        data[key] = np.array(data[key],dtype=float)
 
 
-numFiles = len(index)
-for i in range(numFiles):
-    fileOutPath = fileInPath
-    fileOutName = prefix + 'a%s.data' % index[i][2]
-    fileOutName = os.path.join(fileOutPath, fileOutName)
-    print 'writing ' + fileOutName
+    # make conversions
+    data['positionLateralMicron'] = data['voltagePositionY']*10.0
+    data['positionNormalMicron']  = data['voltagePositionX']*10.0
+
+    # cantilever stiffnesses in newtons per meter
+    normalStiffness      = cantileverDict['normalStiffness']
+    lateralStiffness     = cantileverDict['lateralStiffness']
+    # displacement sensitivity measured at 100x amplification
+    normalDisplacement   = cantileverDict['normalDisplacement']
+    lateralDisplacement  = cantileverDict['lateralDisplacement']
+
+    # use cantilever values to convert voltages to forces
+    data['forceLateralMicroNewton'] = (data['voltageForceLateral'] *
+                                       lateralStiffness / lateralDisplacement)
+    data['forceNormalMicroNewton']  = (data['voltageForceNormal'] *
+                                       normalStiffness / normalDisplacement)
+    # make polarity adjustments
+    data['forceLateralMicroNewton'] *= -1
+
+    return data
+
+
+'''raw stuff'''
+# open data file
+rawFile = open('test.data','r')
+# read header, rip into dictionary
+rawHeaderDict = getHeader(rawFile)
+# grab data
+# convert according to rx.cantilever and sign conventions
+data = rx.readDataFileArray(rawFile)
+# need to get cantilever values, micron conversion, and polarity stuff
+cantileverDict = rx.getCantileverData(rawHeaderDict['cantilever'])
+data = convertData(data,cantileverDict)
+
+'''index stuff'''
+# open index file
+indexFile = open('test.index','r')
+# use matrix open from roxanne
+# create dictionary from index entries
+indexDict = rx.readDataFileArray(indexFile)
+# converting string to float facilitates later formatting
+indexDict['angle'] = map(float,indexDict['angle'])
+#print dict to stdout
+#print indexDict
+
+# todo:check if file name exists (to deal with multiple trials)
+for i in range(len(indexDict['angle'])):
+    # construct file name
+    fileOutName = 'pre-'
+    fileOutName += 'a%02d.data' % indexDict['angle'][i]
+    print fileOutName,
+    print 'opening',
     fileOut = open(fileOutName,'w')
-    fileOut.write('\n'.join(header))
-    fileOut.write('\n')
-    fileOut.write('time\tvoltageForceLateral\tvoltageForceNormal\tvoltagePositionX\tvoltagePositionY\n')
+    print 'writing',
+    outputDictAsText(rawHeaderDict, fileOut)
+    outputDictAsTextByIndex(indexDict, i, fileOut)
+    # output header
+    # output data list
+    startIndex = int(indexDict['startIndex'][i])
+    endIndex = int(indexDict['endIndex'][i])
+    keys = data.keys()
+    keys.sort()
+    colWidth = max(map(len, keys)) + 1
+    for key in keys:
+        fileOut.write(key.ljust(colWidth))
+    # get starting time
+    startTime = data['time'][startIndex]
+    for j in range(startIndex, endIndex + 1):
+        for key in keys:
+            if key == 'time':
+                fileOut.write(str(data[key][j]-startTime).ljust(colWidth))
+            else:
+                fileOut.write(str(data[key][j]).ljust(colWidth))
+    print 'finishing'
+        #print '\n',
 
-    for j in range(index[i][0], index[i][1]):
-        outString = '\t'.join(data[j])
-        fileOut.write(outString)
-        fileOut.write('\n')
-    #fileNameOut = '%s.data' % index['angle'][i]
-    #fileOut = open(fileNameOut,'w')
+
