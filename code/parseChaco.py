@@ -80,7 +80,7 @@ class plotBoxHandler(Handler):
         info.object.plotdata.set_data('pointY',info.object.pointY)
         info.object.isAccepted = False
         info.object.pointsClicked = 0
-    
+
     def object_pointX_changed(self, info):
         pass
 
@@ -124,9 +124,12 @@ class plotBox(HasTraits):
         fileIn = open(fileName,'r')
         hD = rx.readDataFileHeader(fileIn)
         dD = rx.readDataFileArray(fileIn)
+        print dD.keys()
 
-        self.normal = numpy.array(map(float,dD['voltageForceNormal']))
-        self.shear  = numpy.array(map(float,dD['voltageForceLateral']))
+        #self.normal = numpy.array(map(float,dD['voltageForceNormal']))
+        #self.shear  = numpy.array(map(float,dD['voltageForceLateral']))
+        self.normal = numpy.array(map(float,dD['forceNormalMicroNewton']))
+        self.shear  = numpy.array(map(float,dD['forceLateralMicroNewton']))
         self.index  = numpy.arange(len(self.normal))
 
         # index dictionary
@@ -152,14 +155,14 @@ class plotBox(HasTraits):
                                                   marker_size = 5,
                                                   color = (0.0,0.0,1.0,0.5),
                                                   outline_color = 'none')
-        
+
         # set y range of plot
         # self.normalPlot.value_range.set_bounds(-1,1)
         marginFactor = 1.1
-        normalMaxRange = numpy.max(self.normal) * marginFactor 
+        normalMaxRange = numpy.max(self.normal) * marginFactor
         normalMinRange = numpy.min(self.normal) * marginFactor
         self.normalPlot.value_range.set_bounds(normalMinRange, normalMaxRange)
-        
+
         self.shearPlot = Plot(self.plotdata)
         self.shearPlot.plot(('index','shear'),type='line',color='green')
 
@@ -201,10 +204,10 @@ def main():
     # fileNameList = glob.glob('../20091124-sws10-ls/data/separated/p3*.data')
     # fileNameList = glob.glob('../20091124-sws11-ls/data/separated/p3*.data')
     # fileNameList=glob.glob('../030-20091230-sws15-ls/data/separated/p3*.data')
-    fileNameList=glob.glob('../034-sws17-ldp/data/separated/ldp*.data')
-    
+    fileNameList=glob.glob('../999-test-data/data/separated/*.data')
+
     timeStamp = rx.getTimeStamp()
-    fOut = open('parsed_' + timeStamp + '.dat', 'w')
+    fOut = open('../999-test-data/data/parsed_' + timeStamp + '.dat', 'w')
     outputList = ['dataFileName',
                               'indexContact',
                               'indexMaxPreload',

@@ -152,7 +152,7 @@ def plotDataFileChacoPNG(fileName):
 def plotDataFileMPLPDF(fileName):
     import os.path
     import matplotlib.pyplot as plt
-    
+
     baseFileName = os.path.splitext(fileName)
     baseFileName = baseFileName[0]
     print 'reading file ',fileName
@@ -173,7 +173,7 @@ def plotDataFileMPLPDF(fileName):
     figure = plt.figure()
     axesNormal  = figure.add_subplot(211)
     axesLateral = figure.add_subplot(212, sharex=axesNormal, sharey=axesNormal)
-    
+
     # have to turn off TeX if i want to print the filename
     axesNormal.plot(time, voltageNormal, label='Normal Voltage', color='b')
     axesLateral.plot(time, voltageLateral, label='Lateral Voltage', color='g')
@@ -184,10 +184,10 @@ def plotDataFileMPLPDF(fileName):
     axesNormal.set_ylabel('Piezo Voltage Signal (V)')
     axesNormal.grid(True,color=((0.5,0.5,0.5)))
     axesLateral.grid(True,color=((0.5,0.5,0.5)))
-    
+
     # construct title for figure
     # have to escape underscores to accomodate TeX interpreter
-    titleFileName = plotFileName.replace('_','\_')    
+    titleFileName = plotFileName.replace('_','\_')
     figureTitle=(titleFileName)
     figureTitle += '\n' + 'cantilever = ' + header['cantilever']
     figureTitle += '\n' + 'sample = ' + header['sample']
@@ -198,8 +198,8 @@ def plotDataFileMPLPDF(fileName):
     l.legendPatch.set_alpha(0.0)
     l = axesNormal.legend()
     l.legendPatch.set_alpha(0.0)
-    
-    
+
+
     width = 6
     height = 8
     figure.set_figheight(height)
@@ -208,7 +208,7 @@ def plotDataFileMPLPDF(fileName):
 
     figure.set_dpi(100)
     figure.savefig(plotFileName,transparent=True)
-    
+
 def plotDataFileForce(fileName):
     import os.path
     import matplotlib.pyplot as plt
@@ -221,8 +221,8 @@ def plotDataFileForce(fileName):
 
     fileIn = open(fileName,'r')
     headerDict = readDataFileHeader(fileIn)
-    dataDict = readDataFileArray(fileIn)    
-    
+    dataDict = readDataFileArray(fileIn)
+
     time = map(float,dataDict['time'])
     timeOffset = time[0]
     time = [x-timeOffset for x in time]
@@ -251,26 +251,26 @@ def plotDataFileForce(fileName):
     lateralForceMuN = (voltageLateral *
                                lateralStiffness / lateralDisplacement)
     normalForceMuN  = (voltageNormal * normalStiffness /
-                               normalDisplacement)    
+                               normalDisplacement)
 
     figure = plt.figure()
     axesNormal  = figure.add_subplot(211)
     axesLateral = figure.add_subplot(212, sharex=axesNormal, sharey=axesNormal)
-    
+
     # have to turn off TeX if i want to print the filename
-    axesNormal.plot(time, normalForceMuN, 
+    axesNormal.plot(time, normalForceMuN,
                     label='Normal Force ($\mu$N)', color='b')
-    axesLateral.plot(time, lateralForceMuN, 
+    axesLateral.plot(time, lateralForceMuN,
                     label='Lateral Force ($\mu$N)', color='g')
     axesLateral.set_xlabel('Time (sec)')
     axesLateral.set_ylabel('Lateral Force ($\mu$N)')
     axesNormal.set_ylabel('Normal Force ($\mu$N)')
     axesNormal.grid(True,color=((0.5,0.5,0.5)))
     axesLateral.grid(True,color=((0.5,0.5,0.5)))
-    
+
     # construct title for figure
     # have to escape underscores to accomodate TeX interpreter
-    titleFileName = plotFileName.replace('_','\_')    
+    titleFileName = plotFileName.replace('_','\_')
     figureTitle=(titleFileName)
     figureTitle += '\n' + 'cantilever = ' + headerDict['cantilever']
     figureTitle += '\n' + 'sample = ' + headerDict['sample']
@@ -281,8 +281,8 @@ def plotDataFileForce(fileName):
     l.legendPatch.set_alpha(0.0)
     l = axesNormal.legend()
     l.legendPatch.set_alpha(0.0)
-    
-    
+
+
     width = 6
     height = 8
     figure.set_figheight(height)
@@ -292,9 +292,9 @@ def plotDataFileForce(fileName):
     figure.set_dpi(100)
     figure.savefig(plotFileName,transparent=True)
 
-def plotDataFileAnnotated(fileName, 
-                          indexContact, 
-                          indexMaxPreload, 
+def plotDataFileAnnotated(fileName,
+                          indexContact,
+                          indexMaxPreload,
                           indexFailure,
                           excludeStart = 0,
                           excludeEnd = 0):
@@ -310,8 +310,8 @@ def plotDataFileAnnotated(fileName,
 
     fileIn = open(fileName,'r')
     headerDict = readDataFileHeader(fileIn)
-    dataDict = readDataFileArray(fileIn)    
-    
+    dataDict = readDataFileArray(fileIn)
+
     # grab data arrays
     time           = map(float,dataDict['time'])
     voltageLateral =  map(float,dataDict['voltageForceLateral'])
@@ -321,7 +321,7 @@ def plotDataFileAnnotated(fileName,
     time           = numpy.array(time)
     voltageLateral = -numpy.array(voltageLateral)
     voltageNormal  =  numpy.array(voltageNormal)
-    
+
     # trim arrays according to excludeStart and excludeEnd
     time           = time[excludeStart:len(time)-excludeEnd]
     voltageLateral = voltageLateral[excludeStart:len(voltageLateral)-excludeEnd]
@@ -332,11 +332,11 @@ def plotDataFileAnnotated(fileName,
     indexMaxPreload -= excludeStart
     indexFailure -= excludeStart
 
-    # remove offsets    
+    # remove offsets
     voltageLateral = voltageLateral - voltageLateral[0]
     voltageNormal  = voltageNormal  - voltageNormal[0]
     time           = time           - time[0]
-    
+
     cantileverDict = getCantileverData(headerDict['cantilever'])
 
     normalStiffness      = cantileverDict['normalStiffness']
@@ -356,68 +356,68 @@ def plotDataFileAnnotated(fileName,
     lateralForceMuN = (voltageLateral *
                                lateralStiffness / lateralDisplacement)
     normalForceMuN  = (voltageNormal * normalStiffness /
-                               normalDisplacement)    
+                               normalDisplacement)
 
     figure = plt.figure()
     axesNormal  = figure.add_subplot(211)
     axesLateral = figure.add_subplot(212, sharex=axesNormal, sharey=axesNormal)
-    
+
 
     # plotting force traces
-    axesNormal.plot(time, normalForceMuN, 
+    axesNormal.plot(time, normalForceMuN,
                     label='Normal Force ($\mu$N)', color='b')
-    axesLateral.plot(time, lateralForceMuN, 
+    axesLateral.plot(time, lateralForceMuN,
                     label='Lateral Force ($\mu$N)', color='g')
 
     # plot points of interest
-    axesNormal.plot(time[indexContact], normalForceMuN[indexContact], 
+    axesNormal.plot(time[indexContact], normalForceMuN[indexContact],
                     markeredgecolor = 'm',
                     markerfacecolor = 'None',
                     color = 'None',
                     label = 'Initial Contact',
                     marker = 'o')
-    axesLateral.plot(time[indexContact], lateralForceMuN[indexContact], 
+    axesLateral.plot(time[indexContact], lateralForceMuN[indexContact],
                     markeredgecolor = 'm',
                     color = 'None',
                     markerfacecolor = 'None',
                     label = 'Initial Contact',
                     marker = 'o')
-    axesNormal.plot(time[indexMaxPreload], normalForceMuN[indexMaxPreload], 
+    axesNormal.plot(time[indexMaxPreload], normalForceMuN[indexMaxPreload],
                     markeredgecolor = 'c',
                     markerfacecolor = 'None',
                     color = 'None',
                     label = 'Initial Compression',
                     marker = 'o')
-    axesLateral.plot(time[indexMaxPreload], lateralForceMuN[indexMaxPreload], 
+    axesLateral.plot(time[indexMaxPreload], lateralForceMuN[indexMaxPreload],
                     markeredgecolor = 'c',
                     color = 'None',
                     markerfacecolor = 'None',
                     label = 'Initial Compression',
                     marker = 'o')
-    axesNormal.plot(time[indexFailure], normalForceMuN[indexFailure], 
+    axesNormal.plot(time[indexFailure], normalForceMuN[indexFailure],
                     markeredgecolor = 'r',
                     color = 'None',
                     markerfacecolor = 'None',
                     label = 'Interface Failure',
                     marker = 'o')
-    axesLateral.plot(time[indexFailure], lateralForceMuN[indexFailure], 
+    axesLateral.plot(time[indexFailure], lateralForceMuN[indexFailure],
                     markeredgecolor = 'r',
                     color = 'None',
                     markerfacecolor = 'None',
                     label = 'Interface Failure',
                     marker = 'o')
-    
-    
+
+
     # set up titles and labels for plot
     axesLateral.set_xlabel('Time (sec)')
     axesLateral.set_ylabel('Lateral Force ($\mu$N)')
     axesNormal.set_ylabel('Normal Force ($\mu$N)')
     axesNormal.grid(True,color=((0.5,0.5,0.5)))
     axesLateral.grid(True,color=((0.5,0.5,0.5)))
-    
+
     # construct title for figure
     # have to escape underscores to accomodate TeX interpreter
-    titleFileName = plotFileName.replace('_','\_')    
+    titleFileName = plotFileName.replace('_','\_')
     figureTitle=(titleFileName)
     figureTitle += '\n' + 'cantilever = ' + headerDict['cantilever']
     #figureTitle += '\n' + 'sample = ' + headerDict['sample']
@@ -429,8 +429,8 @@ def plotDataFileAnnotated(fileName,
     l.legendPatch.set_alpha(0.0)
     l = axesNormal.legend()
     l.legendPatch.set_alpha(0.0)
-    
-    
+
+
     width = 6
     height = 8
     figure.set_figheight(height)
@@ -509,7 +509,8 @@ def readDataFileArray(fileIn):
 
     tempLine = fileIn.readline()
     tempLine = tempLine.rstrip()
-    headers = tempLine.split('\t')
+    #headers = tempLine.split('\t')
+    headers = tempLine.split()
 
     # TODO : strip whitespace from headers
 
@@ -526,7 +527,7 @@ def readDataFileArray(fileIn):
         #line = line.replace('\n','')
         line = line.rstrip('\r\n')
         line = line.replace('\r','')
-        value = line.split('\t')
+        value = line.split()
         for i in range(numColumns):
             columnList[i].append(value[i])
 
@@ -563,12 +564,12 @@ def parseForceTrace(hD,dD):
     lateralDisplacement  = cD['lateralDisplacement']
 
     # filter spikes
-    
+
     # finding points of interest
     # 03 june 2009 - changing to be more robust
     # idea is to find maximum value -> preload
     # then find next local minimum, that is pulloff
-    
+
     # original algorithm
     #indexMaxAdhesion = np.argmin(voltageNormal)
     #indexMaxPreload = np.argmax(voltageNormal[0:indexMaxAdhesion+1])
@@ -578,16 +579,16 @@ def parseForceTrace(hD,dD):
     indexMaxAdhesion = 0 # here find local min
     forwardWindow = 8
     backwardWindow = 2
-    for i in range(indexMaxPreload+backwardWindow, 
+    for i in range(indexMaxPreload+backwardWindow,
                    len(voltageNormal)-forwardWindow):
         #if np.average(voltageNormal[i-backwardWindow:i-1])>voltageNormal[i] and np.average(voltageNormal[i+3:i+forwardWindow])>voltageNormal[i]:
-        if (np.average(voltageNormal[i-backwardWindow:i])>voltageNormal[i] 
-            and 
+        if (np.average(voltageNormal[i-backwardWindow:i])>voltageNormal[i]
+            and
             np.average(voltageNormal[i:i+forwardWindow])>voltageNormal[i]):
             indexMaxAdhesion = i+3
             break
     indexContact = np.argmin(voltageNormal[0:indexMaxPreload+1])
-    
+
     index = {'indexContact'     : indexContact,
              'indexMaxPreload'  : indexMaxPreload,
              'indexMaxAdhesion' : indexMaxAdhesion}

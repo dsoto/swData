@@ -106,6 +106,7 @@ for i in range(len(indexDict['angle'])):
     print 'writing',
     outputDictAsText(rawHeaderDict, fileOut)
     outputDictAsTextByIndex(indexDict, i, fileOut)
+    fileOut.write('<data>\n')
     # output header
     # output data list
     startIndex = int(indexDict['startIndex'][i])
@@ -115,6 +116,7 @@ for i in range(len(indexDict['angle'])):
     colWidth = max(map(len, keys)) + 1
     for key in keys:
         fileOut.write(key.ljust(colWidth))
+    fileOut.write('\n')
     # get starting time
     startTime = data['time'][startIndex]
     for j in range(startIndex, endIndex + 1):
@@ -123,6 +125,7 @@ for i in range(len(indexDict['angle'])):
                 fileOut.write(str(data[key][j]-startTime).ljust(colWidth))
             else:
                 fileOut.write(str(data[key][j]).ljust(colWidth))
+        fileOut.write('\n')
     print 'finishing'
         #print '\n',
 
