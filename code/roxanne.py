@@ -524,9 +524,9 @@ def readDataFileArray(fileIn):
 
     # loop through data and append arrays
     for line in tempData:
-        #line = line.replace('\n','')
-        line = line.rstrip('\r\n')
-        line = line.replace('\r','')
+        # i took out all the '\r\n' windows business and it seems to work
+        # with just line.strip()
+        line = line.strip()
         value = line.split()
         for i in range(numColumns):
             columnList[i].append(value[i])
