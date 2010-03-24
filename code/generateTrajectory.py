@@ -26,13 +26,13 @@ class trajectory:
 
     def saveTrajectory(self, fileName):
         fOut = open(fileName,'w')
-        outString = '%.2f\t%.2f\n' % (self.outputTimeStep*1000, 
+        outString = '%.2f\t%.2f\n' % (self.outputTimeStep*1000,
                                       self.acquisitionTimeStep*1000)
         fOut.write(outString)
         for this in zip(self.xPoints, self.yPoints):
             outString = '%.2f\t%.2f\n' % (this[0], this[1])
             fOut.write(outString)
-            
+
 
     def setTimeStepMS(self, timeStep):
         self.outputTimeStep = timeStep / 1000.0
@@ -45,6 +45,9 @@ class trajectory:
         self.vertices = np.array(vertices)
 
     def setVelocities(self, velocities):
+        # if the distance of one of the legs is zero
+        # the velocity is interpreted as the time between
+        # the two points
         self.velocities = np.array(velocities,dtype=float)
 
     def printVertices(self):
@@ -56,15 +59,16 @@ class trajectory:
             print velocity
 
     def createPoints(self):
-        numLegs = self.vertices.shape[0] # number of rows in 
-        for i in range(numLegs-1):
-            distance = np.linalg.norm(self.vertices[i] - 
+        # numLegs is number of vertices - 1
+        numLegs = self.vertices.shape[0] - 1
+        for i in range(numLegs):
+            distance = np.linalg.norm(self.vertices[i] -
                                       self.vertices[i+1])
-            #print distance
-            #print self.velocities[i]
-            #if distance = 0 velocity interpreted as time?
-            numSteps = np.floor(distance/self.velocities[i]/self.outputTimeStep)
-            #print numSteps
+            #if distance = 0 velocity interpreted as time
+            if (distance == 0):
+                numSteps = np.floor(self.velocities[i]/self.outputTimeStep)
+            else:
+                numSteps = np.floor(distance/self.velocities[i]/self.outputTimeStep)
             xLeg = np.linspace(self.vertices[i,   0],
                                self.vertices[i+1, 0],
                                numSteps+1)
@@ -73,6 +77,7 @@ class trajectory:
                                numSteps+1)
             self.xPoints = np.hstack([self.xPoints[0:-1], xLeg])
             self.yPoints = np.hstack([self.yPoints[0:-1], yLeg])
+
 
     def clearPoints(self):
         self.xPoints = [0]
