@@ -204,13 +204,14 @@ class plotBox(HasTraits):
                      x = 20, y = 40)
 
 def main():
+    directory = '../035-sws17-length/'
     # fileNameList = glob.glob('../20091124-sws10-ls/data/separated/p3*.data')
     # fileNameList = glob.glob('../20091124-sws11-ls/data/separated/p3*.data')
     # fileNameList=glob.glob('../030-20091230-sws15-ls/data/separated/p3*.data')
-    fileNameList=glob.glob('../999-test-data/data/separated/*.data')
+    fileNameList=glob.glob(directory + 'data/separated/*.data')
 
     timeStamp = rx.getTimeStamp()
-    fOut = open('../999-test-data/data/parsed_' + timeStamp + '.dat', 'w')
+    fOut = open(directory + 'data/parsed_' + timeStamp + '.dat', 'w')
     outputList = ['dataFileName',
                               'indexContact',
                               'indexMaxPreload',
