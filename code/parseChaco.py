@@ -187,35 +187,34 @@ class plotBox(HasTraits):
         self.shearPlot.index_range = self.normalPlot.index_range
 
     traits_view = View(Item('vPlot',
-                                              editor = ComponentEditor(),
-                                              resizable = True,
-                                              show_label = False),
-                                         HGroup(Item('message',    width = 200),
-                                                Item('cursorPosX', width = 200),
-                                                Item('cursorPosY', width = 200),
-                                                Item('pointX', style='readonly', width = 200),
-                                                Item('pointY', style='readonly', width = 200)),
-                                                Item('fileTitle', style = 'readonly', width = 200),
-                                                buttons = [accept, reject, OKButton],
-                     title = 'Roxanne Parse Application',
-                     handler = plotBoxHandler(),
-                     resizable = True,
-                     width = 1400, height = 800,
-                     x = 20, y = 40)
+                            editor = ComponentEditor(),
+                            resizable = True,
+                            show_label = False
+                            ),
+                       HGroup(Item('message',    width = 200),
+                              Item('cursorPosX', width = 200),
+                              Item('cursorPosY', width = 200),
+                              Item('pointX', style='readonly', width = 200),
+                              Item('pointY', style='readonly', width = 200)
+                              ),
+                       Item('fileTitle', style = 'readonly', width = 200),
+                       buttons = [accept, reject, OKButton],
+                       title = 'Roxanne Parse Application',
+                       handler = plotBoxHandler(),
+                       resizable = True,
+                       width = 1400, height = 800,
+                       x = 20, y = 40)
 
 def main():
     directory = '../035-sws17-length/'
-    # fileNameList = glob.glob('../20091124-sws10-ls/data/separated/p3*.data')
-    # fileNameList = glob.glob('../20091124-sws11-ls/data/separated/p3*.data')
-    # fileNameList=glob.glob('../030-20091230-sws15-ls/data/separated/p3*.data')
     fileNameList=glob.glob(directory + 'data/separated/*.data')
 
     timeStamp = rx.getTimeStamp()
     fOut = open(directory + 'data/parsed_' + timeStamp + '.dat', 'w')
     outputList = ['dataFileName',
-                              'indexContact',
-                              'indexMaxPreload',
-                              'indexMaxAdhesion\n']
+                  'indexContact',
+                  'indexMaxPreload',
+                  'indexMaxAdhesion\n']
     sep = '\t'
     headerString = sep.join(outputList)
     fOut.write(headerString)
