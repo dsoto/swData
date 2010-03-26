@@ -92,6 +92,7 @@ class plotBox(HasTraits):
     pointX = Array(dtype = int, value = ([0.0,100.0,200.0]), comparison_mode = 0)
     pointY = Array(dtype = float, value = ([0.0,0.0,0.0]), comparison_mode = 0)
     message = Str
+    fileTitle = Str
     isAccepted = Bool
     accept = Action(name = "Accept", action = "accept")
     reject = Action(name = "Reject", action = "reject")
@@ -114,6 +115,7 @@ class plotBox(HasTraits):
 
         # def parseFileName():
         self.fileName = fileName
+        self.fileTitle = fileName
         # get complete path of data file
         fullFileName = os.path.abspath(fileName)
         self.fileName = os.path.split(fullFileName)[1]
@@ -193,6 +195,7 @@ class plotBox(HasTraits):
                                                 Item('cursorPosY', width = 200),
                                                 Item('pointX', style='readonly', width = 200),
                                                 Item('pointY', style='readonly', width = 200)),
+                                                Item('fileTitle', style = 'readonly', width = 200),
                                                 buttons = [accept, reject, OKButton],
                      title = 'Roxanne Parse Application',
                      handler = plotBoxHandler(),
