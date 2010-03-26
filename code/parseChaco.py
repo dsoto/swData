@@ -1,10 +1,5 @@
 #!/usr/bin/env python
 
-'''
-fixme : put parsed*.dat file in directory with data
-fixme : add keybinding to get return key to do OKButton
-'''
-
 from enthought.chaco.api               import (OverlayPlotContainer,
                                                VPlotContainer, Plot, ArrayPlotData)
 from enthought.chaco.tools.api         import (PanTool, LineInspector)

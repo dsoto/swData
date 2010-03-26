@@ -1,5 +1,4 @@
-- create convert raw file function in roxanne library.  this script  will
-  take a file and convert its raw data to micronewton forces and
-  micron displacements
+- send data directory on command line to parseChaco so i don't have to keep updating the file with directory strings.  use sys.argv[1] to get first argument
 
-- 
+- add keybinding to get return key to do OKButton on parseChaco
+
