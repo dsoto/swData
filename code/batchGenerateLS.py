@@ -9,16 +9,16 @@ formatString = 'LS_p%02.0f_d%02.0f_vp%02.0f_vd%02.0f'
 angleDegree = np.hstack([np.linspace(0,9,10), np.linspace(10,90,9)])
 angleRadian = angleDegree * np.pi / 180.0
 
-preload  = [36.0]
+preload  = [35.0]
 drag     = 80.0
 timeStep = 10.0
 velocity = [20.0, 20.0, 100.0, 100.0]
 numZeros = 100
 
-fileName = formatString % (preload[0], 
-                           drag, 
+fileName = formatString % (preload[0],
+                           drag,
                            velocity[0],
-                           velocity[1])        
+                           velocity[1])
 
 indexFile = open(fileName+'.index','w')
 indexHeaderString = 'startIndex'+'\t'+'endIndex'+'\t'+'angle'+'\n'
@@ -42,7 +42,6 @@ for p in preload:
                        [[0,                  0],
                         [p,                  0],
                         [0,                  drag*np.cos(a)],
-                        [0,                  drag*np.cos(a)],
                         [0,                  0]])
 
         traj.setVertices(vertices)
@@ -56,12 +55,12 @@ for p in preload:
 
         endIndex = traj.getPointsLength()
         outString = str(startIndex) + '\t' + str(endIndex) + '\t' +str(angleDegree[i]) + '\n'
-        
+
         print outString
         indexFile.write(outString)
-        
+
 indexFile.close()
-#traj.plotPath()
+traj.plotPath('dummy.pdf')
 # save trajectory file
 traj.saveTrajectory(fileName+'.traj')
 
