@@ -121,7 +121,6 @@ class plotBox(HasTraits):
         fileIn = open(fileName,'r')
         hD = rx.readDataFileHeader(fileIn)
         dD = rx.readDataFileArray(fileIn)
-        print dD.keys()
 
         #self.normal = numpy.array(map(float,dD['voltageForceNormal']))
         #self.shear  = numpy.array(map(float,dD['voltageForceLateral']))
@@ -181,27 +180,26 @@ class plotBox(HasTraits):
 
         self.shearPlot.index_range = self.normalPlot.index_range
 
-    traits_view = View(Item('vPlot',
+    w = 100
+    traits_view = View(HGroup(Item('cursorPosX', width = w),
+                              Item('cursorPosY', width = w)),
+                       HGroup(Item('pointX', style='readonly', width = w),
+                              Item('pointY', style='readonly', width = w)),
+                       Item('fileTitle', style = 'readonly', width = w),
+                       Item('vPlot',
                             editor = ComponentEditor(),
                             resizable = True,
                             show_label = False
                             ),
-                       HGroup(Item('message',    width = 200),
-                              Item('cursorPosX', width = 200),
-                              Item('cursorPosY', width = 200),
-                              Item('pointX', style='readonly', width = 200),
-                              Item('pointY', style='readonly', width = 200)
-                              ),
-                       Item('fileTitle', style = 'readonly', width = 200),
                        buttons = [accept, reject, OKButton],
                        title = 'Roxanne Parse Application',
                        handler = plotBoxHandler(),
                        resizable = True,
-                       width = 1400, height = 800,
+                       width = 600, height = 800,
                        x = 20, y = 40)
 
 def main():
-    directory = '../035-sws17-length/'
+    directory = '../036-sws19-ls/'
     fileNameList=glob.glob(directory + 'data/separated/*.data')
 
     timeStamp = rx.getTimeStamp()
