@@ -33,7 +33,7 @@ def outputDictAsTextByIndex(dict, i, fileOut):
     outputDictAsText(newDict, fileOut)
 
 def convertTime(timeStrings):
-    timeStrings = data['time']
+    #timeStrings = data['time']
     timeSeconds = [float(ts[0:2])*3600+float(ts[3:5])*60+float(ts[6:]) for ts in timeStrings]
     timeSeconds = np.array(timeSeconds)
     timeSeconds = timeSeconds - timeSeconds[0]
@@ -71,62 +71,70 @@ def convertData(data, cantileverDict):
 
     return data
 
+def separateData(rawFileName, indexFileName, prefix):
+    rawFile = open(rawFileName,'r')
+    '''raw stuff'''
+    # read header, rip into dictionary
+    rawHeaderDict = getHeader(rawFile)
+    # grab data
+    # convert according to rx.cantilever and sign conventions
+    data = rx.readDataFileArray(rawFile)
+    # need to get cantilever values, micron conversion, and polarity stuff
+    cantileverDict = rx.getCantileverData(rawHeaderDict['cantilever'])
+    data = convertData(data,cantileverDict)
 
-'''raw stuff'''
-# open data file
-rawFile = open('/Users/dsoto/current/swDataFlat/999-test-data/data/raw/test.data','r')
-# read header, rip into dictionary
-rawHeaderDict = getHeader(rawFile)
-# grab data
-# convert according to rx.cantilever and sign conventions
-data = rx.readDataFileArray(rawFile)
-# need to get cantilever values, micron conversion, and polarity stuff
-cantileverDict = rx.getCantileverData(rawHeaderDict['cantilever'])
-data = convertData(data,cantileverDict)
+    '''index stuff'''
+    # open index file
+    indexFile = open(indexFileName,'r')
 
-'''index stuff'''
-# open index file
-indexFile = open('/Users/dsoto/current/swDataFlat/999-test-data/traj/test.index','r')
-# use matrix open from roxanne
-# create dictionary from index entries
-indexDict = rx.readDataFileArray(indexFile)
-# converting string to float facilitates later formatting
-indexDict['angle'] = map(float,indexDict['angle'])
-#print dict to stdout
-#print indexDict
+    # use matrix open from roxanne
+    # create dictionary from index entries
+    indexDict = rx.readDataFileArray(indexFile)
+    # converting string to float facilitates later formatting
+    indexDict['angle'] = map(float,indexDict['angle'])
+    #print dict to stdout
+    #print indexDict
 
-# todo:check if file name exists (to deal with multiple trials)
-for i in range(len(indexDict['angle'])):
-    # construct file name
-    fileOutName = '/Users/dsoto/current/swDataFlat/999-test-data/data/separated/pre-'
-    fileOutName += 'a%02d.data' % indexDict['angle'][i]
-    print fileOutName,
-    print 'opening',
-    fileOut = open(fileOutName,'w')
-    print 'writing',
-    outputDictAsText(rawHeaderDict, fileOut)
-    outputDictAsTextByIndex(indexDict, i, fileOut)
-    fileOut.write('<data>\n')
-    # output header
-    # output data list
-    startIndex = int(indexDict['startIndex'][i])
-    endIndex = int(indexDict['endIndex'][i])
-    keys = data.keys()
-    keys.sort()
-    colWidth = max(map(len, keys)) + 1
-    for key in keys:
-        fileOut.write(key.ljust(colWidth))
-    fileOut.write('\n')
-    # get starting time
-    startTime = data['time'][startIndex]
-    for j in range(startIndex, endIndex + 1):
+    # todo:check if file name exists (to deal with multiple trials)
+    for i in range(len(indexDict['angle'])):
+        # construct file name
+        fileOutName = prefix
+        fileOutName += 'a%02d.data' % indexDict['angle'][i]
+        print fileOutName,
+        print 'opening',
+        fileOut = open(fileOutName,'w')
+        print 'writing',
+        outputDictAsText(rawHeaderDict, fileOut)
+        outputDictAsTextByIndex(indexDict, i, fileOut)
+        fileOut.write('<data>\n')
+        # output header
+        # output data list
+        startIndex = int(indexDict['startIndex'][i])
+        endIndex = int(indexDict['endIndex'][i])
+        keys = data.keys()
+        keys.sort()
+        colWidth = max(map(len, keys)) + 1
         for key in keys:
-            if key == 'time':
-                fileOut.write(str(data[key][j]-startTime).ljust(colWidth))
-            else:
-                fileOut.write(str(data[key][j]).ljust(colWidth))
+            fileOut.write(key.ljust(colWidth))
         fileOut.write('\n')
-    print 'finishing'
-        #print '\n',
+        # get starting time
+        startTime = data['time'][startIndex]
+        for j in range(startIndex, endIndex + 1):
+            for key in keys:
+                if key == 'time':
+                    fileOut.write(str(data[key][j]-startTime).ljust(colWidth))
+                else:
+                    fileOut.write(str(data[key][j]).ljust(colWidth))
+            fileOut.write('\n')
+        print 'finishing'
+            #print '\n',
 
 
+preload = [25, 27, 29, 31, 33, 35]
+dataDirectory = '../036-sws19-ls/'
+for p in preload:
+    rawFileName = dataDirectory + 'data/raw/036-p%d.data' % p
+    indexFileName = dataDirectory + 'traj/LS_p%d_d80_vp20_vd20.index' % p
+    prefix = dataDirectory + 'data/separated/p%d-' % p
+    print rawFileName, indexFileName, prefix
+    separateData(rawFileName, indexFileName, prefix)

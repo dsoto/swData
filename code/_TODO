@@ -2,3 +2,4 @@
 
 - add keybinding to get return key to do OKButton on parseChaco
 
+- refactor separateData.py and put stuff in roxanne
