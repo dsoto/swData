@@ -21,7 +21,7 @@ fileName = formatString % (preload[0],
                            velocity[1])
 
 indexFile = open(fileName+'.index','w')
-indexHeaderString = 'startIndex'+'\t'+'endIndex'+'\t'+'angle'+'\n'
+indexHeaderString = 'startIndex'+'\t'+'endIndex'+'\t'+'pulloffAngle'+'\n'
 indexFile.write(indexHeaderString)
 
 

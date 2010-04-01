@@ -91,15 +91,15 @@ def separateData(rawFileName, indexFileName, prefix):
     # create dictionary from index entries
     indexDict = rx.readDataFileArray(indexFile)
     # converting string to float facilitates later formatting
-    indexDict['angle'] = map(float,indexDict['angle'])
+    indexDict['pulloffAngle'] = map(float,indexDict['pulloffAngle'])
     #print dict to stdout
     #print indexDict
 
     # todo:check if file name exists (to deal with multiple trials)
-    for i in range(len(indexDict['angle'])):
+    for i in range(len(indexDict['pulloffAngle'])):
         # construct file name
         fileOutName = prefix
-        fileOutName += 'a%02d.data' % indexDict['angle'][i]
+        fileOutName += 'a%02d.data' % indexDict['pulloffAngle'][i]
         print fileOutName,
         print 'opening',
         fileOut = open(fileOutName,'w')
