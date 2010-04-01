@@ -1,4 +1,4 @@
-startIndex	endIndex	angle
+startIndex	endIndex	pulloffAngle
 1	879	0.0
 879	1754	1.0
 1754	2628	2.0
