@@ -1,3 +1,58 @@
 these scripts create trajectories for and analyze data from the
 roxanne dual axis force testing platform.
 
+these are the keys used for dictionaries in the roxanne code.
+ideally they are in the form nounAdjectiveUnits.
+
+the labview code uses these keys for its header
+
+norAmp        = normal amplification factor on signal box
+latAmp        = lateral amplification factor on signal box
+rollAngle     = roll angle of pin (about axis)
+pitchAngle    = pitch angle of pin
+cantilever    = cantilever number
+sample        = name of sample
+contactDistance = distance to initial contact in test setup
+run             = number of data run/test
+temperature = 21.2
+cantilever = 529b02
+trajectory = LS_p27_d80_vp20_vd20.traj
+humidity = 37.8
+sample = sws19
+date = March 30, 2010 12:06
+norAmp = 100
+
+the data file from the labview code also contains
+
+time
+voltageForceLateral
+voltageForceNormal
+voltagePositionX
+voltagePositionY
+
+after the data is separated, the data file contains these column headings:
+
+forceLateralMicroNewton
+forceNormalMicroNewton
+positionLateralMicron
+positionNormalMicron
+
+and these additional header tags
+
+the index file
+endIndex = 843
+startIndex = 1
+pulloffAngle = 0.0
+<data>
+
+once the data is analyzed, the following headings are used
+
+pulloffAngle  = angle of withdrawal in ldp test
+fileName
+forceMaxAdhesion
+forceMaxShear
+forcePreload
+dataFileName
+
+
+
