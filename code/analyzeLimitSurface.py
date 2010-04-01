@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-
-
 def main():
     import sys
     sys.path.append('/Users/dsoto/current/swDataFlat/roxanne')
@@ -10,142 +8,82 @@ def main():
     import os.path
     import numpy
 
-    # parseFileIn = open('../20091124-sws10-ls/data/separated/parsed.dat','r')
-    parseFileIn = open('../034-sws17-ldp/data/separated/indices.dat',
+    parseFileIn = open('../036-sws19-ls/data/parsed.dat',
                        'r')
     parseDict = roxanne.readDataFileArray(parseFileIn)
-    print parseDict.keys()
-    
+    #print parseDict.keys()
+
     fOut = open('analyzed.data','w')
-    # fileNameList = glob.glob('../20091124-sws10-ls/data/separated/p3*.data')
-    fileNameList = glob.glob('../034-sws17-ldp/data/separated/ldp*.data')
+    fileNameList = glob.glob('../036-sws19-ls/data/separated/*.data')
     outputList = ['fileName',
-                  'anglePitch',
+                  'pulloffAngle',
                   'forceMaxAdhesion',
-                  'forceMaxShear']
+                  'forceMaxShear',
+                  'forcePreload']
 
     # removed angle pulloff from output list
     sep = '\t'
     headerString = sep.join(outputList)
     fOut.write(headerString)
     fOut.write('\n')
-    
-    for fileName in fileNameList:
 
-        print 'processing file : ' + fileName
+    for dataFileName in fileNameList:
 
-        # TODO - pulloff angle from trajectory file name
+        print 'processing file : ' + dataFileName
 
-        fileIn = open(fileName)
-        headerDict = roxanne.readDataFileHeader(fileIn)
+        # read in data file
+        fileIn = open(dataFileName)
+        headerDict = roxanne.getHeader(fileIn)
         dataDict = roxanne.readDataFileArray(fileIn)
+        # this dataDict needs to be converted to floats
+        for key in dataDict.keys():
+            dataDict[key] = map(float, dataDict[key])
 
-        voltageLateral        =  map(float,dataDict['voltageForceLateral'])
-        voltageNormal         =  map(float,dataDict['voltageForceNormal'])
-        positionNormalMicron  =  map(float,dataDict['voltagePositionX'])
-        positionLateralMicron =  map(float,dataDict['voltagePositionY'])
+        # angle value should be in headerDict
+        pulloffAngle = float(headerDict['pulloffAngle'])
 
-        voltageLateral        = -numpy.array(voltageLateral)
-        voltageNormal         =  numpy.array(voltageNormal)
-        positionNormalMicron  =  numpy.array(positionNormalMicron) * 10
-        positionLateralMicron =  numpy.array(positionLateralMicron) * 10
-
-        cantileverDict = roxanne.getCantileverData(headerDict['cantilever'])
-
-        normalStiffness      = cantileverDict['normalStiffness']
-        lateralStiffness     = cantileverDict['lateralStiffness']
-        normalDisplacement   = cantileverDict['normalDisplacement']
-        lateralDisplacement  = cantileverDict['lateralDisplacement']
-        lateralAmplification = float(headerDict['latAmp'])
-        normalAmplification  = float(headerDict['norAmp'])
-        rollAngle            = float(headerDict['rollAngle'])
-        pitchAngle           = float(headerDict['pitchAngle'])
-#        anglePulloff         = float(headerDict['anglePulloff'])
-
-        defaultAmplification = 100
-        lateralDisplacement = (lateralDisplacement * lateralAmplification /
-                                                     defaultAmplification)
-        normalDisplacement = (normalDisplacement * normalAmplification /
-                                                  defaultAmplification)
-
-        # use cantilever values to convert voltages to forces
-        lateralForceMuN = (voltageLateral *
-                                   lateralStiffness / lateralDisplacement)
-        normalForceMuN  = (voltageNormal * normalStiffness /
-                                   normalDisplacement)
-
+        # get indices from the parsed.data file
         # get location of filename in parseDict
         # and pull data from same index in the other arrays
-        #fileName = os.path.splitext(fileName)
-        #fileName = fileName[0]
-        fileNames = parseDict['dataFileName']
-        fileNameNoPath = os.path.split(fileName)[1]
-        indexFileName = fileNames.index(fileNameNoPath)
+        parsedFileNames = parseDict['dataFileName']
+        dataFileNameNoPath = os.path.split(dataFileName)[1]
+        #fileNameNoPath = fileNames
+        indexFileName = parsedFileNames.index(dataFileNameNoPath)
 
         indexContact     = parseDict['indexContact'][indexFileName]
         indexPreload     = parseDict['indexMaxPreload'][indexFileName]
         indexMaxAdhesion = parseDict['indexMaxAdhesion'][indexFileName]
-        
-        indexContact = int(indexContact)
-        indexPreload = int(indexPreload)
+
+        indexContact     = int(indexContact)
+        indexPreload     = int(indexPreload)
         indexMaxAdhesion = int(indexMaxAdhesion)
 
-        # get forces at contact, preload, pulloff
-        normalForceContactMuN = normalForceMuN[indexContact]
-        normalForcePreloadMuN = normalForceMuN[indexPreload]
-        normalForcePulloffMuN = normalForceMuN[indexMaxAdhesion]
+        # pull force values at those indices
+        # data will be in dataDict
+        normalForceContactMuN = dataDict['forceNormalMicroNewton'][indexContact]
+        normalForcePreloadMuN = dataDict['forceNormalMicroNewton'][indexPreload]
+        normalForcePulloffMuN = dataDict['forceNormalMicroNewton'][indexMaxAdhesion]
 
-        shearForceContactMuN  = lateralForceMuN[indexContact]
-        shearForcePreloadMuN  = lateralForceMuN[indexPreload]
-        shearForcePulloffMuN  = lateralForceMuN[indexMaxAdhesion]
+        shearForceContactMuN  = dataDict['forceLateralMicroNewton'][indexContact]
+        shearForcePreloadMuN  = dataDict['forceLateralMicroNewton'][indexPreload]
+        shearForcePulloffMuN  = dataDict['forceLateralMicroNewton'][indexMaxAdhesion]
 
-        normalCantileverVoltageContact     = voltageNormal[indexContact]
-        normalCantileverVoltagePreload     = voltageNormal[indexPreload]
-        normalCantileverVoltageMaxAdhesion = voltageNormal[indexMaxAdhesion]
-
-        normalStagePositionContact     = positionNormalMicron[indexContact]
-        normalStagePositionPreload     = positionNormalMicron[indexPreload]
-        normalStagePositionMaxAdhesion = positionNormalMicron[indexMaxAdhesion]
-
-        # calculate effective stage preload
-        normalStagePreload = (normalStagePositionMaxAdhesion -
-                              normalStagePositionContact)
-        # calculate effective cantilever deflection
-        normalCantileverDeflection = ((normalCantileverVoltageContact -
-                                       normalCantileverVoltageMaxAdhesion)/
-                                       normalDisplacement)
-        # calculate effective microwedge deflection (effective preload)
-        effectivePreload = normalCantileverDeflection + normalStagePreload
+        # correct for force at contact
         # adhesion force = maxAdhesion - force at contact
         maxAdhesionMuN = (normalForcePulloffMuN -
                           normalForceContactMuN)
         # shear force = maxShear - force at contact
         maxShearMuN = (shearForcePulloffMuN -
                        shearForceContactMuN)
-        # calculate effective stiffness of structure
+
         # force at preload - force at contact = force of preload
         forcePreload = normalForcePreloadMuN - normalForceContactMuN
-        stageMovement = normalStagePositionPreload - normalStagePositionContact
-        normalCantileverDeflection = ((normalCantileverVoltageContact -
-                                       normalCantileverVoltagePreload)/
-                                       normalDisplacement)
 
-        # stage movement between contact and preload - cantilever deflection
-        effectiveStiffness = forcePreload/(stageMovement-
-                                           normalCantileverDeflection)
-
-#        print indexContact
-#        input()
-        fOut.write(fileName + '\t')
-        fOut.write('% 5.1f\t' % pitchAngle )
-#        fOut.write('% 5.3f\t' % effectivePreload)
+        fOut.write(dataFileNameNoPath + '\t')
+        fOut.write('% 5.1f\t' % pulloffAngle )
         fOut.write('% 5.3f\t' % maxAdhesionMuN)
         fOut.write('% 5.3f\t' % maxShearMuN)
-#        fOut.write('% 5.3f\t' % normalStagePositionPreload)
-#        fOut.write('% 5.3f\t' % normalStagePositionContact)
-#        fOut.write('% 5.3f\t' % forcePreload)
-#        fOut.write('% 5.3f\t' % stageMovement)
-#        fOut.write('% 5.3f\t' % effectiveStiffness)
+        fOut.write('% 5.3f\t' % forcePreload)
         fOut.write('\n')
 
     fOut.close()
