@@ -34,7 +34,7 @@ def plotLimitSurface(fileName):
 
     shearForce = np.array(shearForce)
     normalForce = np.array(normalForce)
-    factor = 3
+    factor = 10
     preload = np.array(preload) * factor
     pulloffAngle = np.array(pulloffAngle)
 
@@ -48,7 +48,7 @@ def plotLimitSurface(fileName):
                 alpha=0.5)
     plt.xlabel('Shear Force (microNewtons)')
     plt.ylabel('Adhesion Force (microNewtons)')
-    plt.title('Colored Limit Surface')
+    plt.title('SWS 19 Limit Surface')
     plt.grid(True)
     colorbar = plt.colorbar()
     colorbar.set_label('angle of pulloff (90 is vertical)')
