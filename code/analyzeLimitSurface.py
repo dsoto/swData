@@ -8,13 +8,13 @@ def main():
     import os.path
     import numpy
 
-    parseFileIn = open('../036-sws19-ls/data/parsed.dat',
+    parseFileIn = open('../037-sps06-ls/data/parsed.dat',
                        'r')
     parseDict = roxanne.readDataFileArray(parseFileIn)
     #print parseDict.keys()
 
     fOut = open('analyzed.data','w')
-    fileNameList = glob.glob('../036-sws19-ls/data/separated/*.data')
+    fileNameList = glob.glob('../037-sps06-ls/data/separated/*.data')
     outputList = ['fileName',
                   'pulloffAngle',
                   'forceMaxAdhesion',
