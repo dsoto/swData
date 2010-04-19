@@ -1,4 +1,4 @@
-April 19, 2010 12:05 
+April 19, 2010 12:05
 529b02
 H:\037-sps06-ls\traj\LS_p31_d80_vp20_vd20.traj
 latAmp = 100
@@ -9,7 +9,7 @@ temperature = 21.6
 humidity = 49.2
 run = 037
 contactDistance = 25
-preload = 27
+preload = 31
 <data>
 time	voltageForceLateral	voltageForceNormal	voltagePositionX	voltagePositionY
 12:02:50.0156	-9.429932E-2	-1.013184E-1	7.934570E-3	4.577637E-3
