@@ -212,7 +212,7 @@ class plotBox(HasTraits):
                        x = 20, y = 40)
 
 def main():
-    directory = '../036-sws19-ls/'
+    directory = '../037-sps06-ls/'
     fileNameList=glob.glob(directory + 'data/separated/*.data')
 
     timeStamp = rx.getTimeStamp()
