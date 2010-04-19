@@ -131,9 +131,9 @@ def separateData(rawFileName, indexFileName, prefix):
 
 
 preload = [25, 27, 29, 31, 33, 35]
-dataDirectory = '../036-sws19-ls/'
+dataDirectory = '../037-sps06-ls/'
 for p in preload:
-    rawFileName = dataDirectory + 'data/raw/036-p%d.data' % p
+    rawFileName = dataDirectory + 'data/raw/037-p%d.data' % p
     indexFileName = dataDirectory + 'traj/LS_p%d_d80_vp20_vd20.index' % p
     prefix = dataDirectory + 'data/separated/p%d-' % p
     print rawFileName, indexFileName, prefix
