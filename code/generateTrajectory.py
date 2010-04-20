@@ -20,6 +20,13 @@ class trajectory:
         plt.show()
         #plt.savefig(fileName + '.pdf')
 
+    def plotPathTimeTrace(self, fileName):
+        import matplotlib.pyplot as plt
+        plt.plot(self.xPoints,label='x')
+        plt.plot(self.yPoints,label='y')
+        plt.legend()
+        plt.show()
+
     def printPath(self):
         for this in zip(self.xPoints, self.yPoints):
             print "x = %.1f,  y = %.1f" % (this[0],this[1])
