@@ -48,7 +48,7 @@ def plotLimitSurface(fileName):
                 alpha=0.5)
     plt.xlabel('Shear Force (microNewtons)')
     plt.ylabel('Adhesion Force (microNewtons)')
-    plt.title('SWS 19 Limit Surface')
+    plt.title('SPS 06 Limit Surface')
     plt.grid(True)
     colorbar = plt.colorbar()
     colorbar.set_label('angle of pulloff (90 is vertical)')
