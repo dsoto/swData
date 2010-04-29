@@ -17,8 +17,16 @@ class trajectory:
         print 'plot'
         import matplotlib.pyplot as plt
         plt.plot(self.xPoints, self.yPoints)
-        plt.show()
-        #plt.savefig(fileName + '.pdf')
+        #plt.show()
+        plt.savefig(fileName + '.pdf')
+
+    def plotPathTimeTrace(self, fileName):
+        import matplotlib.pyplot as plt
+        plt.plot(self.xPoints,label='x')
+        plt.plot(self.yPoints,label='y')
+        plt.legend()
+        plt.savefig(fileName + '.pdf')
+        #plt.show()
 
     def printPath(self):
         for this in zip(self.xPoints, self.yPoints):
